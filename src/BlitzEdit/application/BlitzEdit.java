@@ -1,16 +1,18 @@
-package application;
+package BlitzEdit.application;
 
 	import java.net.URL;
 	import java.util.ResourceBundle;
-	import javafx.event.ActionEvent;
 	import javafx.event.Event;
-	import javafx.event.EventHandler;
 	import javafx.fxml.FXML;
 	import javafx.scene.control.Button;
+	import javafx.scene.control.TextArea;
 
-	public class Example implements javafx.fxml.Initializable {
+	public class BlitzEdit implements javafx.fxml.Initializable {
 		@FXML
 		private Button Hello_World;
+		
+		@FXML
+		private TextArea Hello_World_Text;
 
 		@Override	
 		public void initialize(URL location, ResourceBundle resources) {		
@@ -20,7 +22,7 @@ package application;
 		 @FXML
 		 private void handleButtonAction(Event event) {
 		     // Button was clicked, do something...
-			 System.out.println("Hello World!");
+			 Hello_World_Text.setText("Hello World!");
 		 }
 		
 	}
