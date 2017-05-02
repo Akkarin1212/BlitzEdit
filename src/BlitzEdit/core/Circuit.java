@@ -2,12 +2,17 @@ package BlitzEdit.core;
 
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.awt.Rectangle;
 import BlitzEdit.core.Component;
 
+
+// Circuit Klasse:
+// Speichert Bauelemente und deren Verbindungen
+// und regelt den Zugriff auf diese
 public class Circuit
 {
-	//Gibt alle Elemente des Schaltplans zurück, die sich an der Position (x, y) befinden.
+	//Gibt alle Elemente des Schaltplans zurÃ¼ck, die sich an der Position (x, y) befinden.
 	public ArrayList<Element> getElementsByPosition(int x, int y)
 	{
 		ArrayList<Element> resultList = new ArrayList<Element>();
@@ -30,7 +35,7 @@ public class Circuit
 		return resultList;
 	}
 	
-	//Gibt alle Elemente des Schaltplans zurück, die sich im Rechteck befinden, dass durch
+	//Gibt alle Elemente des Schaltplans zurÃ¼ck, die sich im Rechteck befinden, dass durch
 	//die Punkte (x1, y1) und (x2, y2) aufgespannt wird.
 	public ArrayList<Element> getElementsByPosition(int x1, int y1, int x2, int y2)
 	{
@@ -47,7 +52,7 @@ public class Circuit
 		return resultList;
 	}
 	
-	//Gibt alle Components zurück, deren Typnamen type entsprechen.
+	//Gibt alle Components zurÃ¼ck, deren Typnamen type entsprechen.
 	public ArrayList<Element> getElementsByPosition(String type)
 	{
 		ArrayList<Element> resultList = new ArrayList<Element>();
@@ -64,24 +69,44 @@ public class Circuit
 		return resultList;
 	}
 	
+	//Gibt Liste aller Elemente zurück (keine Kopie!)
 	public ArrayList<Element> getElements()
 	{
-		return new ArrayList<Element>(_elements);
+		return _elements;
 	}
 	
-	//Fügt das Element elem an den Schaltplan an.
+	//FÃ¼gt das Element elem an den Schaltplan an.
 	public void addElement(Element elem)
 	{
-		if (elem != null)
-			_elements.add(elem);
+		if (elem == null)
+			return;
+		if (elem instanceof Component)
+		{
+			for (Connector con : ((Component)elem).getConnectors())
+			{
+				_elements.add(con);
+			}
+		}
+		_elements.add(elem);
 	}
 	
-	public void addElements(ArrayList<Element> elements)
+	//Fügt alle Elemente der übergebenene Collection in den Schaltplan ein
+	//(sofern diese noch nicht im Schlatplan vorhanden sind)
+	public void addElements(Collection<Element> elements)
 	{
 		if (elements != null)
 		{
 			for (Element elem : elements)
+			{
+				if (elem instanceof Component)
+				{
+					for (Connector con : ((Component)elem).getConnectors())
+					{
+						_elements.add(con);
+					}
+				}
 				_elements.add(elem);
+			}
 		}
 	}
 	
@@ -98,6 +123,7 @@ public class Circuit
 		}
 	}
 	
+	//Entfernt alle Elemente aus dem Schaltplan
 	public void clearElements()
 	{
 		_elements.clear();
@@ -125,9 +151,10 @@ public class Circuit
 		_name = new String(name);
 	}
 	
-	public Circuit(ArrayList<Element> elems, String name) 
+	public Circuit(Collection<Element> elems, String name) 
 	{
-		_elements = new ArrayList<Element>(elems);
+		_elements = new ArrayList<Element>();
+		addElements(elems);
 		_name = new String(name);
 	}
 	
