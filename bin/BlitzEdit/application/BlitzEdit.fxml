@@ -10,29 +10,29 @@
 
 <AnchorPane minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1080.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="BlitzEdit.application.BlitzEdit">
    <children>
-      <SplitPane dividerPositions="0.0" minHeight="-Infinity" minWidth="-Infinity" orientation="VERTICAL" prefHeight="720.0" prefWidth="1080.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <SplitPane dividerPositions="0.03899721448467967, 0.9610027855153204" minHeight="-Infinity" minWidth="-Infinity" orientation="VERTICAL" prefHeight="720.0" prefWidth="1080.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <items>
             <MenuBar maxHeight="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="25.0" prefWidth="1050.0">
               <menus>
                 <Menu mnemonicParsing="false" text="File">
                   <items>
-                    <MenuItem mnemonicParsing="false" text="New">
+                    <MenuItem fx:id="New" mnemonicParsing="false" onAction="#handleNewAction" text="New">
                            <accelerator>
                               <KeyCodeCombination alt="UP" code="N" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                            </accelerator>
                         </MenuItem>
                         <SeparatorMenuItem mnemonicParsing="false" />
-                        <MenuItem mnemonicParsing="false" text="Open...">
+                        <MenuItem fx:id="Open" mnemonicParsing="false" onAction="#handleOpenAction" text="Open...">
                            <accelerator>
                               <KeyCodeCombination alt="UP" code="O" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                            </accelerator>
                         </MenuItem>
-                        <MenuItem mnemonicParsing="false" text="Save">
+                        <MenuItem fx:id="Save" mnemonicParsing="false" onAction="#handleSaveAction" text="Save">
                            <accelerator>
                               <KeyCodeCombination alt="UP" code="S" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                            </accelerator>
                         </MenuItem>
-                        <MenuItem mnemonicParsing="false" text="Save As...">
+                        <MenuItem fx:id="SaveAs" mnemonicParsing="false" onAction="#handleSaveAsAction" text="Save As...">
                            <accelerator>
                               <KeyCodeCombination alt="UP" code="A" control="DOWN" meta="UP" shift="DOWN" shortcut="UP" />
                            </accelerator>
@@ -40,90 +40,90 @@
                         <SeparatorMenuItem mnemonicParsing="false" />
                         <Menu mnemonicParsing="false" text="Import...">
                           <items>
-                            <MenuItem mnemonicParsing="false" text="Library" />
-                              <MenuItem mnemonicParsing="false" text="Component" />
+                            <MenuItem fx:id="Import_Library" mnemonicParsing="false" onAction="#handleImportLibraryAction" text="Library" />
+                              <MenuItem fx:id="Import_Component" mnemonicParsing="false" onAction="#handleImportComponentAction" text="Component" />
                           </items>
                         </Menu>
-                        <MenuItem mnemonicParsing="false" text="Close" />
+                        <MenuItem fx:id="Close" mnemonicParsing="false" onAction="#handleCloseAction" text="Close" />
                   </items>
                 </Menu>
                   <Menu mnemonicParsing="false" text="Edit">
                     <items>
-                      <MenuItem mnemonicParsing="false" text="Undo">
+                      <MenuItem fx:id="Undo" mnemonicParsing="false" onAction="#handleUndoAction" text="Undo">
                            <accelerator>
                               <KeyCodeCombination alt="UP" code="Z" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                            </accelerator>
                         </MenuItem>
-                        <MenuItem mnemonicParsing="false" text="Redo">
+                        <MenuItem fx:id="Redo" mnemonicParsing="false" onAction="#handleRedoAction" text="Redo">
                            <accelerator>
                               <KeyCodeCombination alt="UP" code="Y" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                            </accelerator>
                         </MenuItem>
                         <SeparatorMenuItem mnemonicParsing="false" />
-                        <MenuItem mnemonicParsing="false" text="Copy">
+                        <MenuItem fx:id="Copy" mnemonicParsing="false" onAction="#handleCopyAction" text="Copy">
                            <accelerator>
                               <KeyCodeCombination alt="UP" code="C" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                            </accelerator>
                         </MenuItem>
-                        <MenuItem mnemonicParsing="false" text="Paste">
+                        <MenuItem fx:id="Paste" mnemonicParsing="false" onAction="#handlePasteAction" text="Paste">
                            <accelerator>
                               <KeyCodeCombination alt="UP" code="V" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                            </accelerator>
                         </MenuItem>
-                        <MenuItem mnemonicParsing="false" text="Duplicate">
+                        <MenuItem fx:id="Duplicate" mnemonicParsing="false" onAction="#handleDuplicateAction" text="Duplicate">
                            <accelerator>
                               <KeyCodeCombination alt="UP" code="D" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                            </accelerator>
                         </MenuItem>
-                        <MenuItem mnemonicParsing="false" text="Delete" />
+                        <MenuItem fx:id="Delete" mnemonicParsing="false" onAction="#handleDeleteAction" text="Delete" />
                         <SeparatorMenuItem mnemonicParsing="false" />
-                        <MenuItem mnemonicParsing="false" text="Select All">
+                        <MenuItem fx:id="SelectAll" mnemonicParsing="false" onAction="#handleSelectAllAction" text="Select All">
                            <accelerator>
                               <KeyCodeCombination alt="UP" code="A" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                            </accelerator>
                         </MenuItem>
-                        <MenuItem mnemonicParsing="false" text="Select None">
+                        <MenuItem fx:id="SelectNone" mnemonicParsing="false" onAction="#handleSelectNoneAction" text="Select None">
                            <accelerator>
                               <KeyCodeCombination alt="UP" code="A" control="DOWN" meta="UP" shift="DOWN" shortcut="UP" />
                            </accelerator>
                         </MenuItem>
                     </items>
                   </Menu>
-                <Menu mnemonicParsing="false" text="Save">
+                <Menu fx:id="QuickSave" mnemonicParsing="false" onAction="#handleQuickSaveAction" text="Save">
                      <accelerator>
                         <KeyCodeCombination alt="UP" code="S" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                      </accelerator>
                 </Menu>
                   <Menu mnemonicParsing="false" text="View">
                      <items>
-                        <MenuItem mnemonicParsing="false" text="Zoom In" />
-                        <MenuItem mnemonicParsing="false" text="Zoom Out" />
+                        <MenuItem fx:id="ZoomIn" mnemonicParsing="false" onAction="#handleViewZoomInAction" text="Zoom In" />
+                        <MenuItem fx:id="ZoomOut" mnemonicParsing="false" onAction="#handleViewZoomOutAction" text="Zoom Out" />
                      </items>
                   </Menu>
                   <Menu mnemonicParsing="false" text="Help">
                      <items>
-                        <MenuItem mnemonicParsing="false" text="About" />
+                        <MenuItem fx:id="About" mnemonicParsing="false" onAction="#handleHelpAboutAction" text="About" />
                      </items>
                   </Menu>
               </menus>
             </MenuBar>
-            <SplitPane dividerPositions="0.16, 0.84" minHeight="-Infinity" minWidth="-Infinity" prefHeight="650.0" prefWidth="1050.0">
+            <SplitPane dividerPositions="0.16, 0.84" minHeight="500.0" minWidth="-Infinity" prefWidth="1050.0">
               <items>
                 <AnchorPane minHeight="0.0" minWidth="180.0" prefHeight="680.0" prefWidth="170.0">
                      <children>
                         <Accordion minHeight="680.0" minWidth="180.0" prefHeight="680.0" prefWidth="181.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                           <panes>
-                            <TitledPane animated="false" text="Bibliothek 1">
+                            <TitledPane fx:id="Library1" animated="false" text="Library 1">
                               <content>
                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
                               </content>
                             </TitledPane>
-                            <TitledPane animated="false" text="Bibliothek 2">
+                            <TitledPane fx:id="Library2" animated="false" text="Library 2">
                               <content>
                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
                               </content>
                             </TitledPane>
-                            <TitledPane animated="false" text="Bibliothek 3">
+                            <TitledPane fx:id="Library3" animated="false" text="Library 3">
                               <content>
                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
                               </content>
@@ -140,7 +140,7 @@
                   </AnchorPane>
                   <AnchorPane minHeight="0.0" minWidth="200.0" prefHeight="680.0" prefWidth="170.0">
                      <children>
-                        <TitledPane animated="false" minHeight="0.0" minWidth="200.0" text="Eigenschaften" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                        <TitledPane fx:id="Properties" animated="false" minHeight="0.0" minWidth="200.0" text="Properties" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                           <content>
                             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                  <children>
@@ -153,6 +153,16 @@
                   </AnchorPane>
               </items>
             </SplitPane>
+            <AnchorPane maxHeight="25.0" minHeight="-Infinity" minWidth="0.0" prefHeight="25.0" prefWidth="0.0">
+               <children>
+                  <Label fx:id="Debug_Text_Label" text="Debug Text" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <padding>
+                        <Insets left="10.0" />
+                     </padding>
+                  </Label>
+                  <TextField fx:id="Debug_Text" layoutX="227.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="150.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+               </children>
+            </AnchorPane>
          </items>
       </SplitPane>
    </children>
