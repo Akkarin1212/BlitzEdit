@@ -90,86 +90,86 @@ import javafx.scene.control.TitledPane;
 		 
 		 @FXML
 		 private void handleSaveAction(Event event) {
-			 
+			 Debug_Text.setText("Save");
 		 } 
 		 
 		 @FXML
 		 private void handleSaveAsAction(Event event) {
-			 
+			 Debug_Text.setText("Save As...");
 		 }
 
 		 @FXML
 		 private void handleImportLibraryAction(Event event) {
-			 
+			 Debug_Text.setText("Import Library");
 		 }
 
 		 @FXML
 		 private void handleImportComponentAction(Event event) {
-			 
+			 Debug_Text.setText("Import Component");
 		 }
 
 		 @FXML
 		 private void handleCloseAction(Event event) {
-			 
+			 Debug_Text.setText("Close");
 		 }
 
 		 @FXML
 		 private void handleUndoAction(Event event) {
-			 
+			 Debug_Text.setText("Undo");
 		 }
 
 		 @FXML
 		 private void handleRedoAction(Event event) {
-			 
+			 Debug_Text.setText("Redo");
 		 }
 
 		 @FXML
 		 private void handleCopyAction(Event event) {
-			 
+			 Debug_Text.setText("Copy");
 		 }
 
 		 @FXML
 		 private void handlePasteAction(Event event) {
-			 
+			 Debug_Text.setText("Paste");
 		 }
 		
 		 @FXML
 		 private void handleDuplicateAction(Event event) {
-			 
+			 Debug_Text.setText("Duplicate");
 		 }
 
 		 @FXML
 		 private void handleDeleteAction(Event event) {
-			 
+			 Debug_Text.setText("Delete");
 		 }
 
 		 @FXML
 		 private void handleSelectAllAction(Event event) {
-			 
+			 Debug_Text.setText("Select All");
 		 }
 
 		 @FXML
 		 private void handleSelectNoneAction(Event event) {
-			 
+			 Debug_Text.setText("Select None");
 		 }
 
 		 @FXML
 		 private void handleQuickSaveAction(Event event) {
-			 
+			 Debug_Text.setText("Save");
 		 }
 		 @FXML
 		 private void handleViewZoomInAction(Event event) {
-			 
+			 Debug_Text.setText("Zoom In");
 		 }
 
 		 @FXML
 		 private void handleViewZoomOutAction(Event event) {
-			 
+			 Debug_Text.setText("Zoom Out");
 		 }
 
 		 @FXML
 		 private void handleHelpAboutAction(Event event) {
-			 
+			 Debug_Text.setText("About");
 		 }
 		
 	}
