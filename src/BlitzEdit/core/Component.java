@@ -5,7 +5,7 @@ import javafx.scene.shape.*;
 
 public class Component extends RotatableElement
 {
-	public void setPosition(int x, int y)
+	public Component setPosition(int x, int y)
 	{
 		for (Connector conn : _ports)
 		{
@@ -13,17 +13,21 @@ public class Component extends RotatableElement
 		}
 		_posX = x;
 		_posY = y;
+		
+		return this;
 	}
 	
 	@Override
-	public void move(int x, int y)
+	public Component move(int x, int y)
 	{
-		_posX += x;
-		_posY += y;
 		for (Connector conn : _ports)
 		{
-			conn.move(x, y);
+			conn.setPosition(conn.getX() + x, conn.getY() + y);
 		}
+		_posX += x;
+		_posY += y;
+		
+		return this;
 	}
 	
 	public ArrayList<Connector> getConnectors()
@@ -40,6 +44,17 @@ public class Component extends RotatableElement
 				if (co == conn)
 					return true;
 			}
+		}
+		return false;
+	}
+	
+	public boolean isConnected(Component comp)
+	{
+		
+		for (Component c : getConnectedComponents())
+		{
+			if (c == comp)
+				return true;
 		}
 		return false;
 	}
@@ -100,7 +115,7 @@ public class Component extends RotatableElement
 		_type = new String(type);
 		_svg = new SVGPath();
 		_svg.setContent(svg.getContent());
-		//Erstellt die Connectoren für die Komponente und setzt sie an
+		//Erstellt die Connectoren fÃ¼r die Komponente und setzt sie an
 		//die richtige Position
 		_ports = new ArrayList<Connector>();
 		for (int i = 0; i < connRelPos.length; i++)

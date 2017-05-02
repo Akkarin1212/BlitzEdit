@@ -1,5 +1,7 @@
 package BlitzEdit.core;
 
+import java.awt.Rectangle;
+
 public abstract class Element 
 {
 	public int getX()
@@ -22,13 +24,21 @@ public abstract class Element
 		return _sizeY;
 	}
 	
-	public void setPosition(int x, int y)
+	public Element setPosition(int x, int y)
 	{
 		_posX = x;
 		_posY = y;
+		return this;
 	}
 	
-	abstract void move(int x, int y);
+	//Bewegt das Element
+	public abstract Element move(int x, int y);
+	
+	public boolean contains(int x, int y)
+	{
+		Rectangle rect = new Rectangle(_posX, _posY, _sizeX, _sizeY);
+		return rect.contains(x, y);
+	}
 	
 	public Element(int x, int y)
 	{
