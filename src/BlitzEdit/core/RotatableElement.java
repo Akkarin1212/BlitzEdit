@@ -47,5 +47,5 @@ public abstract class RotatableElement extends Element
 	}
 	
 
-	private short _rotation;
+	protected short _rotation;
 }
