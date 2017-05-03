@@ -1,6 +1,7 @@
 package BlitzEdit.core;
 
 import java.awt.Rectangle;
+import java.awt.geom.AffineTransform;
 
 public abstract class RotatableElement extends Element
 {
