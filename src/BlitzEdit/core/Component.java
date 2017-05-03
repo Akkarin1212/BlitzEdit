@@ -109,6 +109,23 @@ public class Component extends RotatableElement
 		return new String(_type);
 	}
 	
+	@Override
+	//Rotates Componenet to the specified angle
+	public void setRotation(short rotation)
+	{
+		AffineTransform at = AffineTransform.getRotateInstance((Math.PI * 2)*((double)rotation / 360.0), _posX, _posY);
+
+		//change connectors absolute position according to components rotation
+		for (Connector con: getConnectors())
+		{
+			Point2D p = new Point(con.getX(), con.getY());
+			Point2D p2 = new Point();
+			at.transform(p, p2);
+			con.setPosition((int)p2.getX(), (int)p2.getY());
+		}
+		_rotation = rotation;
+	}
+	
 	public Component(int x, int y, short rot, String type, int[][] connRelPos, SVGPath svg)
 	{
 		super(x, y, rot);
