@@ -158,6 +158,14 @@ public class Circuit
 		_name = new String(name);
 	}
 	
+	public void updateBlueprints(Collection<ComponentBlueprint> blueprints)
+	{
+		_blueprints.clear();
+		_blueprints.addAll(blueprints);
+	}
+	
+	private ArrayList<ComponentBlueprint> _blueprints;
+	
 	private ArrayList<Element> _elements;
 	private String _name;
 	private String _path;
