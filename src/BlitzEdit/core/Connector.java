@@ -74,21 +74,25 @@ public final class Connector extends Element
 			_connected = false;
 	}
 	
-	//
-	public void disconnect(Collection<Connector> conns)
+	// Disconnects all Elements of elems
+	// that are connected
+	public void disconnect(Collection<Element> elems)
 	{
 		if (this.connected())
 		{
-			for (Connector c : conns)
+			for (Element e : elems)
 			{
-				if (_connections.contains(c))
-					_connections.remove(c);
+				if (e instanceof Connector)
+					disconnect((Connector)e);
+				else if (e instanceof Component)
+					disconnect((Component)e);
 			}
 		}
 		if (_connections.isEmpty())
 			_connected = false;
 	}
 	
+	// Disconnects all Connections to comp
 	public void disconnect(Component comp)
 	{
 		if (this.connected())
@@ -102,24 +106,7 @@ public final class Connector extends Element
 		if (_connections.isEmpty())
 			_connected = false;
 	}
-	/*
-	public void disconnect(Collection<Component> comps)
-	{
-		if (this.connected())
-		{
-			for (Component co : comps)
-			{
-				for (Connector c : comp.getConnectors())
-				{
-					if (_connections.contains(c))
-						_connections.remove(c);
-				}
-			}
-		}
-		if (_connections.isEmpty())
-			_connected = false;
-	}
-	*/
+	
 	public boolean connected()
 	{
 		if(_connected)
