@@ -6,8 +6,8 @@ import java.util.ArrayList;
 
 public class BlueprintContainer 
 {
-	
-	
+	// put new Blueprint in container.
+	// the old one will be overwritten, if already existing. 
 	public void setBlueprint(ComponentBlueprint blueprint)
 	{
 		_blueprints.put(blueprint.getType(), blueprint);
@@ -31,7 +31,7 @@ public class BlueprintContainer
 		for (ComponentBlueprint cb : cbs)
 		{
 			if (!_blueprints.containsKey(cb.getType())
-				|| _blueprints.get(cb.getType()).hashCode() != cb.hashCode() )
+				|| _blueprints.get(cb.getType()).equals(cb))
 				ret.add(cb);
 		}
 		if (ret.isEmpty())
