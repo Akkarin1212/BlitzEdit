@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.canvas.*?>
+<?import javafx.scene.shape.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.input.*?>
 <?import javafx.scene.text.*?>
@@ -134,8 +136,19 @@
                   </AnchorPane>
                 <AnchorPane minHeight="0.0" minWidth="400.0">
                      <children>
-                        <Button fx:id="Hello_World" layoutX="295.0" layoutY="310.0" mnemonicParsing="false" onAction="#handleButtonAction" text="Hello World" />
-                        <TextArea fx:id="Hello_World_Text" layoutX="235.0" layoutY="349.0" prefHeight="25.0" prefWidth="200.0" />
+                        <TabPane minHeight="-Infinity" minWidth="-Infinity" prefHeight="0.0" prefWidth="0.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                          <tabs>
+                            <Tab text="Untitled Tab 1">
+                              <content>
+                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                                       <children>
+                                          <Canvas fx:id="Canvas" height="626.0" onMouseClicked="#handleCanvasClicked" width="686.0" AnchorPane.bottomAnchor="1.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                       </children>
+                                    </AnchorPane>
+                              </content>
+                            </Tab>
+                          </tabs>
+                        </TabPane>
                      </children>
                   </AnchorPane>
                   <AnchorPane minHeight="0.0" minWidth="200.0" prefHeight="680.0" prefWidth="170.0">
@@ -155,12 +168,11 @@
             </SplitPane>
             <AnchorPane maxHeight="25.0" minHeight="-Infinity" minWidth="0.0" prefHeight="25.0" prefWidth="0.0">
                <children>
-                  <Label fx:id="Debug_Text_Label" text="Debug Text" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                  <Label fx:id="Debug_Text" text="Debug Text" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <padding>
                         <Insets left="10.0" />
                      </padding>
                   </Label>
-                  <TextField fx:id="Debug_Text" layoutX="227.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="150.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                </children>
             </AnchorPane>
          </items>
