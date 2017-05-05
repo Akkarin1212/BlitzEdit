@@ -1,10 +1,10 @@
-package BlitzEdit.core;
+package blitzEdit.core;
 
 import java.util.ArrayList;
 import java.util.Collection;
 
-import BlitzEdit.core.Element;
-import BlitzEdit.core.Component;
+import blitzEdit.core.Element;
+import blitzEdit.core.Component;
 
 public final class Connector extends Element
 {

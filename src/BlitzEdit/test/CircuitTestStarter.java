@@ -1,8 +1,8 @@
-package BlitzEdit.test;
+package blitzEdit.test;
 
 import java.util.ArrayList;
 
-import BlitzEdit.test.CircuitCreateTest;
+import blitzEdit.test.CircuitCreateTest;
 
 public class CircuitTestStarter {
 	

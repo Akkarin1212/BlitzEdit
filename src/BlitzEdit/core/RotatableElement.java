@@ -1,4 +1,4 @@
-package BlitzEdit.core;
+package blitzEdit.core;
 
 import java.awt.Rectangle;
 import java.awt.geom.AffineTransform;

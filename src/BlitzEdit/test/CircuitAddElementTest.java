@@ -1,6 +1,6 @@
-package BlitzEdit.test;
+package blitzEdit.test;
 
-import BlitzEdit.core.*;
+import blitzEdit.core.*;
 import javafx.scene.shape.SVGPath;
 import java.util.ArrayList;
 

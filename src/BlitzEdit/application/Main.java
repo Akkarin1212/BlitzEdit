@@ -1,4 +1,4 @@
-package BlitzEdit.application;
+package blitzEdit.application;
 	
 import java.io.IOException;
 import javafx.application.Application;

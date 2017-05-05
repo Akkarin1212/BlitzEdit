@@ -1,6 +1,7 @@
-package BlitzEdit.core;
+package blitzEdit.core;
 
 
+import java.awt.Point;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;

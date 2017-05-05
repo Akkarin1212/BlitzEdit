@@ -1,4 +1,4 @@
-package BlitzEdit.core;
+package blitzEdit.core;
 
 import java.awt.Rectangle;
 

@@ -1,11 +1,11 @@
-package BlitzEdit.test;
+package blitzEdit.test;
 
 import java.util.ArrayList;
 
-import BlitzEdit.core.Circuit;
-import BlitzEdit.core.Component;
-import BlitzEdit.core.Connector;
-import BlitzEdit.core.Element;
+import blitzEdit.core.Circuit;
+import blitzEdit.core.Component;
+import blitzEdit.core.Connector;
+import blitzEdit.core.Element;
 import javafx.scene.shape.*;
 
 public class CircuitCreateTest implements Runnable {
@@ -26,7 +26,7 @@ public class CircuitCreateTest implements Runnable {
 		int[][] relPos = {{0, 1}, {0, -1}};
 		ArrayList elements = new ArrayList<Element>();
 		
-		//elemente, die eingefügt werden sollen
+		//elemente, die eingefï¿½gt werden sollen
 		elements.add(new Component(1, 3, (short)0, "Resistor", relPos, new SVGPath()));
 		elements.add(new Component(5, 8, (short)0, "Source", relPos, new SVGPath()));
 		

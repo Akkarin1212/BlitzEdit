@@ -1,4 +1,4 @@
-package BlitzEdit.application;
+package blitzEdit.application;
 
 	import java.net.URL;
 	import java.util.ResourceBundle;

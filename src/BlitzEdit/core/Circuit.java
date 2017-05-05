@@ -1,10 +1,10 @@
-package BlitzEdit.core;
+package blitzEdit.core;
 
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.awt.Rectangle;
-import BlitzEdit.core.Component;
+import blitzEdit.core.Component;
 
 
 // Circuit Klasse:
