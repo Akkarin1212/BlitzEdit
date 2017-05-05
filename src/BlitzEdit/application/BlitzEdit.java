@@ -4,18 +4,15 @@ package BlitzEdit.application;
 	import java.util.ResourceBundle;
 	import javafx.event.Event;
 	import javafx.fxml.FXML;
-	import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
-import javafx.scene.control.TitledPane;
+	import javafx.scene.canvas.Canvas;
+	import javafx.scene.canvas.GraphicsContext;
+	import javafx.scene.control.Label;
+	import javafx.scene.control.MenuItem;
+	import javafx.scene.control.TitledPane;
 
 	public class BlitzEdit implements javafx.fxml.Initializable {
-		@FXML 
-		private Button Hello_World;
 		@FXML
-		private TextArea Hello_World_Text;
+		private Canvas Canvas;
 		@FXML 
 		private MenuItem New;
 		@FXML 
@@ -63,20 +60,12 @@ import javafx.scene.control.TitledPane;
 		@FXML
 		private TitledPane Properties;
 		@FXML
-		private Label Debug_Text_Label;
-		@FXML
-		private TextField Debug_Text;
+		private Label Debug_Text;
 		
 		@Override	
 		public void initialize(URL location, ResourceBundle resources) {		
-				
+			
 		}
-		
-		 @FXML
-		 private void handleButtonAction(Event event) {
-		     // Button was clicked, do something...
-			 Hello_World_Text.setText("Hello World!");
-		 }
 		 
 		 @FXML
 		 private void handleNewAction(Event event) {
@@ -170,6 +159,12 @@ import javafx.scene.control.TitledPane;
 		 @FXML
 		 private void handleHelpAboutAction(Event event) {
 			 Debug_Text.setText("About");
+		 }
+		 
+		 @FXML
+		 private void handleCanvasClicked(Event event) {
+			 GraphicsContext gc = Canvas.getGraphicsContext2D();
+			 
 		 }
 		
 	}
