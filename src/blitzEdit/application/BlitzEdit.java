@@ -9,6 +9,7 @@ package blitzEdit.application;
 	import javafx.scene.control.Label;
 	import javafx.scene.control.MenuItem;
 	import javafx.scene.control.TitledPane;
+import javafx.scene.input.MouseEvent;
 
 	public class BlitzEdit implements javafx.fxml.Initializable {
 		@FXML
@@ -162,9 +163,12 @@ package blitzEdit.application;
 		 }
 		 
 		 @FXML
-		 private void handleCanvasClicked(Event event) {
+		 private void handleCanvasClicked(MouseEvent event) {
 			 GraphicsContext gc = Canvas.getGraphicsContext2D();
 			 
+			 String foo = SvgRenderer.getSvgFileString("img/Widerstand.svg");
+			 System.out.println(foo);
+			 SvgRenderer.renderSvgString(foo, gc, event.getX(), event.getY());
 		 }
 		
 	}
