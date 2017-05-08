@@ -1,21 +1,24 @@
 package blitzEdit.application;
 
 	import java.net.URL;
-	import java.util.ResourceBundle;
-	import javafx.event.Event;
+import java.util.ResourceBundle;
+import java.util.concurrent.ThreadLocalRandom;
+
+import javafx.event.Event;
 	import javafx.fxml.FXML;
-	import javafx.scene.canvas.Canvas;
-	import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Accordion;
 import javafx.scene.control.Label;
 	import javafx.scene.control.MenuItem;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TitledPane;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 
 	public class BlitzEdit implements javafx.fxml.Initializable {
+		
+		LibraryCanvas currentLibraryCanvas;
+		CircuitCanvas currentCircuitCanvas;
+		
 		@FXML 
 		private MenuItem New;
 		@FXML 
@@ -74,6 +77,7 @@ import javafx.scene.layout.AnchorPane;
 		@Override	
 		public void initialize(URL location, ResourceBundle resources) {		
 			addTab();
+			addLibrary();
 		}
 		 
 		 @FXML
@@ -101,6 +105,9 @@ import javafx.scene.layout.AnchorPane;
 		 @FXML
 		 private void handleImportLibraryAction(Event event) {
 			 Debug_Text.setText("Import Library");
+			 
+			 addLibrary();
+			 currentLibraryCanvas.drawLibraryEntries();
 		 }
 
 		 @FXML
@@ -179,7 +186,7 @@ import javafx.scene.layout.AnchorPane;
 			 {	
 				 Tab tab = new Tab("New Tab");
 				 AnchorPane root = new AnchorPane();
-				 ResizableCanvas canvas = new ResizableCanvas();
+				 CircuitCanvas canvas = new CircuitCanvas();
 				 
 				 AnchorPane.setTopAnchor(canvas, 0.0);
 				 AnchorPane.setBottomAnchor(canvas, 0.0);
@@ -190,6 +197,31 @@ import javafx.scene.layout.AnchorPane;
 				 tab.setContent(canvas);
 				 CircuitsTabPane.getTabs().add(tab);
 				 CircuitsTabPane.getSelectionModel().select(tab);
+				 currentCircuitCanvas = canvas;
+			 }
+		 }
+		 
+		 private void addLibrary()
+		 {
+			// check if the TabPanel exists before creating tabs
+			 if(LibrariesAccordion != null)
+			 {	
+				 AnchorPane root = new AnchorPane();
+				 LibraryCanvas canvas = new LibraryCanvas();
+				 TitledPane library = new TitledPane("New Library", null);
+				 
+				 AnchorPane.setTopAnchor(canvas, 0.0);
+				 AnchorPane.setBottomAnchor(canvas, 0.0);
+				 AnchorPane.setLeftAnchor(canvas, 0.0);
+				 AnchorPane.setRightAnchor(canvas, 0.0);
+				 
+				 library.setContent(root);
+				 library.setContent(canvas);
+				 LibrariesAccordion.getPanes().add(library);
+				 LibrariesAccordion.setExpandedPane(library);
+				 
+				 canvas.drawLibraryEntries();
+				 currentLibraryCanvas = canvas;
 			 }
 		 }
 	}
