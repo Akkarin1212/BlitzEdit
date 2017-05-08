@@ -5,6 +5,9 @@ import java.awt.Point;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
+
+import blitzEdit.application.SvgRenderer;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.shape.*;
 
 public class Component extends RotatableElement
@@ -113,6 +116,22 @@ public class Component extends RotatableElement
 		return new String(_type);
 	}
 	
+	public String getSvgFilePath()
+	{
+		return new String(_svgFilePath);
+	}
+	
+	public String getSvgFileString()
+	{
+		return new String(_svgFileString);
+	}
+	
+	@Override
+	public void draw(GraphicsContext gc, double scale)
+	{
+		SvgRenderer.renderSvgString(getSvgFileString(), gc, getX(), getY(), scale);
+	}
+	
 	@Override
 	//Rotates Componenet to the specified angle
 	public void setRotation(short rotation)
@@ -130,12 +149,12 @@ public class Component extends RotatableElement
 		_rotation = rotation;
 	}
 	
-	public Component(int x, int y, short rot, String type, int[][] connRelPos, SVGPath svg)
+	public Component(int x, int y, short rot, String type, int[][] connRelPos, String svgFilePath)
 	{
 		super(x, y, rot);
 		_type = new String(type);
-		_svg = new SVGPath();
-		_svg.setContent(svg.getContent());
+		_svgFilePath = svgFilePath;
+		_svgFileString = SvgRenderer.getSvgFileString(_svgFilePath);
 		//Erstellt die Connectoren für die Komponente und setzt sie an
 		//die richtige Position
 		_ports = new ArrayList<Connector>();
@@ -146,6 +165,7 @@ public class Component extends RotatableElement
 	}
 	
 	private ArrayList<Connector> _ports;
-	private SVGPath _svg;
+	private String _svgFilePath;
+	private String _svgFileString;
 	private String _type;
 }

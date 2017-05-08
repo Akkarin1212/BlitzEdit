@@ -2,6 +2,8 @@ package blitzEdit.core;
 
 import java.awt.Rectangle;
 
+import javafx.scene.canvas.GraphicsContext;
+
 public abstract class Element 
 {
 	public int getX()
@@ -38,6 +40,11 @@ public abstract class Element
 	{
 		Rectangle rect = new Rectangle(_posX, _posY, _sizeX, _sizeY);
 		return rect.contains(x, y);
+	}
+	
+	public void draw(GraphicsContext gc, double scale)
+	{
+		
 	}
 	
 	public Element(int x, int y)

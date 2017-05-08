@@ -6,7 +6,6 @@ import blitzEdit.core.Circuit;
 import blitzEdit.core.Component;
 import blitzEdit.core.Connector;
 import blitzEdit.core.Element;
-import javafx.scene.shape.*;
 
 public class CircuitCreateTest implements Runnable {
 
@@ -27,8 +26,8 @@ public class CircuitCreateTest implements Runnable {
 		ArrayList elements = new ArrayList<Element>();
 		
 		//elemente, die eingef�gt werden sollen
-		elements.add(new Component(1, 3, (short)0, "Resistor", relPos, new SVGPath()));
-		elements.add(new Component(5, 8, (short)0, "Source", relPos, new SVGPath()));
+		elements.add(new Component(1, 3, (short)0, "Resistor", relPos, new String()));
+		elements.add(new Component(5, 8, (short)0, "Source", relPos, new String()));
 		
 		System.out.println("Creating Circuit by Constructor Circuit(ArrayList<Element>, String)");
 		Circuit circuit3 = new Circuit(elements, "Schaltplan2");

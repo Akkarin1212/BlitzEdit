@@ -1,7 +1,6 @@
 package blitzEdit.test;
 
 import blitzEdit.core.*;
-import javafx.scene.shape.SVGPath;
 import java.util.ArrayList;
 
 
@@ -18,11 +17,11 @@ public class CircuitAddElementTest implements Runnable
 		
 		System.out.println("Create new Elements...");
 		System.out.println("Source (0, 0)");
-		Component source = new Component(0, 0, (short)0, "Source", relPos, new SVGPath());
+		Component source = new Component(0, 0, (short)0, "Source", relPos, new String());
 		System.out.println("Resistor (10, 10)");
-		Component resistor = new Component(10, 10, (short)0, "Resistor", relPos, new SVGPath());
+		Component resistor = new Component(10, 10, (short)0, "Resistor", relPos, new String());
 		System.out.println("Coil (20, 10)");
-		Component coil = new Component(20, 10, (short)0, "Coil", relPos, new SVGPath());
+		Component coil = new Component(20, 10, (short)0, "Coil", relPos, new String());
 		
 		System.out.println("Adding new Elements separatly\n");
 		circuit.addElement(source);

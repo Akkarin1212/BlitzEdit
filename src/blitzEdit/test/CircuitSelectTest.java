@@ -6,7 +6,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 
 import blitzEdit.core.*;
-import javafx.scene.shape.SVGPath;
 
 public class CircuitSelectTest implements Runnable {
 
@@ -17,9 +16,9 @@ public class CircuitSelectTest implements Runnable {
 		ArrayList<Element> elements = new ArrayList<Element>();
 		int [][] relPos = {{0, 10},{0, -10}};
 		
-		Component source = new Component(0, 0, (short)0, "Source", relPos, new SVGPath());
-		Component resistor = new Component(100, 100, (short)0, "Resistor", relPos, new SVGPath());
-		Component coil = new Component(200, 100, (short)0, "Coil", relPos, new SVGPath());
+		Component source = new Component(0, 0, (short)0, "Source", relPos, new String());
+		Component resistor = new Component(100, 100, (short)0, "Resistor", relPos, new String());
+		Component coil = new Component(200, 100, (short)0, "Coil", relPos, new String());
 		
 		elements.add(source);
 		elements.add(coil);
