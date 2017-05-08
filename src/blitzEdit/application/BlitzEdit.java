@@ -6,14 +6,16 @@ package blitzEdit.application;
 	import javafx.fxml.FXML;
 	import javafx.scene.canvas.Canvas;
 	import javafx.scene.canvas.GraphicsContext;
-	import javafx.scene.control.Label;
+import javafx.scene.control.Accordion;
+import javafx.scene.control.Label;
 	import javafx.scene.control.MenuItem;
-	import javafx.scene.control.TitledPane;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
+import javafx.scene.control.TitledPane;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 
 	public class BlitzEdit implements javafx.fxml.Initializable {
-		@FXML
-		private Canvas Canvas;
 		@FXML 
 		private MenuItem New;
 		@FXML 
@@ -52,6 +54,12 @@ import javafx.scene.input.MouseEvent;
 		private MenuItem ZoomOut;
 		@FXML 
 		private MenuItem About;
+		
+		@FXML 
+		private TabPane CircuitsTabPane;
+		@FXML
+		private Accordion LibrariesAccordion;
+		
 		@FXML 
 		private TitledPane Library1;
 		@FXML 
@@ -65,12 +73,14 @@ import javafx.scene.input.MouseEvent;
 		
 		@Override	
 		public void initialize(URL location, ResourceBundle resources) {		
-			
+			addTab();
 		}
 		 
 		 @FXML
 		 private void handleNewAction(Event event) {
 			 Debug_Text.setText("New");
+			 
+			 addTab();
 		 }
 		 
 		 @FXML
@@ -162,13 +172,24 @@ import javafx.scene.input.MouseEvent;
 			 Debug_Text.setText("About");
 		 }
 		 
-		 @FXML
-		 private void handleCanvasClicked(MouseEvent event) {
-			 GraphicsContext gc = Canvas.getGraphicsContext2D();
-			 
-			 String foo = SvgRenderer.getSvgFileString("img/Widerstand.svg");
-			 System.out.println(foo);
-			 SvgRenderer.renderSvgString(foo, gc, event.getX(), event.getY());
+		 private void addTab()
+		 {
+			// check if the TabPanel exists before creating tabs
+			 if(CircuitsTabPane != null)
+			 {	
+				 Tab tab = new Tab("New Tab");
+				 AnchorPane root = new AnchorPane();
+				 ResizableCanvas canvas = new ResizableCanvas();
+				 
+				 AnchorPane.setTopAnchor(canvas, 0.0);
+				 AnchorPane.setBottomAnchor(canvas, 0.0);
+				 AnchorPane.setLeftAnchor(canvas, 0.0);
+				 AnchorPane.setRightAnchor(canvas, 0.0);
+				 
+				 tab.setContent(root);
+				 tab.setContent(canvas);
+				 CircuitsTabPane.getTabs().add(tab);
+				 CircuitsTabPane.getSelectionModel().select(tab);
+			 }
 		 }
-		
 	}

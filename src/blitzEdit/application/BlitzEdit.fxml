@@ -136,19 +136,7 @@
                   </AnchorPane>
                 <AnchorPane minHeight="0.0" minWidth="400.0">
                      <children>
-                        <TabPane minHeight="-Infinity" minWidth="-Infinity" prefHeight="0.0" prefWidth="0.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                          <tabs>
-                            <Tab text="Untitled Tab 1">
-                              <content>
-                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                                       <children>
-                                          <Canvas fx:id="Canvas" height="626.0" onMouseClicked="#handleCanvasClicked" width="686.0" AnchorPane.bottomAnchor="1.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                                       </children>
-                                    </AnchorPane>
-                              </content>
-                            </Tab>
-                          </tabs>
-                        </TabPane>
+                        <TabPane fx:id="CircuitsTabPane" minHeight="-Infinity" minWidth="-Infinity" prefHeight="0.0" prefWidth="0.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                      </children>
                   </AnchorPane>
                   <AnchorPane minHeight="0.0" minWidth="200.0" prefHeight="680.0" prefWidth="170.0">
