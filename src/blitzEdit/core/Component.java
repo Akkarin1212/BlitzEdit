@@ -128,7 +128,8 @@ public class Component extends RotatableElement
 	@Override
 	public void draw(GraphicsContext gc, double scale)
 	{
-		SvgRenderer.renderSvgString(getSvgFileString(), gc, getX(), getY(), scale);
+		//TODO neue bool für selektierung statt false
+		SvgRenderer.renderSvgString(getSvgFileString(), gc, getX(), getY(), scale, false);
 	}
 	
 	@Override
@@ -148,6 +149,7 @@ public class Component extends RotatableElement
 		_rotation = rotation;
 	}
 	
+	//TODO Konstruktor mit double für width und height, circuit methoden funktionieren bisher nicht
 	public Component(int x, int y, short rot, String type, int[][] connRelPos, String svgFilePath)
 	{
 		super(x, y, rot);

@@ -55,11 +55,15 @@ public class SvgRenderer
 		return result;
 	}
 	
-	static public void renderSvgString(String svgString, GraphicsContext gc, double offsetX, double offsetY, double scale)
+	static public void renderSvgString(String svgString, GraphicsContext gc, double offsetX, double offsetY, double scale, boolean drawSelectRect)
 	{
 		String[] svgElements = svgString.split("<");
-		double svgWidthMedian = 0.0;
-		double svgHeightMedian = 0.0;
+		
+		double svgWidth = scale*getSvgWidth(svgString);
+		double svgHeight =scale*getSvgHeight(svgString);
+		double svgWidthMedian = svgWidth*0.5;
+		double svgHeightMedian = svgHeight*0.5;
+		
 		
 		for(String s: svgElements)
 		{
@@ -69,9 +73,48 @@ public class SvgRenderer
 			}
 			else if(s.startsWith("polygon"))
 			{
-				
+				//TODO polygin renderer
 			}
-			else if(s.startsWith("svg"))
+		}
+		
+		if(true)
+		{
+			gc.strokeRect(offsetX-svgWidthMedian, offsetY-svgHeightMedian, svgWidth, svgHeight);
+		}
+	}
+	
+	public static double getSvgHeight(String svgString)
+	{
+		String[] svgElements = svgString.split("<");
+		
+		for(String s: svgElements)
+		{
+			if(s.startsWith("svg"))
+			{
+				String[] svgProperties = s.split(" ");
+				for(String property : svgProperties)
+				{
+					property = property.replace('"', ' ');
+					property = property.replace("px"," ");
+					property = property.trim();
+					if(property.contains("height="))
+					{
+						String[] propertyValues = property.split(" ");
+						return Double.parseDouble(propertyValues[1]);
+					}
+				}
+			}
+		}
+		return -1;
+	}
+	
+	public static double getSvgWidth(String svgString)
+	{
+		String[] svgElements = svgString.split("<");
+		
+		for(String s: svgElements)
+		{
+			if(s.startsWith("svg"))
 			{
 				String[] svgProperties = s.split(" ");
 				for(String property : svgProperties)
@@ -82,19 +125,12 @@ public class SvgRenderer
 					if(property.contains("width="))
 					{
 						String[] propertyValues = property.split(" ");
-						svgWidthMedian = 0.5*Double.parseDouble(propertyValues[1]);
-					}
-					else if(property.contains("height="))
-					{
-						String[] propertyValues = property.split(" ");
-						svgHeightMedian = 0.5*Double.parseDouble(propertyValues[1]);
+						return Double.parseDouble(propertyValues[1]);
 					}
 				}
 			}
 		}
-		
-		
-		
+		return -1;
 	}
 	
 	private static void renderRect(String rectString, GraphicsContext gc, double offsetX, double offsetY, double scale)
