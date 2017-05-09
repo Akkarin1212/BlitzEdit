@@ -7,6 +7,8 @@ import javafx.event.Event;
 import javafx.scene.control.Accordion;
 import javafx.scene.control.Label;
 	import javafx.scene.control.MenuItem;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.ScrollPane.ScrollBarPolicy;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TitledPane;
@@ -14,8 +16,8 @@ import javafx.scene.layout.AnchorPane;
 
 	public class BlitzEdit implements javafx.fxml.Initializable {
 		
-		LibraryCanvas currentLibraryCanvas;
-		CircuitCanvas currentCircuitCanvas;
+		static LibraryCanvas currentLibraryCanvas;
+		static CircuitCanvas currentCircuitCanvas;
 		
 		@FXML 
 		private MenuItem New;
@@ -184,15 +186,24 @@ import javafx.scene.layout.AnchorPane;
 			 {	
 				 Tab tab = new Tab("New Tab");
 				 AnchorPane root = new AnchorPane();
-				 CircuitCanvas canvas = new CircuitCanvas();
+				 ScrollPane sp = new ScrollPane();
+				 CircuitCanvas canvas = new CircuitCanvas(sp);
 				 
 				 AnchorPane.setTopAnchor(canvas, 0.0);
 				 AnchorPane.setBottomAnchor(canvas, 0.0);
 				 AnchorPane.setLeftAnchor(canvas, 0.0);
 				 AnchorPane.setRightAnchor(canvas, 0.0);
 				 
+				 AnchorPane.setTopAnchor(sp, 0.0);
+				 AnchorPane.setBottomAnchor(sp, 0.0);
+				 AnchorPane.setLeftAnchor(sp, 0.0);
+				 AnchorPane.setRightAnchor(sp, 0.0);
+				 
+				 sp.setContent(canvas);
+				 
 				 tab.setContent(root);
-				 tab.setContent(canvas);
+				 tab.setContent(sp);
+				 
 				 CircuitsTabPane.getTabs().add(tab);
 				 CircuitsTabPane.getSelectionModel().select(tab);
 				 currentCircuitCanvas = canvas;
@@ -206,6 +217,7 @@ import javafx.scene.layout.AnchorPane;
 			 {	
 				 AnchorPane root = new AnchorPane();
 				 LibraryCanvas canvas = new LibraryCanvas();
+				 ScrollPane sp = new ScrollPane();
 				 TitledPane library = new TitledPane("New Library", null);
 				 
 				 AnchorPane.setTopAnchor(canvas, 0.0);
@@ -213,8 +225,18 @@ import javafx.scene.layout.AnchorPane;
 				 AnchorPane.setLeftAnchor(canvas, 0.0);
 				 AnchorPane.setRightAnchor(canvas, 0.0);
 				 
+				 AnchorPane.setTopAnchor(sp, 0.0);
+				 AnchorPane.setBottomAnchor(sp, 0.0);
+				 AnchorPane.setLeftAnchor(sp, 0.0);
+				 AnchorPane.setRightAnchor(sp, 0.0);
+				 
+				 sp.setContent(canvas);
+				 sp.setHbarPolicy(ScrollBarPolicy.NEVER);
+				 sp.setVbarPolicy(ScrollBarPolicy.ALWAYS);
+				 
 				 library.setContent(root);
-				 library.setContent(canvas);
+				 library.setContent(sp);
+				 System.err.println(LibrariesAccordion.getMaxHeight() + " " + LibrariesAccordion.getMaxWidth());
 				 LibrariesAccordion.getPanes().add(library);
 				 LibrariesAccordion.setExpandedPane(library);
 				 

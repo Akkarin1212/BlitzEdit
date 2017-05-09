@@ -3,7 +3,7 @@ package blitzEdit.application;
 import javafx.scene.canvas.Canvas;
 
 public class ResizableCanvas extends Canvas
-{
+{	
 	@Override
 	public double minHeight(double width)
 	{
@@ -13,7 +13,7 @@ public class ResizableCanvas extends Canvas
 	@Override
 	public double maxHeight(double width)
 	{
-	    return 1000;
+	    return 2000;
 	}
 
 	@Override
@@ -31,7 +31,7 @@ public class ResizableCanvas extends Canvas
 	@Override
 	public double maxWidth(double height)
 	{
-	    return 1600;
+	    return 2000;
 	}
 	
 	@Override

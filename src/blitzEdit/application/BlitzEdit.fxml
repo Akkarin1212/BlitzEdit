@@ -111,9 +111,9 @@
             </MenuBar>
             <SplitPane dividerPositions="0.16, 0.84" minHeight="500.0" minWidth="-Infinity" prefWidth="1050.0">
               <items>
-                <AnchorPane minHeight="0.0" minWidth="180.0" prefHeight="680.0" prefWidth="170.0">
+                <AnchorPane maxWidth="200.0" minHeight="0.0" minWidth="200.0" prefHeight="680.0" prefWidth="200.0">
                      <children>
-                        <Accordion fx:id="LibrariesAccordion" minHeight="680.0" minWidth="180.0" prefHeight="680.0" prefWidth="181.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                        <Accordion fx:id="LibrariesAccordion" maxWidth="200.0" minHeight="680.0" minWidth="200.0" prefHeight="680.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                      </children>
                   </AnchorPane>
                 <AnchorPane minHeight="0.0" minWidth="400.0">
