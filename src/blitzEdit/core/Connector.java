@@ -3,6 +3,8 @@ package blitzEdit.core;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.awt.Point;
+import java.awt.geom.AffineTransform;
+
 import javafx.scene.canvas.GraphicsContext;
 
 import blitzEdit.core.Element;
@@ -30,8 +32,25 @@ public final class Connector extends Element
 	@Override
 	public Connector move(int x, int y)
 	{
+		short rotation = (short)(_owner.getRotation() + _relRotation);		
+		double px = (Math.sin( (rotation/360.0)*2*Math.PI ));
+		double py = (Math.cos( (rotation/360.0)*2*Math.PI ));
+		//Errechnet die Länge des Connectors
+		int length = (int)(((x-getX()) * px + (y-getY()) * py)/(px * px + py * py));
+		//wäre die Länge negativ, wird sie so gesetzt, das der Connector an seien Ausgangspunkt
+		//verschoben wird
+		if (_length + length < 0)
+			length -= (_length + length);
+		_length += length; 
+		
+		_position.translate((int)(px * length), (int)(py * length));
 		
 		return this;
+	}
+	
+	public int [] getRelPos()
+	{
+		return _conRelPos.clone();
 	}
 	
 	//Nimmt conn in die Verbindungsliste auf
@@ -154,21 +173,26 @@ public final class Connector extends Element
 		}
 		_connected = false;
 		_connections = new ArrayList<Connector>();
+		_length = 0;
 	}
 	
-	public Connector(int x, int y, short relRotation, Component owner)
+	public Connector(int x, int y, int[] conRelPos, short relRotation, Component owner)
 	{
 		super(x, y, 3, 3); //Standartwerte: breite 6, höhe 6
 		if (owner != null)
 		{
 			_owner = owner;
 		}
+		_conRelPos = conRelPos.clone();
 		_relRotation = relRotation;
 		_connected = false;
 		_connections = new ArrayList<Connector>();
+		_length = 0;
 	}
 	
+	private int [] _conRelPos;
 	private short _relRotation;
+	private int _length;
 	private ArrayList<Connector> _connections;
 	private boolean _connected;
 	private Component _owner;
