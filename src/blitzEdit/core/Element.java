@@ -36,7 +36,7 @@ public abstract class Element
 	//Bewegt das Element
 	public abstract Element move(int x, int y);
 	
-	public abstract void draw(GraphicsContext gc, double scale);
+	public abstract void draw(GraphicsContext gc, double scale, boolean selected);
 	
 	public boolean contains(int x, int y)
 	{
