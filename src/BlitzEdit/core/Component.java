@@ -26,7 +26,7 @@ public class Component extends RotatableElement
 	{
 		for (Connector conn : _ports)
 		{
-			conn.setPosition(conn.getX() + x, conn.getY() + y);
+			conn.setPosition((conn.getX() - getX()) + x, (conn.getY() - getY()) + y);
 		}
 		_position.move(x, y);
 		
@@ -46,7 +46,7 @@ public class Component extends RotatableElement
 	@Override
 	public void draw(GraphicsContext gc, double scale)
 	{
-		SvgRenderer.renderSvgString(getSvgFileString(), gc, getX(), getY(), scale);
+		//SvgRenderer.renderSvgString(getSvgFileString(), gc, getX(), getY(), scale);
 		
 		for (Connector conn : getConnectors())
 			conn.draw(gc, scale);
@@ -137,7 +137,7 @@ public class Component extends RotatableElement
 		return new String(_type);
 	}
 	
-	public Component(int x, int y, short rot, String type, int[][] connRelPos, short [] conRelRot ,String svg)
+	public Component(int x, int y, short rot, String type, int[][] connRelPos, short [] connRelRot ,String svg)
 	{
 		super(x, y, rot);
 		_type = new String(type);
@@ -148,13 +148,13 @@ public class Component extends RotatableElement
 		_ports = new ArrayList<Connector>();
 		for (int i = 0; i < connRelPos.length; i++)
 		{
-			_ports.add(new Connector(x + connRelPos[i][0], y + connRelPos[i][1], conRelRot[i], this));
+			_ports.add(new Connector(x + connRelPos[i][0], y + connRelPos[i][1], connRelPos[i], connRelRot[i], this));
 		}
 		rotate(rot);
 	}
 	
 	public Component(int x, int y, int sizeX, int sizeY, short rot, String type,
-						int[][] connRelPos, short [] conRelRot ,String svg)
+						int[][] connRelPos, short [] connRelRot ,String svg)
 	{
 		super(x, y , sizeX, sizeY, rot);
 		_type = new String(type);
@@ -165,7 +165,7 @@ public class Component extends RotatableElement
 		_ports = new ArrayList<Connector>();
 		for (int i = 0; i < connRelPos.length; i++)
 		{
-			_ports.add(new Connector(x + connRelPos[i][0], y + connRelPos[i][1], conRelRot[i], this));
+			_ports.add(new Connector(x + connRelPos[i][0], y + connRelPos[i][1], connRelPos[i], connRelRot[i], this));
 		}
 		rotate(rot);
 	}
@@ -174,8 +174,10 @@ public class Component extends RotatableElement
 	//Rotates Componenet to the specified angle
 	public void rotate(short rotation)
 	{
-		AffineTransform at = AffineTransform.getRotateInstance((((double)rotation / 360.0) * (Math.PI * 2))
-				, _position.getX(), _position.getY());
+		// Erstellt AffineTransform Objekt, um die connectoren um den schwerpunkt der component zu drehen
+		// die rotation ist negativ, damit nach rechts gedreht wird
+		AffineTransform at = AffineTransform.getRotateInstance((-((double)rotation / 360.0) * (Math.PI * 2)) 
+				, _position.getX(), _position.getY());						
 
 		//change connectors absolute position according to components rotation
 		for (Connector con: getConnectors())
