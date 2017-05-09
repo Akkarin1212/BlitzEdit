@@ -43,11 +43,18 @@ public class Component extends RotatableElement
 		return new String(_svgFileString);
 	}
 	
+	
 	@Override
-	public void draw(GraphicsContext gc, double scale)
+	//Draws Component on GraphicalContext
+	public void draw(GraphicsContext gc, double scale, boolean selected)
 	{
-		//SvgRenderer.renderSvgString(getSvgFileString(), gc, getX(), getY(), scale);
-		
+		SvgRenderer.renderSvgString(getSvgFileString(), gc, getX(), getY(), scale);
+		gc.setStroke(Color.GRAY);
+		if (selected) {
+			gc.strokeRect(_posX-((double)_sizeX/2+2), 
+					(double)_posY-((double)_sizeY/2+2), 
+					(double)sizeX+4, (double)sizeY+4);
+		}
 		for (Connector conn : getConnectors())
 			conn.draw(gc, scale);
 	}
