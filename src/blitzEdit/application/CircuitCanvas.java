@@ -13,11 +13,14 @@ public class CircuitCanvas extends ResizableCanvas
 {
 	GraphicsContext gc;
 	Circuit circuit;
+	String currentSvgPath;
 	
 	public CircuitCanvas()
 	{
 		gc = getGraphicsContext2D();
 		circuit = new Circuit();
+		
+		currentSvgPath = "img/Widerstand.svg";
 		
 		addClickHandler();
 	}
@@ -30,7 +33,7 @@ public class CircuitCanvas extends ResizableCanvas
 			{
 				refreshCanvas();
 				int [][] relPos = {{0, 10},{0, -10}};
-				Component comp = new Component((int)click.getX(), (int)click.getY(), (short)0, "dunno", relPos, "img/Widerstand.svg");
+				Component comp = new Component((int)click.getX(), (int)click.getY(), (short)0, "dunno", relPos, currentSvgPath);
 				circuit.addElement(comp);
 				SvgRenderer.renderSvgString(comp.getSvgFileString(), gc, click.getX(), click.getY(), 1.0);
 			}

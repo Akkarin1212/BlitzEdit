@@ -5,10 +5,6 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Scanner;
-import java.util.Vector;
-import java.util.regex.Pattern;
-
 import javafx.scene.canvas.*;
 
 public class SvgRenderer

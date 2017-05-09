@@ -8,7 +8,6 @@ import java.util.ArrayList;
 
 import blitzEdit.application.SvgRenderer;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.shape.*;
 
 public class Component extends RotatableElement
 {

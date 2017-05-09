@@ -1,7 +1,6 @@
 package blitzEdit.application;
 
 import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
 
 public class ResizableCanvas extends Canvas
 {

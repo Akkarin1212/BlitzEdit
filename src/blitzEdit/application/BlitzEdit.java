@@ -2,8 +2,6 @@ package blitzEdit.application;
 
 	import java.net.URL;
 import java.util.ResourceBundle;
-import java.util.concurrent.ThreadLocalRandom;
-
 import javafx.event.Event;
 	import javafx.fxml.FXML;
 import javafx.scene.control.Accordion;

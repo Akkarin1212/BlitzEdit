@@ -23,7 +23,7 @@ public class CircuitCreateTest implements Runnable {
 		System.out.println("circuit2.name = " + circuit2.getName() + "\n");
 		
 		int[][] relPos = {{0, 1}, {0, -1}};
-		ArrayList elements = new ArrayList<Element>();
+		ArrayList<Element> elements = new ArrayList<Element>();
 		
 		//elemente, die eingef�gt werden sollen
 		elements.add(new Component(1, 3, (short)0, "Resistor", relPos, new String()));
