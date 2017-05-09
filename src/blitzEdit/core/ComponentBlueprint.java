@@ -16,7 +16,12 @@ public class ComponentBlueprint
 	}
 	public int [][] getRelPos() 
 	{
-		return _relPos.clone();
+		return _conRelPos.clone();
+	}
+	
+	public short [] getConRelRot()
+	{
+		return _conRelRot.clone();
 	}
 	
 	public int getSizeX()
@@ -29,18 +34,20 @@ public class ComponentBlueprint
 		return _sizeY;
 	}
 	
-	public ComponentBlueprint(String type, String svg, int [][] relPos, int sizeX, int sizeY)
+	public ComponentBlueprint(String type, String svg, int [][] relPos, short [] conRelRot, int sizeX, int sizeY)
 	{
 		_type = new String(type);
 		_svg = new String(svg);
-		_relPos = relPos.clone();
+		_conRelPos = relPos.clone();
+		_conRelRot = conRelRot.clone();
 		_sizeX = sizeX;
 		_sizeY = sizeY;
 	}
 	
 	private String _type;
 	private String _svg;
-	private int [][] _relPos;
+	private int [][] _conRelPos;
+	private short [] _conRelRot;
 	private int _sizeX;
 	private int _sizeY;
 }
