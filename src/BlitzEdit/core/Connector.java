@@ -1,22 +1,36 @@
-package BlitzEdit.core;
+package blitzEdit.core;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.awt.Point;
+import javafx.scene.canvas.GraphicsContext;
 
-import BlitzEdit.core.Element;
-import BlitzEdit.core.Component;
+import blitzEdit.core.Element;
+import blitzEdit.core.Component;
 
 public final class Connector extends Element
 {
+	@Override
+	public void draw(GraphicsContext gc, double scale) 
+	{
+		gc.fillRect(getX(), getY(), getSizeX(), getSizeY());
+	}
+	
 	public ArrayList<Connector> getConnections()
 	{
 		return _connections;
+	}
+	
+	public short getRelativeRotation()
+	{
+		return _relRotation;
 	}
 	
 	//TODO: move-methode implementieren
 	@Override
 	public Connector move(int x, int y)
 	{
+		
 		return this;
 	}
 	
@@ -74,8 +88,6 @@ public final class Connector extends Element
 			_connected = false;
 	}
 	
-	// Disconnects all Elements of elems
-	// that are connected
 	public void disconnect(Collection<Element> elems)
 	{
 		if (this.connected())
@@ -92,7 +104,6 @@ public final class Connector extends Element
 			_connected = false;
 	}
 	
-	// Disconnects all Connections to comp
 	public void disconnect(Component comp)
 	{
 		if (this.connected())
@@ -145,17 +156,19 @@ public final class Connector extends Element
 		_connections = new ArrayList<Connector>();
 	}
 	
-	public Connector(int x, int y, Component owner)
+	public Connector(int x, int y, short relRotation, Component owner)
 	{
-		super(x+3, y+3, 6, 6); //Standartwerte: breite 6, höhe 6
+		super(x, y, 3, 3); //Standartwerte: breite 6, höhe 6
 		if (owner != null)
 		{
 			_owner = owner;
 		}
+		_relRotation = relRotation;
 		_connected = false;
 		_connections = new ArrayList<Connector>();
 	}
 	
+	private short _relRotation;
 	private ArrayList<Connector> _connections;
 	private boolean _connected;
 	private Component _owner;
