@@ -1,13 +1,12 @@
 package blitzEdit.core;
 
-
 import java.awt.Point;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
-
 import blitzEdit.application.SvgRenderer;
 import javafx.scene.canvas.GraphicsContext;
+
 
 public class Component extends RotatableElement
 {
@@ -15,10 +14,9 @@ public class Component extends RotatableElement
 	{
 		for (Connector conn : _ports)
 		{
-			conn.setPosition(x + (conn.getX() - _posX), y + (conn.getY() - _posY));
+			conn.setPosition((int)(x + (conn.getX() - _position.getX())), (int)(y + (conn.getY() - _position.getY())));
 		}
-		_posX = x;
-		_posY = y;
+		_position.setLocation(x, y);
 		
 		return this;
 	}
@@ -30,10 +28,28 @@ public class Component extends RotatableElement
 		{
 			conn.setPosition(conn.getX() + x, conn.getY() + y);
 		}
-		_posX += x;
-		_posY += y;
+		_position.move(x, y);
 		
 		return this;
+	}
+	
+	public String getSvgFilePath()
+	{
+		return new String(_svgFilePath);
+	}
+	
+	public String getSvgFileString()
+	{
+		return new String(_svgFileString);
+	}
+	
+	@Override
+	public void draw(GraphicsContext gc, double scale)
+	{
+		SvgRenderer.renderSvgString(getSvgFileString(), gc, getX(), getY(), scale);
+		
+		for (Connector conn : getConnectors())
+			conn.draw(gc, scale);
 	}
 	
 	public ArrayList<Connector> getConnectors()
@@ -65,6 +81,12 @@ public class Component extends RotatableElement
 		return false;
 	}
 	
+	public String getSVG()
+	{
+		return new String(_svgFilePath);
+	}
+	
+	//Returns the connector that is connected to conn
 	public Connector getConnectorOfConnection(Connector conn)
 	{
 		for (Connector c : _ports)
@@ -78,7 +100,7 @@ public class Component extends RotatableElement
 		return null;
 	}
 	
-	
+	//Returns the connector that is connected to comp
 	public Connector getConnectorOfConnection(Component comp)
 	{
 		for (Connector c : _ports)
@@ -115,28 +137,45 @@ public class Component extends RotatableElement
 		return new String(_type);
 	}
 	
-	public String getSvgFilePath()
+	public Component(int x, int y, short rot, String type, int[][] connRelPos, short [] conRelRot ,String svg)
 	{
-		return new String(_svgFilePath);
+		super(x, y, rot);
+		_type = new String(type);
+		_svgFilePath = new String(svg);
+		
+		//Erstellt die Connectoren für die Komponente und setzt sie an
+		//die richtige Position
+		_ports = new ArrayList<Connector>();
+		for (int i = 0; i < connRelPos.length; i++)
+		{
+			_ports.add(new Connector(x + connRelPos[i][0], y + connRelPos[i][1], conRelRot[i], this));
+		}
+		rotate(rot);
 	}
 	
-	public String getSvgFileString()
+	public Component(int x, int y, int sizeX, int sizeY, short rot, String type,
+						int[][] connRelPos, short [] conRelRot ,String svg)
 	{
-		return new String(_svgFileString);
-	}
-	
-	@Override
-	public void draw(GraphicsContext gc, double scale)
-	{
-		//TODO neue bool für selektierung statt false
-		SvgRenderer.renderSvgString(getSvgFileString(), gc, getX(), getY(), scale, false);
+		super(x, y , sizeX, sizeY, rot);
+		_type = new String(type);
+		_svgFilePath = new String(svg);
+		
+		//Erstellt die Connectoren für die Komponente und setzt sie an
+		//die richtige Position
+		_ports = new ArrayList<Connector>();
+		for (int i = 0; i < connRelPos.length; i++)
+		{
+			_ports.add(new Connector(x + connRelPos[i][0], y + connRelPos[i][1], conRelRot[i], this));
+		}
+		rotate(rot);
 	}
 	
 	@Override
 	//Rotates Componenet to the specified angle
-	public void setRotation(short rotation)
+	public void rotate(short rotation)
 	{
-		AffineTransform at = AffineTransform.getRotateInstance((Math.PI * 2)*((double)rotation / 360.0), _posX, _posY);
+		AffineTransform at = AffineTransform.getRotateInstance((((double)rotation / 360.0) * (Math.PI * 2))
+				, _position.getX(), _position.getY());
 
 		//change connectors absolute position according to components rotation
 		for (Connector con: getConnectors())
@@ -147,22 +186,6 @@ public class Component extends RotatableElement
 			con.setPosition((int)p2.getX(), (int)p2.getY());
 		}
 		_rotation = rotation;
-	}
-	
-	//TODO Konstruktor mit double für width und height, circuit methoden funktionieren bisher nicht
-	public Component(int x, int y, short rot, String type, int[][] connRelPos, String svgFilePath)
-	{
-		super(x, y, rot);
-		_type = new String(type);
-		_svgFilePath = svgFilePath;
-		_svgFileString = SvgRenderer.getSvgFileString(_svgFilePath);
-		//Erstellt die Connectoren für die Komponente und setzt sie an
-		//die richtige Position
-		_ports = new ArrayList<Connector>();
-		for (int i = 0; i < connRelPos.length; i++)
-		{
-			_ports.add(new Connector(x + connRelPos[i][0], y + connRelPos[i][1], this));
-		}
 	}
 	
 	private ArrayList<Connector> _ports;
