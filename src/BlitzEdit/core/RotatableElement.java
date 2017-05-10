@@ -1,6 +1,7 @@
 package BlitzEdit.core;
 
 import java.awt.Rectangle;
+import java.awt.geom.AffineTransform;
 
 public abstract class RotatableElement extends Element
 {
@@ -16,11 +17,15 @@ public abstract class RotatableElement extends Element
 		_rotation = rotation;
 	}
 	
+	// Tests if the point (x, y) is contained by element
+	// TODO: Test new implemented method
 	public boolean contains(int x, int y)
 	{
 		Rectangle rect = new Rectangle(_posX, _posY, _sizeX, _sizeY);
-		//TODO: check containment of (x, y) with considering rotation
-		return rect.contains(x, y);
+		
+		AffineTransform at = AffineTransform.getRotateInstance((Math.PI * 2)*((double)_rotation / 360.0), _posX, _posY);
+		
+		return at.createTransformedShape(rect).contains(x, y);
 	}
 	
 	public RotatableElement(int x, int y, int sizeX, int sizeY, short rot)
@@ -42,5 +47,5 @@ public abstract class RotatableElement extends Element
 	}
 	
 
-	private short _rotation;
+	protected short _rotation;
 }

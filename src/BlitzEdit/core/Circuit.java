@@ -35,6 +35,11 @@ public class Circuit
 		return resultList;
 	}
 	
+	public ArrayList<Element> getElementsByPosition(double x, double y)
+	{
+		return getElementsByPosition((int)x, (int)y);
+	}
+	
 	//Gibt alle Elemente des Schaltplans zurÃ¼ck, die sich im Rechteck befinden, dass durch
 	//die Punkte (x1, y1) und (x2, y2) aufgespannt wird.
 	public ArrayList<Element> getElementsByPosition(int x1, int y1, int x2, int y2)
@@ -50,6 +55,11 @@ public class Circuit
 		if (resultList.isEmpty())
 			return null;
 		return resultList;
+	}
+	
+	public ArrayList<Element> getElementsByPosition(double x1, double y1, double x2, double y2)
+	{
+		return getElementsByPosition((int)x1, (int)y1, (int)x2, (int)y2);
 	}
 	
 	//Gibt alle Components zurÃ¼ck, deren Typnamen type entsprechen.
@@ -157,6 +167,14 @@ public class Circuit
 		addElements(elems);
 		_name = new String(name);
 	}
+	
+	public void updateBlueprints(Collection<ComponentBlueprint> blueprints)
+	{
+		_blueprints.clear();
+		_blueprints.addAll(blueprints);
+	}
+	
+	private ArrayList<ComponentBlueprint> _blueprints;
 	
 	private ArrayList<Element> _elements;
 	private String _name;
