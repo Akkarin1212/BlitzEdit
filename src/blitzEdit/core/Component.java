@@ -147,37 +147,35 @@ public class Component extends RotatableElement
 	{
 		return new String(_type);
 	}
-	
 	public Component(int x, int y, short rot, String type, int[][] connRelPos, short [] connRelRot ,String svg)
 	{
 		super(x, y, (int)SvgRenderer.getSvgWidth(svg), (int)SvgRenderer.getSvgHeight(svg),rot);
-		_type = new String(type);
-		_svgFilePath = new String(svg);
-		_svgFileString = SvgRenderer.getSvgFileString(_svgFilePath);
-		
-		//Erstellt die Connectoren für die Komponente und setzt sie an
-		//die richtige Position
-		_ports = new ArrayList<Connector>();
-		for (int i = 0; i < connRelPos.length; i++)
-		{
-			_ports.add(new Connector(x + connRelPos[i][0], y + connRelPos[i][1], connRelPos[i], connRelRot[i], this));
-		}
-		rotate(rot);
+		initialize(x, y, rot, type, svg, connRelPos, connRelRot);
 	}
+	
 	
 	public Component(int x, int y, int sizeX, int sizeY, short rot, String type,
 						int[][] connRelPos, short [] connRelRot ,String svg)
 	{
 		super(x, y , sizeX, sizeY, rot);
+		initialize(x, y, rot, type, svg, connRelPos, connRelRot);
+	}
+	
+	public Component(double x, double y, double sizeX, double sizeY, double rot, String type, int[][] connRelPos, short[] connRelRot,
+			String svg) 
+	{
+		super((int)x, (int)y, (int)sizeX, (int)sizeY, (short)rot);
+		initialize((int)x, (int)y, (short)rot, type, svg, connRelPos, connRelRot);
+	}
+	
+	//Private method called by constructor
+	private void initialize(int x, int y, short rot, String type, String svg, int[][] connRelPos, short[] connRelRot)
+	{
 		_type = new String(type);
 		_svgFilePath = new String(svg);
 		_svgFileString = SvgRenderer.getSvgFileString(_svgFilePath);
-		
-		//Erstellt die Connectoren für die Komponente und setzt sie an
-		//die richtige Position
 		_ports = new ArrayList<Connector>();
-		for (int i = 0; i < connRelPos.length; i++)
-		{
+		for (int i = 0; i < connRelPos.length; i++) {
 			_ports.add(new Connector(x + connRelPos[i][0], y + connRelPos[i][1], connRelPos[i], connRelRot[i], this));
 		}
 		rotate(rot);
