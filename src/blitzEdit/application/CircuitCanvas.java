@@ -97,9 +97,6 @@ public class CircuitCanvas extends ResizableCanvas
 				if (currentSelectedElement != null)
 				{
 					System.err.println("release");
-
-					currentSelectedElement.setIsSelected(false);
-					currentSelectedElement = null;
 					refreshCanvas();
 				}
 			}
@@ -175,6 +172,13 @@ public class CircuitCanvas extends ResizableCanvas
 	
 	private boolean selectElement(double x, double y)
 	{
+		// unselect currentSelectedElement first
+		if(currentSelectedElement != null)
+		{
+			currentSelectedElement.setIsSelected(false);
+			currentSelectedElement = null;
+		}
+		
 		ArrayList<Element> elements = circuit.getElementsByPosition((int) x, (int) y);
 		if (elements != null)
 		{
