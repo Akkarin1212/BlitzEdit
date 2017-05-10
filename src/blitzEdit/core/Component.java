@@ -149,8 +149,9 @@ public class Component extends RotatableElement
 	}
 	public Component(int x, int y, short rot, String type, int[][] connRelPos, short [] connRelRot ,String svg)
 	{
-		super(x, y, (int)SvgRenderer.getSvgWidth(svg), (int)SvgRenderer.getSvgHeight(svg),rot);
+		super(x, y, rot);
 		initialize(x, y, rot, type, svg, connRelPos, connRelRot);
+		super.setSize(SvgRenderer.getSvgWidth(_svgFileString), SvgRenderer.getSvgHeight(_svgFileString));
 	}
 	
 	

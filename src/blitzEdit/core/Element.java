@@ -27,6 +27,18 @@ public abstract class Element
 		return _sizeY;
 	}
 	
+	public Element setSize(int sizeX, int sizeY)
+	{
+		_sizeX = sizeX;
+		_sizeY = sizeY;
+		return this;
+	}
+	
+	public Element setSize(double sizeX, double sizeY)
+	{
+		return setSize((int)sizeX, (int)sizeY);
+	}
+	
 	public boolean getIsSelected()
 	{
 		return _isSelected;

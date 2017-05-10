@@ -24,6 +24,8 @@ public class Circuit
 			int esy = element.getSizeY();
 			Rectangle rect = new Rectangle(ex, ey, esx, esy);
 			
+			System.err.println(ex + " " + ey + " " + esx + " " + esy);
+			
 			if (rect.contains(x, y)) //checkt, ob element angeklickt wurde
 			{
 				resultList.add(element);

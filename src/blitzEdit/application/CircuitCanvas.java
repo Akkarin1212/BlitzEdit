@@ -21,141 +21,134 @@ public class CircuitCanvas extends ResizableCanvas
 {
 	GraphicsContext gc;
 	Circuit circuit;
+	ScrollPane sp;
 	private CircuitCanvas ref = this;
 	private ContextMenu rightClickMenu;
-	
+
 	private String currentSvgPath;
-	private Element currentMovingElement;
-	
-	
+	private Element currentSelectedElement;
+
 	public CircuitCanvas(ScrollPane sp)
 	{
 		gc = getGraphicsContext2D();
 		circuit = new Circuit();
-		
+
 		currentSvgPath = "img/Widerstand.svg";
-		
-		 sp.setPannable(true);
-		
-		onDragDetectedHandler();
-		onMouseDragOverHandler();
-		onMouseDragReleasedHandler();
-		
-		
+
+		this.sp = sp;
+		// this.sp.setPannable(true);
+
 		onClickHandler();
-		//initiateRightClickMenu();
+		onMouseDraggedHandler();
+		onMouseReleasedHandler();
+
+		// initiateRightClickMenu();
 	}
-	
+
 	private void onClickHandler()
 	{
-		EventHandler<MouseEvent> OnMousePressedEventHandler = new EventHandler<MouseEvent>() {
+		EventHandler<MouseEvent> OnMousePressedEventHandler = new EventHandler<MouseEvent>()
+		{
 			@Override
 			public void handle(MouseEvent click)
 			{
-				if(click.isSecondaryButtonDown())
+				if (click.isSecondaryButtonDown())
 				{
-				int [][] relPos = {{0, 10},{0, -10}};
-				short [] relRot = {0, 0};
-				Component comp = new Component((int)click.getX(), (int)click.getY(), (short)0, "dunno", relPos, relRot, currentSvgPath);
-				circuit.addElement(comp);
-				refreshCanvas();
+					int[][] relPos = { { 0, 10 }, { 0, -10 } };
+					short[] relRot = { 0, 0 };
+					Component comp = new Component((int) click.getX(), (int) click.getY(), (short) 0, "dunno", relPos,
+							relRot, currentSvgPath);
+					circuit.addElement(comp);
+					refreshCanvas();
+				}
+				else if (click.isPrimaryButtonDown())
+				{
+					selectElement(click.getX(), click.getY());
+					refreshCanvas();
 				}
 			}
 		};
 		this.setOnMousePressed(OnMousePressedEventHandler);
 	}
-	
-	private void onDragDetectedHandler()
+
+	private void onMouseDraggedHandler()
 	{
-		this.setOnDragDetected(new EventHandler<MouseEvent>() {
-		    @Override 
-		    public void handle(MouseEvent event) {
-		    	System.err.println((int)event.getX() + " " + (int)event.getY());
-		        ArrayList<Element> elements = circuit.getElementsByPosition((int)event.getX(), (int)event.getY());
-		        if(elements != null)
-		        {
-		        	currentMovingElement = elements.get(0); //take first element found
-		        }
-		        ref.startFullDrag();
-		    }
+		this.setOnMouseDragged(new EventHandler<MouseEvent>()
+		{
+			@Override
+			public void handle(MouseEvent click)
+			{
+				if (currentSelectedElement != null)
+				{
+					currentSelectedElement.move((int) click.getX(), (int) click.getY());
+					refreshCanvas();
+				}
+			}
 		});
 	}
-	
-	private void onMouseDragOverHandler()
-	{
-		if(true)//(currentMovingElement != null)
-		{
-			this.setOnMouseDragOver(new EventHandler<MouseDragEvent>() {
-			@Override 
-		    public void handle(MouseDragEvent event) 
-		    {
-				System.err.println((int)event.getX() + " " + (int)event.getY());
-				//currentMovingElement.move((int)event.getX(), (int)event.getY());
-		    }
-			});
-		}
-	}
-	
-	private void onMouseDragEnteredHandler()
-	{
 
-	}
-	
-	private void onMouseDragReleasedHandler()
+	private void onMouseReleasedHandler()
 	{
-		if(currentMovingElement != null)
+		this.setOnMouseReleased(new EventHandler<MouseEvent>()
 		{
-			this.setOnMouseDragReleased(new EventHandler<MouseDragEvent>() {
-			@Override 
-		    public void handle(MouseDragEvent event) 
-		    {
-		       currentMovingElement = null;
-		    }
-			});
-		}
+			@Override
+			public void handle(MouseEvent click)
+			{
+				if (currentSelectedElement != null)
+				{
+					System.err.println("release");
+
+					currentSelectedElement.setIsSelected(false);
+					currentSelectedElement = null;
+					refreshCanvas();
+				}
+			}
+		});
 	}
-	
-	
+
 	public void drawGrid()
 	{
-        gc.clearRect(0, 0, getWidth(), getHeight());
+		gc.clearRect(0, 0, getWidth(), getHeight());
 
-        gc.setLineWidth(0.1);
-        
-        // vertical lines
-        for(int i = 0 ; i < getWidth() ; i+=30){
-            gc.strokeLine(i, 0, i, getHeight());
-        }        
+		gc.setLineWidth(0.1);
 
-        // horizontal lines
-        for(int i = 30 ; i < getHeight() ; i+=30){
-            gc.strokeLine(30, i, getWidth(), i);
-        } 
+		// vertical lines
+		for (int i = 0; i < getWidth(); i += 30)
+		{
+			gc.strokeLine(i, 0, i, getHeight());
+		}
+
+		// horizontal lines
+		for (int i = 30; i < getHeight(); i += 30)
+		{
+			gc.strokeLine(30, i, getWidth(), i);
+		}
 	}
-	
+
 	public void refreshCanvas()
 	{
 		drawGrid();
-	    drawAllCircuitElements();
+		drawAllCircuitElements();
 	}
-	
+
 	private void drawAllCircuitElements()
 	{
 		ArrayList<Element> array = circuit.getElements();
-		for(Element elem : array)
+		for (Element elem : array)
 		{
 			elem.draw(gc, 1.0, elem.getIsSelected());
 		}
 	}
-	
+
 	private void initiateRightClickMenu()
 	{
 		final ContextMenu contextMenu = new ContextMenu();
 		MenuItem cut = new MenuItem("Cut");
 		MenuItem copy = new MenuItem("Copy");
 		MenuItem paste = new MenuItem("Paste");
-		
-		EventHandler<ActionEvent> OnMouseClickedEventHandler = new EventHandler<ActionEvent>() {
+
+		EventHandler<ActionEvent> OnMouseClickedEventHandler = new EventHandler<ActionEvent>()
+		{
 			@Override
 			public void handle(ActionEvent click)
 			{
@@ -163,49 +156,64 @@ public class CircuitCanvas extends ResizableCanvas
 			}
 		};
 		cut.setOnAction(OnMouseClickedEventHandler);
-		
+
 		contextMenu.getItems().addAll(cut, copy, paste);
-		
+
 		CircuitCanvas ref = this;
-		setOnMousePressed(new EventHandler<MouseEvent>() {
-		    @Override
-		    public void handle(MouseEvent event) {
-		        if (event.isSecondaryButtonDown()) {
-		            contextMenu.show(ref, event.getScreenX(), event.getScreenY());
-		        }
-		    }
+		setOnMousePressed(new EventHandler<MouseEvent>()
+		{
+			@Override
+			public void handle(MouseEvent event)
+			{
+				if (event.isSecondaryButtonDown())
+				{
+					contextMenu.show(ref, event.getScreenX(), event.getScreenY());
+				}
+			}
 		});
 	}
 	
+	private boolean selectElement(double x, double y)
+	{
+		ArrayList<Element> elements = circuit.getElementsByPosition((int) x, (int) y);
+		if (elements != null)
+		{
+			currentSelectedElement = elements.get(0); // take first element found
+			currentSelectedElement.setIsSelected(true);
+			return true;
+		}
+		return false;
+	}
+
 	@Override
 	public void resize(double width, double height)
 	{
-	    super.setWidth(width);
-	    super.setHeight(height);
-	    refreshCanvas();
+		super.setWidth(width);
+		super.setHeight(height);
+		refreshCanvas();
 	}
-	
+
 	@Override
 	public double minWidth(double height)
 	{
-	    return 2000;
+		return 2000;
 	}
 
 	@Override
 	public double maxWidth(double height)
 	{
-	    return 4000;
+		return 4000;
 	}
-	
+
 	@Override
 	public double minHeight(double width)
 	{
-	    return 2000;
+		return 2000;
 	}
 
 	@Override
 	public double maxHeight(double width)
 	{
-	    return 4000;
+		return 4000;
 	}
 }
