@@ -48,6 +48,12 @@ public final class Connector extends Element
 		return this;
 	}
 	
+	@Override
+	public Connector move(double x, double y) 
+	{
+		return move((int)x, (int)y);
+	}
+	
 	public int [] getRelPos()
 	{
 		return _conRelPos.clone();
