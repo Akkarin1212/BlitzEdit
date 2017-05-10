@@ -33,8 +33,15 @@ public abstract class Element
 		return this;
 	}
 	
+	public Element setPosition(double x, double y)
+	{
+		return setPosition((int)x, (int)y);
+	}
+	
 	//Bewegt das Element
 	public abstract Element move(int x, int y);
+	
+	public abstract Element move(double x, double y);
 	
 	public abstract void draw(GraphicsContext gc, double scale, boolean selected);
 	
