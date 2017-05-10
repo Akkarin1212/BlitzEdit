@@ -203,7 +203,7 @@ public class Component extends RotatableElement
 			at.transform(p, p2);
 			con.setPosition((int)p2.getX(), (int)p2.getY());
 		}
-		_rotation = rotation;
+		super.rotate(rotation);
 	}
 	
 	private ArrayList<Connector> _ports;
