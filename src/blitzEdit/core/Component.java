@@ -21,6 +21,11 @@ public class Component extends RotatableElement
 		return this;
 	}
 	
+	public Component setPosition(double x, double y)
+	{
+		return setPosition((int)x, (int)y);
+	}
+	
 	@Override
 	public Component move(int x, int y)
 	{
@@ -31,6 +36,11 @@ public class Component extends RotatableElement
 		_position.move(x, y);
 		
 		return this;
+	}
+	
+	public Component move(double x, double y)
+	{
+		return move((int)x, (int)y);
 	}
 	
 	public String getSvgFilePath()
