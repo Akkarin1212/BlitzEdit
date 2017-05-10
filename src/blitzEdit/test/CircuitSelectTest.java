@@ -15,10 +15,11 @@ public class CircuitSelectTest implements Runnable {
 		
 		ArrayList<Element> elements = new ArrayList<Element>();
 		int [][] relPos = {{0, 10},{0, -10}};
+		short [] relRot = {0, 0};
 		
-		Component source = new Component(0, 0, (short)0, "Source", relPos, new String());
-		Component resistor = new Component(100, 100, (short)0, "Resistor", relPos, new String());
-		Component coil = new Component(200, 100, (short)0, "Coil", relPos, new String());
+		Component source = new Component(0, 0, (short)0, "Source", relPos, relRot, new String());
+		Component resistor = new Component(100, 100, (short)0, "Resistor", relPos, relRot, new String());
+		Component coil = new Component(200, 100, (short)0, "Coil", relPos, relRot, new String());
 		
 		elements.add(source);
 		elements.add(coil);

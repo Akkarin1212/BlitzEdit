@@ -13,7 +13,7 @@ import blitzEdit.core.Component;
 public final class Connector extends Element
 {
 	@Override
-	public void draw(GraphicsContext gc, double scale) 
+	public void draw(GraphicsContext gc, double scale, boolean selected) 
 	{
 		gc.fillRect(getX(), getY(), getSizeX(), getSizeY());
 	}

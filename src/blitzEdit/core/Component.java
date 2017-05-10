@@ -58,15 +58,9 @@ public class Component extends RotatableElement
 	//Draws Component on GraphicalContext
 	public void draw(GraphicsContext gc, double scale, boolean selected)
 	{
-		SvgRenderer.renderSvgString(getSvgFileString(), gc, getX(), getY(), scale);
-		gc.setStroke(Color.GRAY);
-		if (selected) {
-			gc.strokeRect(_position.getX()-((double)_sizeX/2+2), 
-					(double)_position.getY()-((double)_sizeY/2+2), 
-					(double)_sizeX+4, (double)_sizeY+4);
-		}
+		SvgRenderer.renderSvgString(getSvgFileString(), gc, getX(), getY(), scale, selected);
 		for (Connector conn : getConnectors())
-			conn.draw(gc, scale);
+			conn.draw(gc, scale, selected); // TODO event. check ob connector selektiert wurde
 	}
 	
 	public ArrayList<Connector> getConnectors()
@@ -156,9 +150,10 @@ public class Component extends RotatableElement
 	
 	public Component(int x, int y, short rot, String type, int[][] connRelPos, short [] connRelRot ,String svg)
 	{
-		super(x, y, rot);
+		super(x, y, (int)SvgRenderer.getSvgWidth(svg), (int)SvgRenderer.getSvgHeight(svg),rot);
 		_type = new String(type);
 		_svgFilePath = new String(svg);
+		_svgFileString = SvgRenderer.getSvgFileString(_svgFilePath);
 		
 		//Erstellt die Connectoren für die Komponente und setzt sie an
 		//die richtige Position
@@ -176,6 +171,7 @@ public class Component extends RotatableElement
 		super(x, y , sizeX, sizeY, rot);
 		_type = new String(type);
 		_svgFilePath = new String(svg);
+		_svgFileString = SvgRenderer.getSvgFileString(_svgFilePath);
 		
 		//Erstellt die Connectoren für die Komponente und setzt sie an
 		//die richtige Position
@@ -187,7 +183,7 @@ public class Component extends RotatableElement
 		rotate(rot);
 	}
 	
-	@Override
+	// @Override TODO rotate in element/rotatableElement?
 	//Rotates Componenet to the specified angle
 	public void rotate(short rotation)
 	{

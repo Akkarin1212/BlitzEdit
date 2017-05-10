@@ -27,6 +27,17 @@ public abstract class Element
 		return _sizeY;
 	}
 	
+	public boolean getIsSelected()
+	{
+		return _isSelected;
+	}
+	
+	public Element setIsSelected(boolean isSelected)
+	{
+		_isSelected = isSelected;
+		return this;
+	}
+	
 	public Element setPosition(int x, int y)
 	{
 		_position.setLocation(x, y);
@@ -82,6 +93,7 @@ public abstract class Element
 	}
 	
 	protected Point _position;
+	protected boolean _isSelected;
 	protected int _sizeX;
 	protected int _sizeY;
 	

@@ -10,6 +10,7 @@ public class CircuitAddElementTest implements Runnable
 	@Override
 	public void run() {
 		int [][] relPos = {{0, 1},{0, -1}};
+		short [] relRot = {0, 0};
 		
 		System.out.println("Add Element Test:\n Creates a Circuit, adds Elements to it and renames it.");
 		System.out.println("Create new Circuit...");
@@ -17,11 +18,11 @@ public class CircuitAddElementTest implements Runnable
 		
 		System.out.println("Create new Elements...");
 		System.out.println("Source (0, 0)");
-		Component source = new Component(0, 0, (short)0, "Source", relPos, new String());
+		Component source = new Component(0, 0, (short)0, "Source", relPos, relRot, new String());
 		System.out.println("Resistor (10, 10)");
-		Component resistor = new Component(10, 10, (short)0, "Resistor", relPos, new String());
+		Component resistor = new Component(10, 10, (short)0, "Resistor", relPos, relRot, new String());
 		System.out.println("Coil (20, 10)");
-		Component coil = new Component(20, 10, (short)0, "Coil", relPos, new String());
+		Component coil = new Component(20, 10, (short)0, "Coil", relPos, relRot, new String());
 		
 		System.out.println("Adding new Elements separatly\n");
 		circuit.addElement(source);

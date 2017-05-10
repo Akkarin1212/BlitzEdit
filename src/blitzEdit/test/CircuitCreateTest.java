@@ -23,11 +23,12 @@ public class CircuitCreateTest implements Runnable {
 		System.out.println("circuit2.name = " + circuit2.getName() + "\n");
 		
 		int[][] relPos = {{0, 1}, {0, -1}};
+		short [] relRot = {0, 0};
 		ArrayList<Element> elements = new ArrayList<Element>();
 		
 		//elemente, die eingef�gt werden sollen
-		elements.add(new Component(1, 3, (short)0, "Resistor", relPos, new String()));
-		elements.add(new Component(5, 8, (short)0, "Source", relPos, new String()));
+		elements.add(new Component(1, 3, (short)0, "Resistor", relPos, relRot, new String()));
+		elements.add(new Component(5, 8, (short)0, "Source", relPos, relRot, new String()));
 		
 		System.out.println("Creating Circuit by Constructor Circuit(ArrayList<Element>, String)");
 		Circuit circuit3 = new Circuit(elements, "Schaltplan2");

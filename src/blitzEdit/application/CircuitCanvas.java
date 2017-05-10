@@ -55,7 +55,8 @@ public class CircuitCanvas extends ResizableCanvas
 				if(click.isSecondaryButtonDown())
 				{
 				int [][] relPos = {{0, 10},{0, -10}};
-				Component comp = new Component((int)click.getX(), (int)click.getY(), (short)0, "dunno", relPos, currentSvgPath);
+				short [] relRot = {0, 0};
+				Component comp = new Component((int)click.getX(), (int)click.getY(), (short)0, "dunno", relPos, relRot, currentSvgPath);
 				circuit.addElement(comp);
 				refreshCanvas();
 				}
@@ -143,7 +144,7 @@ public class CircuitCanvas extends ResizableCanvas
 		ArrayList<Element> array = circuit.getElements();
 		for(Element elem : array)
 		{
-			elem.draw(gc, 1.0);
+			elem.draw(gc, 1.0, elem.getIsSelected());
 		}
 	}
 	
