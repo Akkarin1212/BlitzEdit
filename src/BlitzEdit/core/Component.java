@@ -51,9 +51,9 @@ public class Component extends RotatableElement
 		SvgRenderer.renderSvgString(getSvgFileString(), gc, getX(), getY(), scale);
 		gc.setStroke(Color.GRAY);
 		if (selected) {
-			gc.strokeRect(_posX-((double)_sizeX/2+2), 
-					(double)_posY-((double)_sizeY/2+2), 
-					(double)sizeX+4, (double)sizeY+4);
+			gc.strokeRect(_position.getX()-((double)_sizeX/2+2), 
+					(double)_position.getY()-((double)_sizeY/2+2), 
+					(double)_sizeX+4, (double)_sizeY+4);
 		}
 		for (Connector conn : getConnectors())
 			conn.draw(gc, scale);
