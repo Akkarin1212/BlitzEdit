@@ -1,6 +1,7 @@
 package blitzEdit.application;
 
 import java.util.ArrayList;
+import java.util.Vector;
 
 import blitzEdit.core.Circuit;
 import blitzEdit.core.Component;
@@ -11,28 +12,35 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.control.ScrollPane.ScrollBarPolicy;
-import javafx.scene.input.DragEvent;
-import javafx.scene.input.MouseDragEvent;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.AnchorPane;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 
 public class CircuitCanvas extends ResizableCanvas
 {
 	GraphicsContext gc;
 	Circuit circuit;
 	ScrollPane sp;
+	
 	private CircuitCanvas ref = this;
 	private ContextMenu rightClickMenu;
-
 	private String currentSvgPath;
-	private Element currentSelectedElement;
+	private Vector<Element> currentSelectedElements = new Vector<Element>();
+	private boolean isSelectingMultipleElements;
+	private boolean hasSelectedMultipleElements;
+	
+	// used to save click begin
+	private double clickX; 
+	private double clickY;
+	
+	// used for calculation when moving multiple elements
+	private double dragX; 
+	private double dragY;
 
 	public CircuitCanvas(ScrollPane sp)
 	{
 		gc = getGraphicsContext2D();
 		circuit = new Circuit();
-
 		currentSvgPath = "img/Widerstand.svg";
 
 		this.sp = sp;
@@ -47,7 +55,7 @@ public class CircuitCanvas extends ResizableCanvas
 
 	private void onClickHandler()
 	{
-		EventHandler<MouseEvent> OnMousePressedEventHandler = new EventHandler<MouseEvent>()
+		this.setOnMousePressed(new EventHandler<MouseEvent>()
 		{
 			@Override
 			public void handle(MouseEvent click)
@@ -60,15 +68,28 @@ public class CircuitCanvas extends ResizableCanvas
 							relRot, currentSvgPath);
 					circuit.addElement(comp);
 					refreshCanvas();
+					
+					System.err.println("secondary click");
 				}
 				else if (click.isPrimaryButtonDown())
 				{
-					selectElement(click.getX(), click.getY());
+					if (!hasSelectedMultipleElements)
+					{
+						selectElement(click.getX(), click.getY());
+					}
+
+					clickX = click.getX();
+					clickY = click.getY();
+					dragX = click.getX();
+					dragY = click.getY();
+					
+					click.consume();
 					refreshCanvas();
+					
+					System.err.println("primary click");
 				}
 			}
-		};
-		this.setOnMousePressed(OnMousePressedEventHandler);
+		});
 	}
 
 	private void onMouseDraggedHandler()
@@ -78,10 +99,37 @@ public class CircuitCanvas extends ResizableCanvas
 			@Override
 			public void handle(MouseEvent click)
 			{
-				if (currentSelectedElement != null)
+				if(hasSelectedMultipleElements)
 				{
-					currentSelectedElement.move((int) click.getX(), (int) click.getY());
+					for(Element e : currentSelectedElements)
+					{
+						if (e.getClass() == Component.class)
+						{
+							e.setPosition(e.getX() + click.getX() - dragX, e.getY() + click.getY() - dragY);		
+						}
+					}
+					dragX = click.getX();
+					dragY = click.getY();
 					refreshCanvas();
+					
+					System.err.println("move multiple elements");
+				}
+				else if (!currentSelectedElements.isEmpty())
+				{
+					for(Element e : currentSelectedElements)
+					{
+						e.move((int) click.getX(), (int) click.getY());
+					}
+					refreshCanvas();
+					
+					System.err.println("move element");
+				}
+				else
+				{
+					drawSelectRect(click.getX(),click.getY());
+					isSelectingMultipleElements = true;
+					
+					System.err.println("draw select rect");
 				}
 			}
 		});
@@ -94,11 +142,33 @@ public class CircuitCanvas extends ResizableCanvas
 			@Override
 			public void handle(MouseEvent click)
 			{
-				if (currentSelectedElement != null)
+				if(hasSelectedMultipleElements)
 				{
-					System.err.println("release");
-					refreshCanvas();
+					if(click.getX() == clickX && click.getY() == clickY)
+					{
+						deselectCurrentSelectedElements();
+						hasSelectedMultipleElements = false;
+						System.err.println("release muliple elements");
+					}
 				}
+				else if (!currentSelectedElements.isEmpty())
+				{
+					System.err.println("release element");
+				}
+				else if(isSelectingMultipleElements)
+				{
+					selectElements(clickX, clickY, click.getX(), click.getY());
+					if(!currentSelectedElements.isEmpty())
+					{
+						isSelectingMultipleElements = false;
+						hasSelectedMultipleElements = true;
+					}
+				}
+				refreshCanvas();
+				clickX = 0;
+				clickY = 0;
+				dragX = 0;
+				dragY = 0;
 			}
 		});
 	}
@@ -170,23 +240,80 @@ public class CircuitCanvas extends ResizableCanvas
 		});
 	}
 	
-	private boolean selectElement(double x, double y)
+	private void drawSelectRect(double currX, double currY)
 	{
-		// unselect currentSelectedElement first
-		if(currentSelectedElement != null)
+		refreshCanvas();
+		gc.setStroke(Color.BLACK);
+
+		if (currX > clickX && currY > clickY)
 		{
-			currentSelectedElement.setIsSelected(false);
-			currentSelectedElement = null;
+			gc.strokeRect(clickX, clickY, currX - clickX, currY - clickY);
 		}
+		else if (currX < clickX && currY > clickY)
+		{
+			gc.strokeRect(currX, clickY, clickX - currX, currY - clickY);
+		}
+		else if (currX > clickX && currY < clickY)
+		{
+			gc.strokeRect(clickX, currY, currX - clickX, clickY - currY);
+		}
+		else if (currX < clickX && currY < clickY)
+		{
+			gc.strokeRect(currX, currY, clickX - currX, clickY - currY);
+		}
+	}
+	
+	private void deselectCurrentSelectedElements()
+	{
+		if (!currentSelectedElements.isEmpty())
+		{
+			for (Element e : currentSelectedElements)
+			{
+				e.setIsSelected(false);
+			}
+			currentSelectedElements.clear();
+		}
+	}
+	
+	private void selectElement(double x, double y)
+	{
+		deselectCurrentSelectedElements();
 		
 		ArrayList<Element> elements = circuit.getElementsByPosition((int) x, (int) y);
+		if (elements != null && !currentSelectedElements.contains(elements.get(0)))
+		{
+			currentSelectedElements.add(elements.get(0).setIsSelected(true)); // take first element found
+		}
+	}
+	
+	private void selectElements(double x, double y, double sizeX, double sizeY)
+	{
+		ArrayList<Element> elements = new ArrayList<Element>();
+		
+		if (sizeX > x && sizeY > y)
+		{
+			elements = circuit.getElementsByPosition(x, y, sizeX - x, sizeY - y);
+		}
+		else if (sizeX < x && sizeY > y)
+		{
+			elements = circuit.getElementsByPosition(sizeX, y, x - sizeX, sizeY - y);
+		}
+		else if (sizeX > x && sizeY < y)
+		{
+			elements = circuit.getElementsByPosition(x, sizeY, sizeX - x, y - sizeY);
+		}
+		else if (sizeX < x && sizeY < y)
+		{
+			elements = circuit.getElementsByPosition(sizeX, sizeY, x - sizeX, y - sizeY);
+		}
+		
 		if (elements != null)
 		{
-			currentSelectedElement = elements.get(0); // take first element found
-			currentSelectedElement.setIsSelected(true);
-			return true;
+			for (Element e : elements)
+			{
+				currentSelectedElements.add(e.setIsSelected(true));
+			}
 		}
-		return false;
 	}
 
 	@Override
