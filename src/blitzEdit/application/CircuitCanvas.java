@@ -22,6 +22,8 @@ public class CircuitCanvas extends ResizableCanvas
 	Circuit circuit;
 	ScrollPane sp;
 	
+	private MouseEvent currentMousePosition;
+	
 	private CircuitCanvas ref = this;
 	private ContextMenu rightClickMenu;
 	private String currentSvgPath;
@@ -49,6 +51,7 @@ public class CircuitCanvas extends ResizableCanvas
 		onClickHandler();
 		onMouseDraggedHandler();
 		onMouseReleasedHandler();
+		onMouseMovedHandler();
 
 		// initiateRightClickMenu();
 	}
@@ -172,6 +175,18 @@ public class CircuitCanvas extends ResizableCanvas
 			}
 		});
 	}
+	
+	private void onMouseMovedHandler()
+	{
+		setOnMouseMoved(new EventHandler<MouseEvent>()
+		{
+			@Override
+			public void handle(MouseEvent event)
+			{
+				currentMousePosition = event;
+			}
+		});
+	}
 
 	public void drawGrid()
 	{
@@ -206,6 +221,40 @@ public class CircuitCanvas extends ResizableCanvas
 			elem.draw(gc, 1.0, elem.getIsSelected());
 		}
 	}
+	
+	public Element[] copySelected()
+	{
+		Element[] elem = currentSelectedElements.toArray(new Element[currentSelectedElements.size()]);
+		return elem;
+	}
+	
+	public void pasteSelected(Element[] elem)
+	{
+		deselectCurrentSelectedElements();
+		for(Element e : elem)
+		{
+			if(e.getClass() == Component.class)
+			{
+				Component orginal = (Component) e; //TODO copy function for components
+				
+			}
+			
+		}
+	}
+	
+	public void deleteSelected()
+	{
+		for(Element e : currentSelectedElements)
+		{
+			circuit.removeElement(e);
+		}
+		isSelectingMultipleElements = false;
+		hasSelectedMultipleElements = false;
+		currentSelectedElements.clear();
+		refreshCanvas();
+		
+	}
+	
 
 	private void initiateRightClickMenu()
 	{
