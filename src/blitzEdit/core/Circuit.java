@@ -19,13 +19,7 @@ public class Circuit
 		ArrayList<Element> resultList = new ArrayList<Element>();
 		for (Element element : _elements)
 		{
-			int ex = element.getX();
-			int ey = element.getY();
-			int esx = element.getSizeX();
-			int esy = element.getSizeY();
-			Rectangle rect = new Rectangle(ex, ey, esx, esy);
-			
-			if (rect.contains(x, y)) //checkt, ob element angeklickt wurde
+			if (element.contains(x, y)) //checkt, ob element angeklickt wurde
 			{
 				resultList.add(element);
 			}
