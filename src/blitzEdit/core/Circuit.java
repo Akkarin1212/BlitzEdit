@@ -42,7 +42,7 @@ public class Circuit
 		Rectangle rect = new Rectangle(x1, y1, x2, y2);
 		for(Element elem : _elements)
 		{
-			if (rect.contains(elem.getX(), elem.getY())) 
+			if (elem.intersects(rect)) 
 				resultList.add(elem);
 		}
 		
