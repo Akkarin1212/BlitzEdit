@@ -31,6 +31,8 @@ public class CircuitCanvas extends ResizableCanvas
 	private boolean isSelectingMultipleElements;
 	private boolean hasSelectedMultipleElements;
 	
+	private double zoomScale = 1;
+	
 	// used to save click begin
 	private double clickX; 
 	private double clickY;
@@ -157,6 +159,7 @@ public class CircuitCanvas extends ResizableCanvas
 				else if (!currentSelectedElements.isEmpty())
 				{
 					System.err.println("release element");
+					deselectCurrentSelectedElements(); // TODO dunno
 				}
 				else if(isSelectingMultipleElements)
 				{
@@ -236,7 +239,6 @@ public class CircuitCanvas extends ResizableCanvas
 			if(e.getClass() == Component.class)
 			{
 				Component orginal = (Component) e; //TODO copy function for components
-				
 			}
 			
 		}
@@ -255,7 +257,37 @@ public class CircuitCanvas extends ResizableCanvas
 		
 	}
 	
+	public void selectAll()
+	{
+		deselectCurrentSelectedElements();
+		
+		ArrayList<Element> elements = circuit.getElements();
+		for(Element e : elements)
+		{
+			if(e.getClass() == Component.class)
+			{
+				currentSelectedElements.add(e.setIsSelected(true));
+			}
+		}
+		refreshCanvas();
+	}
+	
+	public void deselectAll()
+	{
+		deselectCurrentSelectedElements();
+		refreshCanvas();
+	}
+	
+	public void zoomIn()
+	{
+		
+	}
 
+	public void zoomOut()
+	{
+		
+	}
+	
 	private void initiateRightClickMenu()
 	{
 		final ContextMenu contextMenu = new ContextMenu();
@@ -328,7 +360,7 @@ public class CircuitCanvas extends ResizableCanvas
 	{
 		deselectCurrentSelectedElements();
 		
-		ArrayList<Element> elements = circuit.getElementsByPosition((int) x, (int) y);
+		ArrayList<Element> elements = circuit.getElementsByPosition(x, y);
 		if (elements != null && !currentSelectedElements.contains(elements.get(0)))
 		{
 			currentSelectedElements.add(elements.get(0).setIsSelected(true)); // take first element found

@@ -217,12 +217,16 @@ public class BlitzEdit implements javafx.fxml.Initializable
 	private void handleSelectAllAction(Event event)
 	{
 		Debug_Text.setText("Select All");
+		
+		getCurrentCircuitCanvas().selectAll();
 	}
 
 	@FXML
 	private void handleSelectNoneAction(Event event)
 	{
 		Debug_Text.setText("Select None");
+		
+		getCurrentCircuitCanvas().deselectAll();
 	}
 
 	@FXML
