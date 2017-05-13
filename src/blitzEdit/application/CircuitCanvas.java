@@ -8,6 +8,7 @@ import blitzEdit.core.Component;
 import blitzEdit.core.Element;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.scene.Cursor;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
@@ -104,6 +105,7 @@ public class CircuitCanvas extends ResizableCanvas
 			@Override
 			public void handle(MouseEvent click)
 			{
+				// moves multiple elements at same time
 				if(hasSelectedMultipleElements)
 				{
 					for(Element e : currentSelectedElements)
@@ -115,20 +117,25 @@ public class CircuitCanvas extends ResizableCanvas
 					}
 					dragX = click.getX();
 					dragY = click.getY();
+					
+					changeCursorStyle(Cursor.MOVE);
 					refreshCanvas();
 					
 					System.err.println("move multiple elements");
 				}
+				// only move 1 element
 				else if (!currentSelectedElements.isEmpty())
 				{
 					for(Element e : currentSelectedElements)
 					{
 						e.move((int) click.getX(), (int) click.getY());
 					}
+					changeCursorStyle(Cursor.MOVE);
 					refreshCanvas();
 					
 					System.err.println("move element");
 				}
+				// draw the selection rect
 				else
 				{
 					drawSelectRect(click.getX(),click.getY());
@@ -147,21 +154,22 @@ public class CircuitCanvas extends ResizableCanvas
 			@Override
 			public void handle(MouseEvent click)
 			{
-				if(hasSelectedMultipleElements)
+				// deselect multiple elements when pressing and releasing mouse at the same position
+				if (hasSelectedMultipleElements && (click.getX() == clickX && click.getY() == clickY))
 				{
-					if(click.getX() == clickX && click.getY() == clickY)
-					{
-						deselectCurrentSelectedElements();
-						hasSelectedMultipleElements = false;
-						System.err.println("release muliple elements");
-					}
+
+					deselectCurrentSelectedElements();
+					hasSelectedMultipleElements = false;
+					System.err.println("release muliple elements");
 				}
+				// deselect single element when releasing
 				else if (!currentSelectedElements.isEmpty())
 				{
 					System.err.println("release element");
 					deselectCurrentSelectedElements(); // TODO dunno
 				}
-				else if(isSelectingMultipleElements)
+				// when selection is in progress calculate all the objects in the selection rect
+				else if (isSelectingMultipleElements)
 				{
 					selectElements(clickX, clickY, click.getX(), click.getY());
 					if(!currentSelectedElements.isEmpty())
@@ -170,6 +178,8 @@ public class CircuitCanvas extends ResizableCanvas
 						hasSelectedMultipleElements = true;
 					}
 				}
+				
+				changeCursorStyle(Cursor.DEFAULT);
 				refreshCanvas();
 				clickX = 0;
 				clickY = 0;
@@ -286,6 +296,11 @@ public class CircuitCanvas extends ResizableCanvas
 	public void zoomOut()
 	{
 		
+	}
+	
+	private void changeCursorStyle(Cursor value)
+	{
+		Main.mainStage.getScene().setCursor(value);
 	}
 	
 	private void initiateRightClickMenu()

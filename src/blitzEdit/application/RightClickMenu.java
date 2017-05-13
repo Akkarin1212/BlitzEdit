@@ -1,6 +1,6 @@
 package blitzEdit.application;
 
-public class PropertyPanel
+public class RightClickMenu
 {
 	//TODO
 }
