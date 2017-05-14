@@ -17,6 +17,8 @@ public abstract class RotatableElement extends Element
 		_rotation = rotation;
 	}
 	
+	
+	/*
 	// Tests if the point (x, y) is contained by element
 	// TODO: Test new implemented method
 	public boolean contains(int x, int y)
@@ -27,6 +29,8 @@ public abstract class RotatableElement extends Element
 		
 		return at.createTransformedShape(rect).contains(x, y);
 	}
+	*/
+	
 	
 	public RotatableElement(int x, int y, int sizeX, int sizeY, short rot)
 	{
