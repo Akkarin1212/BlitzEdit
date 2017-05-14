@@ -22,7 +22,7 @@ import javafx.stage.FileChooser;
 
 public class BlitzEdit implements javafx.fxml.Initializable
 {
-	Element[] elementsToCopy;
+	public static Element[] elementsToCopy;
 	
 	@FXML
 	private MenuItem New;
@@ -195,8 +195,10 @@ public class BlitzEdit implements javafx.fxml.Initializable
 	private void handlePasteAction(Event event)
 	{
 		Debug_Text.setText("Paste");
-		
-		
+		if(elementsToCopy != null)
+		{
+			getCurrentCircuitCanvas().pasteSelected(elementsToCopy);
+		}
 	}
 
 	@FXML
@@ -239,12 +241,16 @@ public class BlitzEdit implements javafx.fxml.Initializable
 	private void handleViewZoomInAction(Event event)
 	{
 		Debug_Text.setText("Zoom In");
+		
+		getCurrentCircuitCanvas().zoomIn();
 	}
 
 	@FXML
 	private void handleViewZoomOutAction(Event event)
 	{
 		Debug_Text.setText("Zoom Out");
+		
+		getCurrentCircuitCanvas().zoomOut();
 	}
 
 	@FXML
