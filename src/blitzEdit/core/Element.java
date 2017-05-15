@@ -67,6 +67,8 @@ public abstract class Element
 	public abstract Element move(double x, double y);
 	
 	public abstract void draw(GraphicsContext gc, double scale, boolean selected);
+		
+	public abstract Element clone();
 	
 	public boolean contains(int x, int y)
 	{
@@ -82,6 +84,7 @@ public abstract class Element
 										_sizeX, _sizeY);
 		return r.intersects(rect);
 	}
+
 	
 	public Element(int x, int y)
 	{

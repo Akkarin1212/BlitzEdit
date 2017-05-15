@@ -16,6 +16,7 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.paint.Color;
+import javafx.geometry.Point2D;
 
 public class CircuitCanvas extends ResizableCanvas
 {
@@ -278,7 +279,7 @@ public class CircuitCanvas extends ResizableCanvas
 		return elem;
 	}
 	
-	public void pasteSelected(Element[] elem)
+	public void pasteSelected(Element[] elem, Point2D mousePos)
 	{
 		deselectCurrentSelectedElements();
 		for(Element e : elem)
@@ -287,9 +288,15 @@ public class CircuitCanvas extends ResizableCanvas
 			{
 				Component orginal = (Component) e; //TODO copy function for components
 				
-				System.err.println(e);
+				double offsetX = e.getX() - mousePos.getX();
+				double offsetY = e.getY() - mousePos.getY();
+				
+				Element clone = orginal.clone();
+				
+				circuit.addElement(clone.move(currentMousePosition.getX() + offsetX, currentMousePosition.getY() + offsetY));
+				selectElement(clone);
+				refreshCanvas();
 			}
-			
 		}
 		refreshCanvas();
 	}
@@ -349,8 +356,6 @@ public class CircuitCanvas extends ResizableCanvas
 			sp.setVvalue(posX);
 			sp.setHvalue(posY);
 			
-			System.err.println(sp.getHmax() + " " + sp.getVmax() + " " + sp.getHmin() + " " + sp.getVmin());
-			
 			refreshCanvas();
 		}
 		else
@@ -380,14 +385,17 @@ public class CircuitCanvas extends ResizableCanvas
 			sp.setVvalue(posX);
 			sp.setHvalue(posY);
 			
-			System.err.println(sp.getHmax() + " " + sp.getVmax() + " " + sp.getHmin() + " " + sp.getVmin());
-
 			refreshCanvas();
 		}
 		else
 		{
 			canvasScaleFactor = 0.55;
 		}
+	}
+	
+	public Point2D getMousePosition()
+	{
+		return new Point2D(currentMousePosition.getX(), currentMousePosition.getY());
 	}
 	
 	private void changeCursorStyle(Cursor value)
@@ -409,6 +417,7 @@ public class CircuitCanvas extends ResizableCanvas
 			public void handle(ActionEvent click)
 			{
 				BlitzEdit.elementsToCopy = copySelected();
+				BlitzEdit.copyMousePosition = getMousePosition();
 				
 				System.out.println("copy");
 			}
@@ -419,9 +428,9 @@ public class CircuitCanvas extends ResizableCanvas
 			@Override
 			public void handle(ActionEvent click)
 			{
-				if(BlitzEdit.elementsToCopy !=  null)
+				if(BlitzEdit.elementsToCopy !=  null && BlitzEdit.copyMousePosition != null)
 				{
-					pasteSelected(BlitzEdit.elementsToCopy);
+					pasteSelected(BlitzEdit.elementsToCopy, BlitzEdit.copyMousePosition);
 				}
 				
 				System.out.println("paste");
@@ -487,6 +496,14 @@ public class CircuitCanvas extends ResizableCanvas
 		}
 	}
 	
+	private void selectElement(Element element)
+	{
+		if(element != null)
+		{
+			currentSelectedElements.add(element.setIsSelected(true));
+		}
+	}
+	
 	private void selectElements(double x, double y, double sizeX, double sizeY)
 	{
 		ArrayList<Element> elements = new ArrayList<Element>();
@@ -511,6 +528,17 @@ public class CircuitCanvas extends ResizableCanvas
 		if (elements != null)
 		{
 			for (Element e : elements)
+			{
+				currentSelectedElements.add(e.setIsSelected(true));
+			}
+		}
+	}
+	
+	private void selectElements(Element[] elements)
+	{
+		if(elements != null)
+		{
+			for(Element e : elements)
 			{
 				currentSelectedElements.add(e.setIsSelected(true));
 			}

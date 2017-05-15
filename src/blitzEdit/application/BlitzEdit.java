@@ -7,6 +7,7 @@ import java.util.ResourceBundle;
 import blitzEdit.core.Element;
 import javafx.event.Event;
 import javafx.fxml.FXML;
+import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.control.Accordion;
 import javafx.scene.control.Label;
@@ -23,6 +24,7 @@ import javafx.stage.FileChooser;
 public class BlitzEdit implements javafx.fxml.Initializable
 {
 	public static Element[] elementsToCopy;
+	public static Point2D copyMousePosition;
 	
 	@FXML
 	private MenuItem New;
@@ -189,15 +191,16 @@ public class BlitzEdit implements javafx.fxml.Initializable
 		Debug_Text.setText("Copy");
 		
 		elementsToCopy = getCurrentCircuitCanvas().copySelected();
+		copyMousePosition = getCurrentCircuitCanvas().getMousePosition();
 	}
 
 	@FXML
 	private void handlePasteAction(Event event)
 	{
 		Debug_Text.setText("Paste");
-		if(elementsToCopy != null)
+		if(elementsToCopy != null && copyMousePosition != null)
 		{
-			getCurrentCircuitCanvas().pasteSelected(elementsToCopy);
+			getCurrentCircuitCanvas().pasteSelected(elementsToCopy, copyMousePosition);
 		}
 	}
 

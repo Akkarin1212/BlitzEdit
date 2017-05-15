@@ -59,6 +59,13 @@ public final class Connector extends Element
 		return _conRelPos.clone();
 	}
 	
+	// not implemented
+	@Override
+	public Element clone()
+	{
+		return null;
+	}
+	
 	//Nimmt conn in die Verbindungsliste auf
 	public void connect(Connector conn)
 	{
