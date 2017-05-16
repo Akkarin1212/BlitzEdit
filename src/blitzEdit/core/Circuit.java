@@ -124,8 +124,20 @@ public class Circuit
 			for (Element element : _elements)
 			{
 				if (element != elem)
+				{
 					newElements.add(element);
+				}
 			}
+			// delete connections too
+			if (elem.getClass() == Component.class) {
+				Component comp = (Component) elem;
+
+				for (Connector c : comp.getConnectors()) {
+					newElements.remove(c);
+				}
+
+			}
+			
 			_elements = newElements;
 		}
 	}
