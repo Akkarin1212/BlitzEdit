@@ -3,7 +3,10 @@ package blitzEdit.application;
 import blitzEdit.core.BlueprintContainer;
 import blitzEdit.core.Component;
 import blitzEdit.core.ComponentBlueprint;
+import javafx.event.EventHandler;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.input.MouseEvent;
+
 import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.TreeMap;
@@ -93,4 +96,27 @@ public class ComponentLibrary extends ResizableCanvas
 	{
 		return getBlueprint((int)x, (int)y);
 	}
+	
+	//Clickhandler für Linksclick auf Element in Library
+	@SuppressWarnings("unused")
+	private void onClickHandler()
+	{
+		this.setOnMousePressed(new EventHandler<MouseEvent>()
+		{
+			@Override
+			public void handle(MouseEvent click)
+			{
+				if (click.isPrimaryButtonDown())
+				{
+					getBlueprint(click.getX(), click.getY());
+				}
+			}
+		});
+	}
+	
+	
+	
+	
+	
+	
 }
