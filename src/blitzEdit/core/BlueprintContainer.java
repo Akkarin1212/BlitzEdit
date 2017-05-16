@@ -1,6 +1,5 @@
 package blitzEdit.core;
 
-import java.util.TreeMap;
 import java.util.Collection;
 import java.util.ArrayList;
 
@@ -10,15 +9,23 @@ public class BlueprintContainer
 	// the old one will be overwritten, if already existing. 
 	public void setBlueprint(ComponentBlueprint blueprint)
 	{
-		_blueprints.put(blueprint.getType(), blueprint);
+		for (ComponentBlueprint cb : _blueprints)
+		{
+			if(cb.getType().matches(blueprint.getType()))
+				_blueprints.remove(cb);
+		}
+		_blueprints.add(blueprint);
 	}
 	
 	// Checks if blueprints with same type
 	// are identical.
 	public boolean checkBlueprint(ComponentBlueprint blueprint)
 	{
-		if (_blueprints.get(blueprint.getType()).equals(blueprint))
-			return true;
+		for (ComponentBlueprint cb : _blueprints)
+		{
+			if(cb.equals(blueprint))
+				return true;
+		}
 		return false;
 	}
 	
@@ -30,8 +37,7 @@ public class BlueprintContainer
 		
 		for (ComponentBlueprint cb : cbs)
 		{
-			if (!_blueprints.containsKey(cb.getType())
-				|| _blueprints.get(cb.getType()).equals(cb))
+			if(!checkBlueprint(cb))
 				ret.add(cb);
 		}
 		if (ret.isEmpty())
@@ -39,15 +45,30 @@ public class BlueprintContainer
 		return ret;
 	}
 	
+	public boolean hasBlueprint(String type)
+	{
+		for (ComponentBlueprint cb : _blueprints)
+		{
+			if(cb.getType().matches(type))
+				return true;
+		}
+		return false;
+	}
+	
 	// returns blueprint for the designated type
 	public ComponentBlueprint getBlueprint(String type)
 	{
-		return _blueprints.get(type);
+		for (ComponentBlueprint cb : _blueprints)
+		{
+			if (cb.getType().matches(type))
+				return cb;
+		}
+		return null;
 	}
 	
-	public TreeMap<String, ComponentBlueprint> getBlueprints()
+	public ArrayList<ComponentBlueprint> getBlueprints()
 	{
-		return new TreeMap<String, ComponentBlueprint>(_blueprints);
+		return new ArrayList<ComponentBlueprint>(_blueprints);
 	}
 	
 	// returns instance (singleton)
@@ -60,9 +81,9 @@ public class BlueprintContainer
 	
 	private BlueprintContainer()
 	{
-		_blueprints = new TreeMap<String, ComponentBlueprint>();
+		_blueprints = new ArrayList<ComponentBlueprint>();
 	}
 	
 	private static BlueprintContainer _instance;
-	private TreeMap<String, ComponentBlueprint> _blueprints;
+	private ArrayList<ComponentBlueprint> _blueprints;
 }
