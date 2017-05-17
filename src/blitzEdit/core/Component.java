@@ -3,6 +3,7 @@ package blitzEdit.core;
 import java.awt.Point;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
+import java.io.IOException;
 import java.util.ArrayList;
 import blitzEdit.application.SvgRenderer;
 import javafx.scene.canvas.GraphicsContext;
@@ -201,6 +202,40 @@ public class Component extends RotatableElement
 		_rotation = rotation;
 	}
 	
+	public ComponentProperty [] getProperties()
+	{
+		return _properties.clone();
+	}
+	
+	public ComponentProperty getProperty(String name)
+	{
+		for (ComponentProperty prop : _properties)
+		{
+			if (prop.getName().matches(name))
+				return new ComponentProperty(prop);
+		}
+		return null;
+	}
+	
+	public void setProperty(String name, String value)
+	{
+		for (ComponentProperty prop : _properties)
+		{
+			if (prop.getName().matches(name))
+			{
+				try
+				{
+					prop.setValue(value);
+				}
+				catch (IOException e)
+				{
+					return;
+				}
+			}
+		}
+	}
+	
+	private ComponentProperty [] _properties;
 	private ArrayList<Connector> _ports;
 	private String _svgFilePath;
 	private String _svgFileString;

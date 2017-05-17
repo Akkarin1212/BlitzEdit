@@ -4,7 +4,7 @@ import java.io.IOException;
 
 // class Component Property
 // speichert eigenschaften der Bauteile
-// Beispiel für Widerstand: name="resistance" value="24" unit=OHM 
+// Beispiel für Widerstand: name="resistance" value="24.0" unit=OHM type=DECIMAL 
 public class ComponentProperty 
 {
 	private String _name;
@@ -32,7 +32,22 @@ public class ComponentProperty
 		return new String(_value);
 	}
 	
-	public void setValue(String value)
+	public String getName()
+	{
+		return new String(_name);
+	}
+	
+	public Unit getUnit()
+	{
+		return _unit;
+	}
+	
+	public PropType getType()
+	{
+		return _type;
+	}
+	
+	public void setValue(String value) throws IOException
 	{
 		switch (_type)
 		{
@@ -62,5 +77,18 @@ public class ComponentProperty
 		_type = type;
 		_unit = unit;
 		setValue(value);
+	}
+	
+	public ComponentProperty(ComponentProperty prop)
+	{
+		_name = prop.getName();
+		_type = prop.getType();
+		_unit = prop.getUnit();
+		try
+		{
+			setValue(prop.getValue());
+		}
+		catch (IOException e)
+		{}
 	}
 }
