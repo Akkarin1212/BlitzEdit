@@ -1,6 +1,7 @@
 package blitzEdit.core;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.awt.Rectangle;
 import blitzEdit.core.Component;
@@ -117,11 +118,25 @@ public class Circuit
 	{
 		if (elem != null)
 		{
+			ArrayList<Element> newElements = new ArrayList<Element>();
 			for (Element element : _elements)
 			{
-				if (element == elem)
-					_elements.remove(elem);
+				if (element != elem)
+				{
+					newElements.add(element);
+				}
 			}
+			// delete connections too
+			if (elem.getClass() == Component.class) {
+				Component comp = (Component) elem;
+
+				for (Connector c : comp.getConnectors()) {
+					newElements.remove(c);
+				}
+
+			}
+			
+			_elements = newElements;
 		}
 	}
 	

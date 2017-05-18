@@ -44,9 +44,10 @@ public class SvgRenderer
 		String[] textList = fileString.split("<");
 		for(String s : textList)
 		{
-			// add '<'
+			// add '<' that got removed by split()
 			s = '<' + s;
 			
+			// only use xml statements important for rendering
 			if(s.contains("<rect") || s.contains("<polygon") || s.contains("<svg version"))
 			{
 				result += s;
@@ -77,7 +78,8 @@ public class SvgRenderer
 			}
 		}
 		
-		if(true)
+		// draws rect around element when selected
+		if(drawSelectRect)
 		{
 			gc.strokeRect(offsetX-svgWidthMedian, offsetY-svgHeightMedian, svgWidth, svgHeight);
 		}
@@ -145,9 +147,7 @@ public class SvgRenderer
 		
 		String[] rectElements = rectString.split(" ");
 		for(String s : rectElements)
-		{
-			System.out.println(s);
-			
+		{		
 			s = s.replace('"', ' ');
 			s = s.trim();
 			if(s.contains("x="))
@@ -185,9 +185,7 @@ public class SvgRenderer
 				String[] sElem = s.split(" ");
 				fill = sElem[1];
 			}
-		}	
-		//System.out.println(rectString);
-		System.out.println(x + " " + y + " " + width + " " + height + " " + fill + " " + stroke + " " + stroke_width);
+		}
 		
 		x *= scale;
 		y *= scale;

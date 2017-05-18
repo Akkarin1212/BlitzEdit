@@ -27,6 +27,18 @@ public abstract class Element
 		return _sizeY;
 	}
 	
+	public Element setSize(int sizeX, int sizeY)
+	{
+		_sizeX = sizeX;
+		_sizeY = sizeY;
+		return this;
+  }
+  
+	public Element setSize(double sizeX, double sizeY)
+	{
+		return setSize((int)sizeX, (int)sizeY);
+  }
+  
 	public Point getPosition()
 	{
 		return _position;
@@ -60,6 +72,8 @@ public abstract class Element
 	public abstract Element move(double x, double y);
 	
 	public abstract void draw(GraphicsContext gc, double scale, boolean selected);
+		
+	public abstract Element clone();
 	
 	public boolean contains(int x, int y)
 	{
@@ -75,6 +89,7 @@ public abstract class Element
 										_sizeX, _sizeY);
 		return r.intersects(rect);
 	}
+
 	
 	public Element(int x, int y)
 	{

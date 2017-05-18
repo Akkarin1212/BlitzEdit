@@ -29,7 +29,7 @@ public class BlueprintContainer
 		return false;
 	}
 	
-	// compares all blueprints to those in the desginated Collection
+	// compares all blueprints to those in the designated Collection
 	// returns all blueprints which have changed.
 	public ArrayList<ComponentBlueprint> compareAll(Collection<ComponentBlueprint> cbs)
 	{

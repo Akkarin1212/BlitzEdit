@@ -1,211 +1,579 @@
 package blitzEdit.application;
 
 import java.util.ArrayList;
+import java.util.Vector;
 
 import blitzEdit.core.Circuit;
 import blitzEdit.core.Component;
 import blitzEdit.core.Element;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.scene.Cursor;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.control.ScrollPane.ScrollBarPolicy;
-import javafx.scene.input.DragEvent;
-import javafx.scene.input.MouseDragEvent;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.AnchorPane;
+import javafx.scene.input.ScrollEvent;
+import javafx.scene.paint.Color;
+import javafx.geometry.Point2D;
 
 public class CircuitCanvas extends ResizableCanvas
 {
 	GraphicsContext gc;
 	Circuit circuit;
+	ScrollPane sp;
+	
+	private MouseEvent currentMousePosition;
+	
 	private CircuitCanvas ref = this;
 	private ContextMenu rightClickMenu;
-	
 	private String currentSvgPath;
-	private Element currentMovingElement;
+	private Vector<Element> currentSelectedElements = new Vector<Element>();
+	private boolean isSelectingMultipleElements;
+	private boolean hasSelectedMultipleElements;
+	private boolean canSelectMultipleElements; 
 	
+	private double canvasScaleFactor = 1;
 	
-	public CircuitCanvas(ScrollPane sp)
+	// used to save click begin
+	private double clickX; 
+	private double clickY;
+	
+	// used for calculation when moving multiple elements
+	private double dragX; 
+	private double dragY;
+
+	public CircuitCanvas(ScrollPane scrollPane)
 	{
 		gc = getGraphicsContext2D();
 		circuit = new Circuit();
-		
 		currentSvgPath = "img/Widerstand.svg";
-		
-		 sp.setPannable(true);
-		
-		onDragDetectedHandler();
-		onMouseDragOverHandler();
-		onMouseDragReleasedHandler();
-		
+
+		sp = scrollPane;
 		
 		onClickHandler();
-		//initiateRightClickMenu();
+		onMouseDraggedHandler();
+		onMouseReleasedHandler();
+		onMouseMovedHandler();
+		onScrollEventHandler();
+		initiateRightClickMenu();
 	}
-	
+
 	private void onClickHandler()
 	{
-		EventHandler<MouseEvent> OnMousePressedEventHandler = new EventHandler<MouseEvent>() {
+		this.setOnMousePressed(new EventHandler<MouseEvent>()
+		{
 			@Override
 			public void handle(MouseEvent click)
 			{
-				if(click.isSecondaryButtonDown())
+				rightClickMenu.hide();
+				
+				if (click.isSecondaryButtonDown()) //TODO
 				{
-				int [][] relPos = {{0, 10},{0, -10}};
-				short [] relRot = {0, 0};
-				Component comp = new Component((int)click.getX(), (int)click.getY(), (short)0, "dunno", relPos, relRot, currentSvgPath);
-				circuit.addElement(comp);
-				refreshCanvas();
+					if (click.isControlDown())
+					{
+						int[][] relPos = { { 0, 10 }, { 0, -10 } };
+						short[] relRot = { 0, 0 };
+						Component comp = new Component((int) click.getX(), (int) click.getY(), (short) 0, "dunno",
+								relPos, relRot, currentSvgPath);
+						circuit.addElement(comp);
+						refreshCanvas();
+					}
+					else
+					{
+						rightClickMenu.show(ref, click.getScreenX(), click.getScreenY());
+					}
+
+					System.err.println("secondary click");
+				}
+				else if (click.isPrimaryButtonDown())
+				{
+					if (!hasSelectedMultipleElements)
+					{
+						selectElement(click.getX(), click.getY());
+					}
+					
+					canSelectMultipleElements = true;
+
+					clickX = click.getX();
+					clickY = click.getY();
+					dragX = click.getX();
+					dragY = click.getY();
+					
+					refreshCanvas();
+					
+					System.err.println("primary click");
 				}
 			}
-		};
-		this.setOnMousePressed(OnMousePressedEventHandler);
+		});
 	}
-	
-	private void onDragDetectedHandler()
+
+	private void onMouseDraggedHandler()
 	{
-		this.setOnDragDetected(new EventHandler<MouseEvent>() {
-		    @Override 
-		    public void handle(MouseEvent event) {
-		    	System.err.println((int)event.getX() + " " + (int)event.getY());
-		        ArrayList<Element> elements = circuit.getElementsByPosition((int)event.getX(), (int)event.getY());
-		        if(elements != null)
-		        {
-		        	currentMovingElement = elements.get(0); //take first element found
-		        }
-		        ref.startFullDrag();
-		    }
+		this.setOnMouseDragged(new EventHandler<MouseEvent>()
+		{
+			@Override
+			public void handle(MouseEvent click)
+			{
+				if (click.isPrimaryButtonDown())
+				{
+
+					// moves multiple elements at same time
+					if (hasSelectedMultipleElements)
+					{
+						for (Element e : currentSelectedElements)
+						{
+							if (e.getClass() == Component.class)
+							{
+								e.setPosition(e.getX() + click.getX() - dragX, e.getY() + click.getY() - dragY);
+							}
+						}
+						dragX = click.getX();
+						dragY = click.getY();
+
+						changeCursorStyle(Cursor.MOVE);
+						refreshCanvas();
+
+						System.err.println("move multiple elements");
+					}
+					// only move 1 element
+					else if (!currentSelectedElements.isEmpty())
+					{
+						for (Element e : currentSelectedElements)
+						{
+							e.move((int) click.getX(), (int) click.getY());
+						}
+						changeCursorStyle(Cursor.MOVE);
+						refreshCanvas();
+
+						System.err.println("move element");
+					}
+					// draw the selection rect
+					else if (canSelectMultipleElements)
+					{
+						drawSelectRect(click.getX(), click.getY());
+						isSelectingMultipleElements = true;
+
+						System.err.println("draw select rect");
+					}
+				}
+			}
+		});
+	}
+
+	private void onMouseReleasedHandler()
+	{
+		this.setOnMouseReleased(new EventHandler<MouseEvent>()
+		{
+			@Override
+			public void handle(MouseEvent click)
+			{
+
+				// deselect multiple elements when pressing and releasing
+				// mouse at the same position
+				if (hasSelectedMultipleElements && (click.getX() == clickX && click.getY() == clickY))
+				{
+
+					deselectCurrentSelectedElements();
+					hasSelectedMultipleElements = false;
+					System.err.println("release muliple elements");
+				}
+				// deselect single element when releasing
+				else if (!currentSelectedElements.isEmpty())
+				{
+
+				}
+				// when selection is in progress calculate all the objects
+				// in the selection rect
+				else if (isSelectingMultipleElements)
+				{
+					selectElements(clickX, clickY, click.getX(), click.getY());
+					if (!currentSelectedElements.isEmpty())
+					{
+						isSelectingMultipleElements = false;
+						hasSelectedMultipleElements = true;
+					}
+				}
+
+				canSelectMultipleElements = false;
+				changeCursorStyle(Cursor.DEFAULT);
+				refreshCanvas();
+				clickX = 0;
+				clickY = 0;
+				dragX = 0;
+				dragY = 0;
+
+			}
 		});
 	}
 	
-	private void onMouseDragOverHandler()
+	private void onScrollEventHandler()
 	{
-		if(true)//(currentMovingElement != null)
-		{
-			this.setOnMouseDragOver(new EventHandler<MouseDragEvent>() {
-			@Override 
-		    public void handle(MouseDragEvent event) 
-		    {
-				System.err.println((int)event.getX() + " " + (int)event.getY());
-				//currentMovingElement.move((int)event.getX(), (int)event.getY());
-		    }
-			});
-		}
+		this.setOnScroll(new EventHandler<ScrollEvent>(){
+			@Override
+			public void handle(ScrollEvent click)
+			{
+				if(click.getDeltaY() < 0)
+				{
+					zoomOut();
+				}
+				else
+				{
+					zoomIn();
+				}
+			}
+		});
 	}
 	
-	private void onMouseDragEnteredHandler()
+	private void onMouseMovedHandler()
 	{
+		this.setOnMouseMoved(new EventHandler<MouseEvent>()
+		{
+			@Override
+			public void handle(MouseEvent event)
+			{
+				currentMousePosition = event;
+			}
+		});
+	}
 
-	}
-	
-	private void onMouseDragReleasedHandler()
-	{
-		if(currentMovingElement != null)
-		{
-			this.setOnMouseDragReleased(new EventHandler<MouseDragEvent>() {
-			@Override 
-		    public void handle(MouseDragEvent event) 
-		    {
-		       currentMovingElement = null;
-		    }
-			});
-		}
-	}
-	
-	
 	public void drawGrid()
 	{
-        gc.clearRect(0, 0, getWidth(), getHeight());
+		gc.clearRect(0, 0, getWidth(), getHeight());
 
-        gc.setLineWidth(0.1);
-        
-        // vertical lines
-        for(int i = 0 ; i < getWidth() ; i+=30){
-            gc.strokeLine(i, 0, i, getHeight());
-        }        
+		gc.setLineWidth(0.1);
+		double lineSpace = 25;// * canvasScaleFactor;
 
-        // horizontal lines
-        for(int i = 30 ; i < getHeight() ; i+=30){
-            gc.strokeLine(30, i, getWidth(), i);
-        } 
+		// vertical lines
+		for (int i = 0; i < getWidth(); i += lineSpace)
+		{
+			gc.strokeLine(i, 0, i, getHeight());
+		}
+
+		// horizontal lines
+		for (int i = (int) lineSpace; i < getHeight(); i += lineSpace)
+		{
+			gc.strokeLine(0, i, getWidth(), i);
+		}
 	}
-	
+
 	public void refreshCanvas()
 	{
 		drawGrid();
-	    drawAllCircuitElements();
+		drawAllCircuitElements();
 	}
-	
+
 	private void drawAllCircuitElements()
 	{
 		ArrayList<Element> array = circuit.getElements();
-		for(Element elem : array)
+		for (Element elem : array)
 		{
 			elem.draw(gc, 1.0, elem.getIsSelected());
 		}
 	}
 	
+	public Element[] copySelected()
+	{
+		Element[] elem = currentSelectedElements.toArray(new Element[currentSelectedElements.size()]);
+		return elem;
+	}
+	
+	public void pasteSelected(Element[] elem, Point2D mousePos)
+	{
+		deselectCurrentSelectedElements();
+		for(Element e : elem)
+		{
+			if(e.getClass() == Component.class)
+			{
+				Component orginal = (Component) e; //TODO copy function for components
+				
+				double offsetX = e.getX() - mousePos.getX();
+				double offsetY = e.getY() - mousePos.getY();
+				
+				Element clone = orginal.clone();
+				
+				circuit.addElement(clone.move(currentMousePosition.getX() + offsetX, currentMousePosition.getY() + offsetY));
+				selectElement(clone);
+				refreshCanvas();
+			}
+		}
+		refreshCanvas();
+	}
+	
+	public void deleteSelected()
+	{
+		for(Element e : currentSelectedElements)
+		{
+			circuit.removeElement(e);
+		}
+		isSelectingMultipleElements = false;
+		hasSelectedMultipleElements = false;
+		currentSelectedElements.clear();
+		refreshCanvas();
+		
+	}
+	
+	public void selectAll()
+	{
+		deselectCurrentSelectedElements();
+		
+		ArrayList<Element> elements = circuit.getElements();
+		for(Element e : elements)
+		{
+			if(e.getClass() == Component.class)
+			{
+				currentSelectedElements.add(e.setIsSelected(true));
+			}
+		}
+		refreshCanvas();
+	}
+	
+	public void deselectAll()
+	{
+		deselectCurrentSelectedElements();
+		refreshCanvas();
+	}
+	
+	public void zoomIn()
+	{
+		if(canvasScaleFactor < 1)
+		{
+			canvasScaleFactor += 0.125;
+			
+			double posX = sp.getVvalue();
+			double posY = sp.getHvalue();
+			
+			setScaleX(canvasScaleFactor);
+			setScaleY(canvasScaleFactor);
+			
+			sp.setHvalue(canvasScaleFactor * 0.5);
+			sp.setVvalue(canvasScaleFactor * 0.5);
+			
+			sp.setHmin((1-canvasScaleFactor)/2);
+			sp.setVmin((1-canvasScaleFactor)/2);
+			
+			sp.setVvalue(posX);
+			sp.setHvalue(posY);
+			
+			refreshCanvas();
+		}
+		else
+		{
+			canvasScaleFactor = 1;
+		}
+	}
+
+	public void zoomOut()
+	{
+		if(canvasScaleFactor > 0.5)
+		{
+			canvasScaleFactor -= 0.125;
+			
+			double posX = sp.getVvalue();
+			double posY = sp.getHvalue();
+			
+			setScaleX(canvasScaleFactor);
+			setScaleY(canvasScaleFactor);
+			
+			sp.setHvalue(canvasScaleFactor * 0.5);
+			sp.setVvalue(canvasScaleFactor * 0.5);
+			
+			sp.setHmin((1-canvasScaleFactor)/2);
+			sp.setVmin((1-canvasScaleFactor)/2);
+			
+			sp.setVvalue(posX);
+			sp.setHvalue(posY);
+			
+			refreshCanvas();
+		}
+		else
+		{
+			canvasScaleFactor = 0.55;
+		}
+	}
+	
+	public Point2D getMousePosition()
+	{
+		return new Point2D(currentMousePosition.getX(), currentMousePosition.getY());
+	}
+	
+	private void changeCursorStyle(Cursor value)
+	{
+		Main.mainStage.getScene().setCursor(value);
+	}
+	
 	private void initiateRightClickMenu()
 	{
-		final ContextMenu contextMenu = new ContextMenu();
-		MenuItem cut = new MenuItem("Cut");
+		rightClickMenu = new ContextMenu();
+		
 		MenuItem copy = new MenuItem("Copy");
 		MenuItem paste = new MenuItem("Paste");
-		
-		EventHandler<ActionEvent> OnMouseClickedEventHandler = new EventHandler<ActionEvent>() {
+		MenuItem delete = new MenuItem("Delete");
+
+		copy.setOnAction(new EventHandler<ActionEvent>()
+		{
 			@Override
 			public void handle(ActionEvent click)
 			{
-				System.out.println("cut");
+				BlitzEdit.elementsToCopy = copySelected();
+				BlitzEdit.copyMousePosition = getMousePosition();
+				
+				System.out.println("copy");
 			}
-		};
-		cut.setOnAction(OnMouseClickedEventHandler);
-		
-		contextMenu.getItems().addAll(cut, copy, paste);
-		
-		CircuitCanvas ref = this;
-		setOnMousePressed(new EventHandler<MouseEvent>() {
-		    @Override
-		    public void handle(MouseEvent event) {
-		        if (event.isSecondaryButtonDown()) {
-		            contextMenu.show(ref, event.getScreenX(), event.getScreenY());
-		        }
-		    }
 		});
+		
+		paste.setOnAction(new EventHandler<ActionEvent>()
+		{
+			@Override
+			public void handle(ActionEvent click)
+			{
+				if(BlitzEdit.elementsToCopy !=  null && BlitzEdit.copyMousePosition != null)
+				{
+					pasteSelected(BlitzEdit.elementsToCopy, BlitzEdit.copyMousePosition);
+				}
+				
+				System.out.println("paste");
+			}
+		});
+		
+		delete.setOnAction(new EventHandler<ActionEvent>()
+		{
+			@Override
+			public void handle(ActionEvent click)
+			{
+				deleteSelected();
+				System.out.println("delete");
+			}
+		});
+
+		rightClickMenu.getItems().addAll(copy, paste, delete);
 	}
 	
+	private void drawSelectRect(double currX, double currY)
+	{
+		refreshCanvas();
+		gc.setStroke(Color.BLACK);
+
+		if (currX > clickX && currY > clickY)
+		{
+			gc.strokeRect(clickX, clickY, currX - clickX, currY - clickY);
+		}
+		else if (currX < clickX && currY > clickY)
+		{
+			gc.strokeRect(currX, clickY, clickX - currX, currY - clickY);
+		}
+		else if (currX > clickX && currY < clickY)
+		{
+			gc.strokeRect(clickX, currY, currX - clickX, clickY - currY);
+		}
+		else if (currX < clickX && currY < clickY)
+		{
+			gc.strokeRect(currX, currY, clickX - currX, clickY - currY);
+		}
+	}
+	
+	private void deselectCurrentSelectedElements()
+	{
+		if (!currentSelectedElements.isEmpty())
+		{
+			for (Element e : currentSelectedElements)
+			{
+				e.setIsSelected(false);
+			}
+			currentSelectedElements.clear();
+		}
+	}
+	
+	private void selectElement(double x, double y)
+	{
+		deselectCurrentSelectedElements();
+		
+		ArrayList<Element> elements = circuit.getElementsByPosition(x, y);
+		if (elements != null && !currentSelectedElements.contains(elements.get(0)))
+		{
+			currentSelectedElements.add(elements.get(0).setIsSelected(true)); // take first element found
+		}
+	}
+	
+	private void selectElement(Element element)
+	{
+		if(element != null)
+		{
+			currentSelectedElements.add(element.setIsSelected(true));
+		}
+	}
+	
+	private void selectElements(double x, double y, double sizeX, double sizeY)
+	{
+		ArrayList<Element> elements = new ArrayList<Element>();
+		
+		if (sizeX > x && sizeY > y)
+		{
+			elements = circuit.getElementsByPosition(x, y, sizeX - x, sizeY - y);
+		}
+		else if (sizeX < x && sizeY > y)
+		{
+			elements = circuit.getElementsByPosition(sizeX, y, x - sizeX, sizeY - y);
+		}
+		else if (sizeX > x && sizeY < y)
+		{
+			elements = circuit.getElementsByPosition(x, sizeY, sizeX - x, y - sizeY);
+		}
+		else if (sizeX < x && sizeY < y)
+		{
+			elements = circuit.getElementsByPosition(sizeX, sizeY, x - sizeX, y - sizeY);
+		}
+		
+		if (elements != null)
+		{
+			for (Element e : elements)
+			{
+				currentSelectedElements.add(e.setIsSelected(true));
+			}
+		}
+	}
+	
+	private void selectElements(Element[] elements)
+	{
+		if(elements != null)
+		{
+			for(Element e : elements)
+			{
+				currentSelectedElements.add(e.setIsSelected(true));
+			}
+		}
+	}
+
 	@Override
 	public void resize(double width, double height)
 	{
-	    super.setWidth(width);
-	    super.setHeight(height);
-	    refreshCanvas();
+		super.setWidth(width);
+		super.setHeight(height);
+		refreshCanvas();
 	}
-	
+
 	@Override
 	public double minWidth(double height)
 	{
-	    return 2000;
+		return 2000;
 	}
 
 	@Override
 	public double maxWidth(double height)
 	{
-	    return 4000;
+		return 4000;
 	}
-	
+
 	@Override
 	public double minHeight(double width)
 	{
-	    return 2000;
+		return 2000;
 	}
 
 	@Override
 	public double maxHeight(double width)
 	{
-	    return 4000;
+		return 4000;
 	}
 }

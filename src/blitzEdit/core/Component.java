@@ -64,6 +64,25 @@ public class Component extends RotatableElement
 			conn.draw(gc, scale, selected); // TODO event. check ob connector selektiert wurde
 	}
 	
+	
+	public Element clone()
+	{
+
+		int[][] connRelPos = new int[_ports.size()][];
+		for(int i = 0; i < connRelPos.length; i++)
+		{
+			connRelPos[i] = _ports.get(i).getRelPos();
+		}
+		
+		short[] connRelRot = new short[_ports.size()];
+		for(int i = 0; i < connRelRot.length; i++)
+		{
+			connRelRot[i] = _ports.get(i).getRelativeRotation();
+		}
+		
+		return new Component(getX(), getY(), _sizeX, _sizeY, _rotation, _type, connRelPos, connRelRot, _svgFilePath);
+	}
+	
 	public ArrayList<Connector> getConnectors()
 	{
 		return _ports;
@@ -150,8 +169,9 @@ public class Component extends RotatableElement
 	}
 	public Component(int x, int y, short rot, String type, int[][] connRelPos, short [] connRelRot ,String svg)
 	{
-		super(x, y, (int)SvgRenderer.getSvgWidth(svg), (int)SvgRenderer.getSvgHeight(svg),rot);
+		super(x, y, rot);
 		initialize(x, y, rot, type, svg, connRelPos, connRelRot);
+		super.setSize(SvgRenderer.getSvgWidth(_svgFileString), SvgRenderer.getSvgHeight(_svgFileString));
 	}
 	
 	
