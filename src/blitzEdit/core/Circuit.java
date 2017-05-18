@@ -1,11 +1,9 @@
 package blitzEdit.core;
 
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.awt.Rectangle;
 import blitzEdit.core.Component;
-
 
 // Circuit Klasse:
 // Speichert Bauelemente und deren Verbindungen
