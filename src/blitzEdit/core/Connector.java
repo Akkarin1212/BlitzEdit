@@ -28,7 +28,6 @@ public final class Connector extends Element
 		return _relRotation;
 	}
 	
-	//TODO: move-methode implementieren
 	@Override
 	public Connector move(int x, int y)
 	{
@@ -69,7 +68,7 @@ public final class Connector extends Element
 	//Nimmt conn in die Verbindungsliste auf
 	public void connect(Connector conn)
 	{
-		if (this.connected())
+		if (_connected)
 		{
 			//Überprüft, ob Verbindung schon vorhanden ist
 			for (Connector c : _connections)

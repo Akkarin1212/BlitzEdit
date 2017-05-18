@@ -32,11 +32,16 @@ public abstract class Element
 		_sizeX = sizeX;
 		_sizeY = sizeY;
 		return this;
-	}
-	
+  }
+  
 	public Element setSize(double sizeX, double sizeY)
 	{
 		return setSize((int)sizeX, (int)sizeY);
+  }
+  
+	public Point getPosition()
+	{
+		return _position;
 	}
 	
 	public boolean getIsSelected()
