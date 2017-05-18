@@ -1,11 +1,9 @@
 package blitzEdit.core;
 
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.awt.Rectangle;
 import blitzEdit.core.Component;
-
 
 // Circuit Klasse:
 // Speichert Bauelemente und deren Verbindungen
@@ -141,6 +139,33 @@ public class Circuit
 	public String getName()
 	{
 		return new String(_name);
+	}
+	
+	public ArrayList<Line> getLines()
+	{
+		ArrayList<Line> lines = new ArrayList<Line>();
+		for (Element e: _elements)
+		{
+			if (e instanceof Component)
+			{
+				for (Connector c1 : ((Component)e).getConnectors())
+				{
+					for (Connector c2 : c1.getConnections())
+					{
+						lines.add(new Line(c1.getPosition(), c2.getPosition()));
+					}
+				}
+			}
+		}
+		for (Line l1 : lines)
+		{
+			for (Line l2 : lines)
+			{
+				if (l1.equals(l2))
+					lines.remove(l2);
+			}
+		}
+		return lines;
 	}
 	
 	public Circuit() 
