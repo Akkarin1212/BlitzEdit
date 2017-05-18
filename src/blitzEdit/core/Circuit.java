@@ -1,11 +1,9 @@
 package blitzEdit.core;
 
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.awt.Rectangle;
 import blitzEdit.core.Component;
-
 
 // Circuit Klasse:
 // Speichert Bauelemente und deren Verbindungen
@@ -18,13 +16,7 @@ public class Circuit
 		ArrayList<Element> resultList = new ArrayList<Element>();
 		for (Element element : _elements)
 		{
-			int ex = element.getX();
-			int ey = element.getY();
-			int esx = element.getSizeX();
-			int esy = element.getSizeY();
-			Rectangle rect = new Rectangle(ex, ey, esx, esy);
-			
-			if (rect.contains(x, y)) //checkt, ob element angeklickt wurde
+			if (element.contains(x, y)) //checkt, ob element angeklickt wurde
 			{
 				resultList.add(element);
 			}
@@ -48,7 +40,7 @@ public class Circuit
 		Rectangle rect = new Rectangle(x1, y1, x2, y2);
 		for(Element elem : _elements)
 		{
-			if (rect.contains(elem.getX(), elem.getY())) 
+			if (elem.intersects(rect)) 
 				resultList.add(elem);
 		}
 		
@@ -147,6 +139,33 @@ public class Circuit
 	public String getName()
 	{
 		return new String(_name);
+	}
+	
+	public ArrayList<Line> getLines()
+	{
+		ArrayList<Line> lines = new ArrayList<Line>();
+		for (Element e: _elements)
+		{
+			if (e instanceof Component)
+			{
+				for (Connector c1 : ((Component)e).getConnectors())
+				{
+					for (Connector c2 : c1.getConnections())
+					{
+						lines.add(new Line(c1.getPosition(), c2.getPosition()));
+					}
+				}
+			}
+		}
+		for (Line l1 : lines)
+		{
+			for (Line l2 : lines)
+			{
+				if (l1.equals(l2))
+					lines.remove(l2);
+			}
+		}
+		return lines;
 	}
 	
 	public Circuit() 
