@@ -27,6 +27,11 @@ public abstract class Element
 		return _sizeY;
 	}
 	
+	public Point getPosition()
+	{
+		return _position;
+	}
+	
 	public boolean getIsSelected()
 	{
 		return _isSelected;

@@ -1,19 +1,19 @@
 package blitzEdit.core;
 
-import java.awt.geom.Point2D;
+import java.awt.Point;
 
 
 public class Line 
 {
-	private Point2D _p1;
-	private Point2D _p2;
+	private Point _p1;
+	private Point _p2;
 	
-	public Point2D getP1()
+	public Point getP1()
 	{
 		return _p1;
 	}
 	
-	public Point2D getP2()
+	public Point getP2()
 	{
 		return _p2;
 	}
@@ -29,9 +29,9 @@ public class Line
 			return false;
 	}
 	
-	public Line(Point2D p1, Point2D p2)
+	public Line(Point p1, Point p2)
 	{
-		_p1 = (Point2D)p1.clone();
-		_p2 = (Point2D)p2.clone();
+		_p1 = (Point)p1.clone();
+		_p2 = (Point)p2.clone();
 	}
 }
