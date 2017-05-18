@@ -23,7 +23,7 @@ public abstract class RotatableElement extends Element
 	// TODO: Test new implemented method
 	public boolean contains(int x, int y)
 	{
-		Rectangle rect = new Rectangle(x, y, _sizeX, _sizeY);
+		Rectangle rect = new Rectangle(x-_sizeX/2, y-_sizeY/2, _sizeX, _sizeY);
 		
 		AffineTransform at = AffineTransform.getRotateInstance((Math.PI * 2)*((double)_rotation / 360.0), x, y);
 		
