@@ -326,6 +326,9 @@ public class CircuitCanvas extends ResizableCanvas
 				currentSelectedElements.add(e.setIsSelected(true));
 			}
 		}
+		
+		isSelectingMultipleElements = false;
+		hasSelectedMultipleElements = true;
 		refreshCanvas();
 	}
 	
@@ -482,6 +485,8 @@ public class CircuitCanvas extends ResizableCanvas
 				e.setIsSelected(false);
 			}
 			currentSelectedElements.clear();
+			
+			hasSelectedMultipleElements = false;
 		}
 	}
 	

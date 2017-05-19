@@ -1,14 +1,11 @@
 package blitzEdit.core;
 
-import javafx.event.EventHandler;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.input.MouseEvent;
 
 import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.TreeMap;
 
-import blitzEdit.application.ResizableCanvas;
 import blitzEdit.application.SvgRenderer;
 
 //Stellt Elemente in einer Bibliothek dar und gibt sie zur�ck wenn sie angeklickt werden
