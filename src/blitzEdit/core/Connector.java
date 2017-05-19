@@ -3,6 +3,8 @@ package blitzEdit.core;
 import java.util.ArrayList;
 import java.util.Collection;
 import javafx.scene.paint.Color;
+import tools.GraphicDesignContainer;
+
 import java.awt.Point;
 import java.awt.geom.AffineTransform;
 
@@ -26,14 +28,18 @@ public final class Connector extends Element
 		
 		//zeichnet die Linie des Connectors von seinem Ursprungspunkt zu seiner
 		// momentanen Position
+		gc.save();
+		gc.setStroke(GraphicDesignContainer.connector_line_color);
+		gc.setLineWidth(GraphicDesignContainer.connector_line_width);
 		gc.strokeLine(x - px * _length, y - py * _length, x, y);
-		
-		// Wenn der Connector angwählt wurde, wird er grün dargestellt
+
+		// wechsel die Farbe wenn ausgewÃ¤hlt
 		if (selected)
-			gc.setFill(Color.GREEN);
+		{
+			gc.setFill(GraphicDesignContainer.selected_connector_color);
+		}
 		gc.fillRect(getX(), getY(), getSizeX(), getSizeY());
-		// setzt die Strokefarbe auf schwarz zurück
-		gc.setFill(Color.BLACK);
+		gc.restore();
 	}
 	
 	public ArrayList<Connector> getConnections()

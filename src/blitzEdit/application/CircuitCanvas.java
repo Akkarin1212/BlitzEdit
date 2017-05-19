@@ -17,6 +17,7 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.paint.Color;
+import tools.GraphicDesignContainer;
 import javafx.geometry.Point2D;
 
 public class CircuitCanvas extends ResizableCanvas
@@ -50,7 +51,7 @@ public class CircuitCanvas extends ResizableCanvas
 		gc = getGraphicsContext2D();
 		circuit = new Circuit();
 		currentSvgPath = "img/Widerstand.svg";
-
+		
 		sp = scrollPane;
 		
 		onMousePresseHandler();
@@ -133,7 +134,7 @@ public class CircuitCanvas extends ResizableCanvas
 						dragX = click.getX();
 						dragY = click.getY();
 
-						changeCursorStyle(Cursor.MOVE);
+						changeCursorStyle(GraphicDesignContainer.move_cursor);
 						refreshCanvas();
 
 						System.err.println("move multiple elements");
@@ -145,7 +146,7 @@ public class CircuitCanvas extends ResizableCanvas
 						{
 							e.move((int) click.getX(), (int) click.getY());
 						}
-						changeCursorStyle(Cursor.MOVE);
+						changeCursorStyle(GraphicDesignContainer.move_cursor);
 						refreshCanvas();
 
 						System.err.println("move element");
@@ -198,7 +199,7 @@ public class CircuitCanvas extends ResizableCanvas
 				}
 
 				canSelectMultipleElements = false;
-				changeCursorStyle(Cursor.DEFAULT);
+				changeCursorStyle(GraphicDesignContainer.default_cursor);
 				refreshCanvas();
 				clickX = 0;
 				clickY = 0;
@@ -243,9 +244,10 @@ public class CircuitCanvas extends ResizableCanvas
 	{
 		gc.save();
 		gc.clearRect(0, 0, getWidth(), getHeight());
-
-		gc.setLineWidth(0.1);
-		double lineSpace = 25;// * canvasScaleFactor;
+		
+		gc.setStroke(GraphicDesignContainer.grid_color);
+		gc.setLineWidth(GraphicDesignContainer.grid_line_width);
+		double lineSpace = GraphicDesignContainer.grid_spacing;
 
 		// vertical lines
 		for (int i = 0; i < getWidth(); i += lineSpace)
@@ -345,7 +347,7 @@ public class CircuitCanvas extends ResizableCanvas
 	{
 		if(canvasScaleFactor < 1)
 		{
-			canvasScaleFactor += 0.125;
+			canvasScaleFactor += GraphicDesignContainer.zoom_factor;
 			
 			double posX = sp.getVvalue();
 			double posY = sp.getHvalue();
@@ -374,7 +376,7 @@ public class CircuitCanvas extends ResizableCanvas
 	{
 		if(canvasScaleFactor > 0.5)
 		{
-			canvasScaleFactor -= 0.125;
+			canvasScaleFactor -= GraphicDesignContainer.zoom_factor;
 			
 			double posX = sp.getVvalue();
 			double posY = sp.getHvalue();
@@ -480,7 +482,8 @@ public class CircuitCanvas extends ResizableCanvas
 	private void drawSelectRect(double currX, double currY)
 	{
 		refreshCanvas();
-		gc.setStroke(Color.BLACK);
+		gc.save();
+		gc.setStroke(GraphicDesignContainer.selection_rect_color);
 
 		if (currX > clickX && currY > clickY)
 		{
@@ -498,6 +501,7 @@ public class CircuitCanvas extends ResizableCanvas
 		{
 			gc.strokeRect(currX, currY, clickX - currX, clickY - currY);
 		}
+		gc.restore();
 	}
 	
 	private void deselectCurrentSelectedElements()

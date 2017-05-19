@@ -86,7 +86,7 @@ public class SvgRenderer
 		{
 			if(s.startsWith("rect"))
 			{
-				renderRect(s,gc,offsetX-svgWidthMedian,offsetY-svgHeightMedian, scale);
+				renderRect(s,gc,offsetX-svgWidthMedian,offsetY-svgHeightMedian, scale, 0);
 			}
 			else if(s.startsWith("polygon"))
 			{
@@ -97,9 +97,10 @@ public class SvgRenderer
 		// draws rect around element when selected
 		if(drawSelectRect)
 		{
-			gc.setStroke(Color.DARKGRAY);
+			gc.save();
+			gc.setStroke(GraphicDesignContainer.selected_element_color);
 			gc.strokeRect(offsetX-svgWidthMedian - selectedRectPadding, offsetY-svgHeightMedian - selectedRectPadding, svgWidth + 2*selectedRectPadding, svgHeight + 2*selectedRectPadding);
-			gc.setStroke(Color.BLACK);
+			gc.restore();
 		}
 	}
 	
@@ -111,11 +112,11 @@ public class SvgRenderer
 		double svgHeight =scale*getSvgHeight(svgString);
 		double svgWidthMedian = svgWidth*0.5;
 		double svgHeightMedian = svgHeight*0.5;
+		double selectedRectPadding = 10;
 		
 		rotationPoint.x = (int) offsetX;
 		rotationPoint.y = (int) offsetY;
 		
-		double selectedRectPadding = 10;
 		
 		for(String s: svgElements)
 		{
@@ -138,7 +139,10 @@ public class SvgRenderer
 			double width = svgWidth + 2*selectedRectPadding;
 			double height = svgHeight + 2*selectedRectPadding;
 			
-			gc.setStroke(Color.DARKGRAY);
+			gc.save();
+			gc.setStroke(GraphicDesignContainer.selected_element_color);
+			gc.setLineWidth(GraphicDesignContainer.selected_stroke_width);
+			
 			ArrayList<Point> corners = new ArrayList<Point>();
 			corners.add(new Point((int)x,(int)y));
 			corners.add(new Point((int)(x+width),(int)y));
@@ -147,11 +151,8 @@ public class SvgRenderer
 			
 			Rectangle rect = new Rectangle(corners, rotationPoint);
 			rect.rotateRect(rot);
-			
-			
-			
 			gc.strokePolygon(rect.getXCoordinates(),rect.getYCoordinates(), 4);
-			gc.setStroke(Color.BLACK);
+			gc.restore();
 		}
 	}
 	
@@ -205,82 +206,12 @@ public class SvgRenderer
 		return -1;
 	}
 	
-	private static void renderRect(String rectString, GraphicsContext gc, double offsetX, double offsetY, double scale)
-	{
-		double x=0;
-		double y=0;
-		double height=0;
-		double width=0;
-		int stroke_width=0;
-		String fill="";
-		String stroke="";
-		
-		String[] rectElements = rectString.split(" ");
-		for(String s : rectElements)
-		{		
-			s = s.replace('"', ' ');
-			s = s.trim();
-			if(s.contains("x="))
-			{
-				String[] sElem = s.split(" ");
-				x = Double.parseDouble(sElem[1]);
-			}
-			else if(s.contains("y="))
-			{
-				String[] sElem = s.split(" ");
-				y = Double.parseDouble(sElem[1]);
-			}
-			else if(s.contains("stroke-width="))
-			{
-				String[] sElem = s.split(" ");
-				stroke_width = Integer.parseInt(sElem[1]);
-			}
-			else if(s.contains("stroke="))
-			{
-				String[] sElem = s.split(" ");
-				stroke = sElem[1];
-			}
-			else if(s.contains("width="))
-			{
-				String[] sElem = s.split(" ");
-				width = Double.parseDouble(sElem[1]);
-			}
-			else if(s.contains("height="))
-			{
-				String[] sElem = s.split(" ");
-				height = Double.parseDouble(sElem[1]);
-			}
-			else if(s.contains("fill="))
-			{
-				String[] sElem = s.split(" ");
-				fill = sElem[1];
-			}
-		}
-		
-		x *= scale;
-		y *= scale;
-		
-		width *= scale;
-		height *= scale;
-		stroke_width *= scale;
-		
-		if(stroke_width != 0)
-		{
-			gc.setLineWidth(stroke_width);
-			gc.strokeRect(x+offsetX, y+offsetY, width, height);
-		}
-		else if(fill.contains("none"))
-		{
-			gc.rect(x+offsetX, y+offsetY, width, height);
-		}
-		else
-		{
-			gc.fillRect(x+offsetX, y+offsetY, width, height);
-		}
-	}
-	
 	private static void renderRect(String rectString, GraphicsContext gc, double offsetX, double offsetY, double scale, double rot)
 	{
+		gc.save();
+		gc.setFill(GraphicDesignContainer.elements_color);
+		gc.setStroke(GraphicDesignContainer.elements_color);
+		
 		double x=0;
 		double y=0;
 		double height=0;
@@ -334,35 +265,59 @@ public class SvgRenderer
 		x *= scale;
 		y *= scale;
 		
-		x += offsetX;
-		y += offsetY;
-		
+
 		width *= scale;
 		height *= scale;
 		stroke_width *= scale;
-		
-		ArrayList<Point> corners = new ArrayList<Point>();
-		corners.add(new Point((int)x,(int)y));
-		corners.add(new Point((int)(x+width),(int)y));
-		corners.add(new Point((int)(x+width),(int)(y+height)));
-		corners.add(new Point((int)x,(int)(y+height)));
-		
-		Rectangle rect = new Rectangle(corners, rotationPoint);
-		rect.rotateRect(rot);
-		
-		if(stroke_width != 0)
+
+		if (rot == 0)
 		{
-			gc.setLineWidth(stroke_width);
-			gc.strokePolygon(rect.getXCoordinates(), rect.getYCoordinates(), 4);
-		}
-		else if(fill.contains("none"))
-		{
-			gc.strokePolygon(rect.getXCoordinates(), rect.getYCoordinates(), 4);
+			if (stroke_width != 0)
+			{
+				gc.save();
+				gc.setLineWidth(stroke_width);
+				gc.strokeRect(x + offsetX, y + offsetY, width, height);
+				gc.restore();
+			}
+			else if (fill.contains("none"))
+			{
+				gc.rect(x + offsetX, y + offsetY, width, height);
+			}
+			else
+			{
+				gc.fillRect(x + offsetX, y + offsetY, width, height);
+			}
 		}
 		else
 		{
-			gc.fillPolygon(rect.getXCoordinates(), rect.getYCoordinates(), 4);
+			x += offsetX;
+			y += offsetY;
+			ArrayList<Point> corners = new ArrayList<Point>();
+			corners.add(new Point((int) x, (int) y));
+			corners.add(new Point((int) (x + width), (int) y));
+			corners.add(new Point((int) (x + width), (int) (y + height)));
+			corners.add(new Point((int) x, (int) (y + height)));
+
+			Rectangle rect = new Rectangle(corners, rotationPoint);
+			rect.rotateRect(rot);
+
+			if (stroke_width != 0)
+			{
+				gc.save();
+				gc.setLineWidth(stroke_width);
+				gc.strokePolygon(rect.getXCoordinates(), rect.getYCoordinates(), 4);
+				gc.restore();
+			}
+			else if (fill.contains("none"))
+			{
+				gc.strokePolygon(rect.getXCoordinates(), rect.getYCoordinates(), 4);
+			}
+			else
+			{
+				gc.fillPolygon(rect.getXCoordinates(), rect.getYCoordinates(), 4);
+			}
 		}
+		gc.restore();
 	}
 }
 
