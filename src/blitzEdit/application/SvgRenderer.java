@@ -6,6 +6,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import javafx.scene.canvas.*;
+import javafx.scene.paint.Color;
 
 public class SvgRenderer
 {	
@@ -65,6 +66,8 @@ public class SvgRenderer
 		double svgWidthMedian = svgWidth*0.5;
 		double svgHeightMedian = svgHeight*0.5;
 		
+		double selectedRectPadding = 10;
+		
 		
 		for(String s: svgElements)
 		{
@@ -81,7 +84,9 @@ public class SvgRenderer
 		// draws rect around element when selected
 		if(drawSelectRect)
 		{
-			gc.strokeRect(offsetX-svgWidthMedian, offsetY-svgHeightMedian, svgWidth, svgHeight);
+			gc.setStroke(Color.DARKGRAY);
+			gc.strokeRect(offsetX-svgWidthMedian - selectedRectPadding, offsetY-svgHeightMedian - selectedRectPadding, svgWidth + 2*selectedRectPadding, svgHeight + 2*selectedRectPadding);
+			gc.setStroke(Color.BLACK);
 		}
 	}
 	

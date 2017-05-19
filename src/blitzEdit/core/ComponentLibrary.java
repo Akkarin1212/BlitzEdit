@@ -1,8 +1,5 @@
-package blitzEdit.application;
+package blitzEdit.core;
 
-import blitzEdit.core.BlueprintContainer;
-import blitzEdit.core.Component;
-import blitzEdit.core.ComponentBlueprint;
 import javafx.event.EventHandler;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.MouseEvent;
@@ -11,11 +8,13 @@ import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.TreeMap;
 
-//Stellt Elemente in einer Bibliothek dar und gibt sie zurück wenn sie angeklickt werden
-public class ComponentLibrary extends ResizableCanvas
+import blitzEdit.application.ResizableCanvas;
+import blitzEdit.application.SvgRenderer;
+
+//Stellt Elemente in einer Bibliothek dar und gibt sie zurï¿½ck wenn sie angeklickt werden
+public class ComponentLibrary
 {
 	private static BlueprintContainer bc;
-	private GraphicsContext gc;
 	// Liste der Positionen
 	private ArrayList<Rectangle> locations;
 	// Ordnet die Blueprints ihren Positionen auf dem Canvas zu
@@ -27,7 +26,6 @@ public class ComponentLibrary extends ResizableCanvas
 	public ComponentLibrary(int marginX, int marginY)
 	{
 		bc 		 		= BlueprintContainer.get();
-		gc 		 		= getGraphicsContext2D();
 		locations 		= new ArrayList<Rectangle>();
 		posBlueprints 	= new TreeMap<Rectangle, ComponentBlueprint>();
 		_marginX 		= marginX;
@@ -38,7 +36,6 @@ public class ComponentLibrary extends ResizableCanvas
 	public ComponentLibrary()
 	{
 		bc 		 		= BlueprintContainer.get();
-		gc 		 		= getGraphicsContext2D();
 		locations 		= new ArrayList<Rectangle>();
 		posBlueprints 	= new TreeMap<Rectangle, ComponentBlueprint>();
 		_marginX 		= 10;
@@ -47,7 +44,7 @@ public class ComponentLibrary extends ResizableCanvas
 	
 	
 	//Zeichnet die Elemente in der Library
-	public void draw()
+	public void draw(GraphicsContext gc, double scale)
 	{
 		int posY = 50;
 		int posX = 25;
@@ -58,7 +55,7 @@ public class ComponentLibrary extends ResizableCanvas
 		for (ComponentBlueprint cb : bc.getBlueprints())
 		{
 			String foo = SvgRenderer.getSvgFileString(cb.getSvg());
-			SvgRenderer.renderSvgString(foo, gc, posX, posY, 0.5, false);
+			SvgRenderer.renderSvgString(foo, gc, posX, posY, scale, false);
 			
 			//Mappen der Elemente
 			Rectangle position = new Rectangle(posX, posY, cb.getSizeX(), cb.getSizeY());
@@ -68,7 +65,7 @@ public class ComponentLibrary extends ResizableCanvas
 			
 			posX += cb.getSizeX() + _marginX;
 			
-			//Setzt die Höhe auf den Wert des höchsten Elements in der Reihe
+			//Setzt die Hï¿½he auf den Wert des hï¿½chsten Elements in der Reihe
 			if (maxY < cb.getSizeY())
 					maxY = cb.getSizeY();
 			
@@ -81,7 +78,7 @@ public class ComponentLibrary extends ResizableCanvas
 		}
 	}
 	
-	//gibt das angeklickte Element in der Bibliothek zurück
+	//gibt das angeklickte Element in der Bibliothek zurï¿½ck
 	public ComponentBlueprint getBlueprint(int x, int y)
 	{
 		for (Rectangle rect : locations)
@@ -96,27 +93,4 @@ public class ComponentLibrary extends ResizableCanvas
 	{
 		return getBlueprint((int)x, (int)y);
 	}
-	
-	//Clickhandler für Linksclick auf Element in Library
-	@SuppressWarnings("unused")
-	private void onClickHandler()
-	{
-		this.setOnMousePressed(new EventHandler<MouseEvent>()
-		{
-			@Override
-			public void handle(MouseEvent click)
-			{
-				if (click.isPrimaryButtonDown())
-				{
-					getBlueprint(click.getX(), click.getY());
-				}
-			}
-		});
-	}
-	
-	
-	
-	
-	
-	
 }

@@ -1,18 +1,27 @@
 package blitzEdit.application;
 
 import java.util.Vector;
+
+import blitzEdit.core.Component;
+import blitzEdit.core.ComponentLibrary;
+import javafx.event.EventHandler;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.input.MouseEvent;
 
 public class LibraryCanvas extends ResizableCanvas
 {
 	Vector<String> entries = new Vector<String>();
+	ComponentLibrary componentLibrary;
 	GraphicsContext gc;
+	
+	private double scale = 0.5;
 	
 	
 	public LibraryCanvas()
 	{
 		// TODO Auto-generated constructor stub
 		gc = getGraphicsContext2D();
+		componentLibrary = new ComponentLibrary();
 		
 		entries.add("img/Widerstand.svg");
 		entries.add("img/Kondensator.svg");
@@ -23,19 +32,22 @@ public class LibraryCanvas extends ResizableCanvas
 	
 	public void drawLibraryEntries()
 	{
-		int posY = 50;
-		int posX = 25;
-		for(String entry : entries)
+		componentLibrary.draw(gc, scale);
+	}
+	
+	public void OnMousePressedHandler()
+	{
+		this.setOnMousePressed(new EventHandler<MouseEvent>()
 		{
-			String foo = SvgRenderer.getSvgFileString(entry);
-			SvgRenderer.renderSvgString(foo, gc, posX, posY, 0.5,false);
-			posX += 50;
-			if(posX > 75)
+			@Override
+			public void handle(MouseEvent click)
 			{
-				posX = 25;
-				posY += 120;
-			}			
-		}
+				if (click.isPrimaryButtonDown())
+				{
+					componentLibrary.getBlueprint(click.getX(), click.getY());
+				}
+			}
+		});
 	}
 	
 	@Override

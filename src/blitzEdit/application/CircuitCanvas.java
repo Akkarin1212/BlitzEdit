@@ -52,7 +52,7 @@ public class CircuitCanvas extends ResizableCanvas
 
 		sp = scrollPane;
 		
-		onClickHandler();
+		onMousePresseHandler();
 		onMouseDraggedHandler();
 		onMouseReleasedHandler();
 		onMouseMovedHandler();
@@ -60,7 +60,7 @@ public class CircuitCanvas extends ResizableCanvas
 		initiateRightClickMenu();
 	}
 
-	private void onClickHandler()
+	private void onMousePresseHandler()
 	{
 		this.setOnMousePressed(new EventHandler<MouseEvent>()
 		{
@@ -490,8 +490,11 @@ public class CircuitCanvas extends ResizableCanvas
 		deselectCurrentSelectedElements();
 		
 		ArrayList<Element> elements = circuit.getElementsByPosition(x, y);
-		if (elements != null && !currentSelectedElements.contains(elements.get(0)))
+		if (elements != null && !currentSelectedElements.contains(elements.get(0))) // avoid selection duplicates
 		{
+
+			// TODO: Select connector not only components
+			
 			currentSelectedElements.add(elements.get(0).setIsSelected(true)); // take first element found
 		}
 	}
