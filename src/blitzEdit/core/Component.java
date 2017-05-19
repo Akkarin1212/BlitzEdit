@@ -59,7 +59,7 @@ public class Component extends RotatableElement
 	//Draws Component on GraphicalContext
 	public void draw(GraphicsContext gc, double scale, boolean selected)
 	{
-		SvgRenderer.renderSvgString(getSvgFileString(), gc, getX(), getY(), scale, selected);
+		SvgRenderer.renderSvgString(getSvgFileString(), gc, getX(), getY(), scale, getRotation(), selected);
 		for (Connector conn : getConnectors())
 			conn.draw(gc, scale, selected); // TODO event. check ob connector selektiert wurde
 	}

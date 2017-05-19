@@ -90,6 +90,41 @@ public class SvgRenderer
 		}
 	}
 	
+	static public void renderSvgString(String svgString, GraphicsContext gc, double offsetX, double offsetY, double scale, double rot, boolean drawSelectRect)
+	{
+		String[] svgElements = svgString.split("<");
+		
+		double svgWidth = scale*getSvgWidth(svgString);
+		double svgHeight =scale*getSvgHeight(svgString);
+		double svgWidthMedian = svgWidth*0.5;
+		double svgHeightMedian = svgHeight*0.5;
+		
+		double selectedRectPadding = 10;
+		
+		rot = 90;
+		
+		for(String s: svgElements)
+		{
+			if(s.startsWith("rect"))
+			{
+				renderRect(s,gc,offsetX-svgWidthMedian,offsetY-svgHeightMedian, scale);
+			}
+			else if(s.startsWith("polygon"))
+			{
+				//TODO polygin renderer
+			}
+		}
+		
+		
+		// draws rect around element when selected
+		if(drawSelectRect)
+		{
+			gc.setStroke(Color.DARKGRAY);
+			gc.strokeRect(offsetX-svgWidthMedian - selectedRectPadding, offsetY-svgHeightMedian - selectedRectPadding, svgWidth + 2*selectedRectPadding, svgHeight + 2*selectedRectPadding);
+			gc.setStroke(Color.BLACK);
+		}
+	}
+	
 	public static double getSvgHeight(String svgString)
 	{
 		String[] svgElements = svgString.split("<");

@@ -5,6 +5,7 @@ import java.util.Vector;
 
 import blitzEdit.core.Circuit;
 import blitzEdit.core.Component;
+import blitzEdit.core.Connector;
 import blitzEdit.core.Element;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -497,10 +498,15 @@ public class CircuitCanvas extends ResizableCanvas
 		ArrayList<Element> elements = circuit.getElementsByPosition(x, y);
 		if (elements != null && !currentSelectedElements.contains(elements.get(0))) // avoid selection duplicates
 		{
-
-			// TODO: Select connector not only components
-			
-			currentSelectedElements.add(elements.get(0).setIsSelected(true)); // take first element found
+			Element elemToAdd = elements.get(0);
+			for(Element e : elements)
+			{
+				if(e.getClass() == Connector.class)
+				{
+					elemToAdd = e;
+				}
+			}
+			currentSelectedElements.add(elemToAdd.setIsSelected(true)); // take first element found
 		}
 	}
 	
