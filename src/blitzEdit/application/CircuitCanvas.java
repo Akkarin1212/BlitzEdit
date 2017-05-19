@@ -73,8 +73,8 @@ public class CircuitCanvas extends ResizableCanvas
 				{
 					if (click.isControlDown())
 					{
-						int[][] relPos = { { 0, 10 }, { 0, -10 } };
-						short[] relRot = { 0, 0 };
+						int[][] relPos = { { 0, 100 }, { 0, -100 } };
+						short[] relRot = { 0, 180 };
 						Component comp = new Component((int) click.getX(), (int) click.getY(), (short) 0, "dunno",
 								relPos, relRot, currentSvgPath);
 						circuit.addElement(comp);
@@ -497,7 +497,7 @@ public class CircuitCanvas extends ResizableCanvas
 		ArrayList<Element> elements = circuit.getElementsByPosition(x, y);
 		if (elements != null && !currentSelectedElements.contains(elements.get(0))) // avoid selection duplicates
 		{
-
+			
 			// TODO: Select connector not only components
 			
 			currentSelectedElements.add(elements.get(0).setIsSelected(true)); // take first element found

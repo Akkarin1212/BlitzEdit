@@ -12,9 +12,8 @@ public abstract class RotatableElement extends Element
 	
 	public void setRotation(short rotation)
 	{
-		if (rotation > 180 || rotation < -180)
-			return;
-		_rotation = rotation;
+		rotation =  (short)Math.abs((int)rotation);
+		_rotation = (short) (rotation % (short)360);
 	}
 	
 	

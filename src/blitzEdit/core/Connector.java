@@ -2,6 +2,7 @@ package blitzEdit.core;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import javafx.scene.paint.Color;
 import java.awt.Point;
 import java.awt.geom.AffineTransform;
 
@@ -15,7 +16,24 @@ public final class Connector extends Element
 	@Override
 	public void draw(GraphicsContext gc, double scale, boolean selected) 
 	{
+		short rotation = (short)(_owner.getRotation() + _relRotation);		
+		double px = (Math.sin( (rotation/360.0)*2*Math.PI ));
+		double py = (Math.cos( (rotation/360.0)*2*Math.PI ));
+		
+		//monentaner Schwerpunkt des Connectors
+		double x = _position.getX() + getSizeX()/2;
+		double y = _position.getY() + getSizeY()/2;
+		
+		//zeichnet die Linie des Connectors von seinem Ursprungspunkt zu seiner
+		// momentanen Position
+		gc.strokeLine(x - px * _length, y - py * _length, x, y);
+		
+		// Wenn der Connector angwählt wurde, wird er grün dargestellt
+		if (selected)
+			gc.setFill(Color.GREEN);
 		gc.fillRect(getX(), getY(), getSizeX(), getSizeY());
+		// setzt die Strokefarbe auf schwarz zurück
+		gc.setFill(Color.BLACK);
 	}
 	
 	public ArrayList<Connector> getConnections()
@@ -41,6 +59,7 @@ public final class Connector extends Element
 		if (_length + length < 0)
 			length -= (_length + length);
 		_length += length; 
+		
 		
 		_position.translate((int)(px * length), (int)(py * length));
 		
@@ -188,9 +207,20 @@ public final class Connector extends Element
 		_length = 0;
 	}
 	
+	public Connector(int x, int y, int[] conRelPos, short relRotation)
+	{
+		super(x-5, y-5, 10, 10); //Standartwerte: breite 6, hÃ¶he 6
+	
+		_conRelPos = conRelPos.clone();
+		_relRotation = relRotation;
+		_connected = false;
+		_connections = new ArrayList<Connector>();
+		_length = 0;
+	}
+	
 	public Connector(int x, int y, int[] conRelPos, short relRotation, Component owner)
 	{
-		super(x, y, 3, 3); //Standartwerte: breite 6, hÃ¶he 6
+		super(x-5, y-5, 10, 10); //Standartwerte: breite 6, hÃ¶he 6
 		if (owner != null)
 		{
 			_owner = owner;
