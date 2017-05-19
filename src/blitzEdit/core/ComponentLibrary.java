@@ -1,12 +1,11 @@
 package blitzEdit.core;
 
 import javafx.scene.canvas.GraphicsContext;
+import tools.SvgRenderer;
 
 import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.TreeMap;
-
-import blitzEdit.application.SvgRenderer;
 
 //Stellt Elemente in einer Bibliothek dar und gibt sie zur�ck wenn sie angeklickt werden
 public class ComponentLibrary

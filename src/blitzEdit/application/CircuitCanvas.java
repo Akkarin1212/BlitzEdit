@@ -241,6 +241,7 @@ public class CircuitCanvas extends ResizableCanvas
 
 	public void drawGrid()
 	{
+		gc.save();
 		gc.clearRect(0, 0, getWidth(), getHeight());
 
 		gc.setLineWidth(0.1);
@@ -257,6 +258,7 @@ public class CircuitCanvas extends ResizableCanvas
 		{
 			gc.strokeLine(0, i, getWidth(), i);
 		}
+		gc.restore();
 	}
 
 	public void refreshCanvas()
@@ -414,6 +416,7 @@ public class CircuitCanvas extends ResizableCanvas
 		MenuItem copy = new MenuItem("Copy");
 		MenuItem paste = new MenuItem("Paste");
 		MenuItem delete = new MenuItem("Delete");
+		MenuItem rotate = new MenuItem("Rotate");
 
 		copy.setOnAction(new EventHandler<ActionEvent>()
 		{
@@ -450,8 +453,28 @@ public class CircuitCanvas extends ResizableCanvas
 				System.out.println("delete");
 			}
 		});
+		
+		rotate.setOnAction(new EventHandler<ActionEvent>()
+		{
+			@Override
+			public void handle(ActionEvent click)
+			{
+				if(!currentSelectedElements.isEmpty())
+				{
+					for(Element e : currentSelectedElements)
+					{
+						if(e.getClass() == Component.class)
+						{
+							Component comp = (Component)e;
+							comp.rotate((short)(45 + comp.getRotation()));
+						}
+					}
+				}
+				refreshCanvas();
+			}
+		});
 
-		rightClickMenu.getItems().addAll(copy, paste, delete);
+		rightClickMenu.getItems().addAll(copy, paste, delete, rotate);
 	}
 	
 	private void drawSelectRect(double currX, double currY)
@@ -538,12 +561,15 @@ public class CircuitCanvas extends ResizableCanvas
 		{
 			elements = circuit.getElementsByPosition(sizeX, sizeY, x - sizeX, y - sizeY);
 		}
-		
+
 		if (elements != null)
 		{
 			for (Element e : elements)
 			{
-				currentSelectedElements.add(e.setIsSelected(true));
+				if (e.getClass() == Component.class)
+				{
+					currentSelectedElements.add(e.setIsSelected(true));
+				}
 			}
 		}
 	}

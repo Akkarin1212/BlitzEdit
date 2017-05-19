@@ -5,8 +5,9 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.io.IOException;
 import java.util.ArrayList;
-import blitzEdit.application.SvgRenderer;
+
 import javafx.scene.canvas.GraphicsContext;
+import tools.SvgRenderer;
 
 
 public class Component extends RotatableElement
@@ -60,8 +61,6 @@ public class Component extends RotatableElement
 	public void draw(GraphicsContext gc, double scale, boolean selected)
 	{
 		SvgRenderer.renderSvgString(getSvgFileString(), gc, getX(), getY(), scale, getRotation(), selected);
-		for (Connector conn : getConnectors())
-			conn.draw(gc, scale, selected); // TODO event. check ob connector selektiert wurde
 	}
 	
 	
