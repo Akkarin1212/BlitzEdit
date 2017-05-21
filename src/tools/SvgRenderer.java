@@ -143,14 +143,9 @@ public class SvgRenderer
 			gc.setStroke(GraphicDesignContainer.selected_element_color);
 			gc.setLineWidth(GraphicDesignContainer.selected_stroke_width);
 			
-			ArrayList<Point> corners = new ArrayList<Point>();
-			corners.add(new Point((int)x,(int)y));
-			corners.add(new Point((int)(x+width),(int)y));
-			corners.add(new Point((int)(x+width),(int)(y+height)));
-			corners.add(new Point((int)x,(int)(y+height)));
-			
-			Rectangle rect = new Rectangle(corners, rotationPoint);
+			RotatableRectangle rect = new RotatableRectangle(x,y,width,height);			
 			rect.rotateRect(rot);
+			
 			gc.strokePolygon(rect.getXCoordinates(),rect.getYCoordinates(), 4);
 			gc.restore();
 		}
@@ -292,13 +287,9 @@ public class SvgRenderer
 		{
 			x += offsetX;
 			y += offsetY;
-			ArrayList<Point> corners = new ArrayList<Point>();
-			corners.add(new Point((int) x, (int) y));
-			corners.add(new Point((int) (x + width), (int) y));
-			corners.add(new Point((int) (x + width), (int) (y + height)));
-			corners.add(new Point((int) x, (int) (y + height)));
 
-			Rectangle rect = new Rectangle(corners, rotationPoint);
+			RotatableRectangle rect = new RotatableRectangle(x,y,width,height, rotationPoint);
+			
 			rect.rotateRect(rot);
 
 			if (stroke_width != 0)
