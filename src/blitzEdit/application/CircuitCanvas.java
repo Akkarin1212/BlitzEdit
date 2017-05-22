@@ -381,8 +381,7 @@ public class CircuitCanvas extends ResizableCanvas
 		ArrayList<Element> elements = circuit.getElementsByPosition(x, y);
 		if (elements != null) // avoid selection duplicates
 		{
-			Element connector = elements.get(0);
-			// prioritize connectors over components
+			Element connector = null;
 			for(Element e : elements)
 			{
 				if(e.getClass() == Connector.class)
@@ -390,10 +389,13 @@ public class CircuitCanvas extends ResizableCanvas
 					connector = e;
 				}
 			}
-			Connector c = (Connector)connector;
-			if(!currentSelectedElements.isEmpty() && (Connector)currentSelectedElements.get(0) != null)
+			if(connector != null)
 			{
-				c.connect((Connector)currentSelectedElements.get(0));
+				Connector c = (Connector) connector;
+				if (!currentSelectedElements.isEmpty() && (Connector) currentSelectedElements.get(0) != null)
+				{
+					c.connect((Connector) currentSelectedElements.get(0));
+				}
 			}
 		}
 		deselectAll();
