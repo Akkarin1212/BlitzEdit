@@ -10,9 +10,9 @@ public class ComponentBlueprint
 		return new String(_type);
 	}
 	
-	public String getSvg()
+	public String getSvgFilePath()
 	{
-		return new String(_svg);
+		return new String(_svgFilePath);
 	}
 	public int [][] getRelPos() 
 	{
@@ -34,10 +34,10 @@ public class ComponentBlueprint
 		return _sizeY;
 	}
 	
-	public ComponentBlueprint(String type, String svg, int [][] relPos, short [] conRelRot, int sizeX, int sizeY)
+	public ComponentBlueprint(String type, String svgFilePath, int [][] relPos, short [] conRelRot, int sizeX, int sizeY)
 	{
 		_type = new String(type);
-		_svg = new String(svg);
+		_svgFilePath = new String(svgFilePath);
 		_conRelPos = relPos.clone();
 		_conRelRot = conRelRot.clone();
 		_sizeX = sizeX;
@@ -45,7 +45,7 @@ public class ComponentBlueprint
 	}
 	
 	private String _type;
-	private String _svg;
+	private String _svgFilePath;
 	private int [][] _conRelPos;
 	private short [] _conRelRot;
 	private int _sizeX;
