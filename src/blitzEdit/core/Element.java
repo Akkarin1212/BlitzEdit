@@ -41,7 +41,7 @@ public abstract class Element
   
 	public Point getPosition()
 	{
-		return _position;
+		return new Point(_position);
 	}
 	
 	public boolean getIsSelected()
