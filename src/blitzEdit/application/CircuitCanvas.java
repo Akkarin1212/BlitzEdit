@@ -60,7 +60,7 @@ public class CircuitCanvas extends ResizableCanvas
 		onMouseReleasedHandler();
 		onMouseMovedHandler();
 		onScrollEventHandler();
-		onMouseDraggedEnterHandler();
+		DragAndDropElements();
 		initiateRightClickMenu();
 	}
 
@@ -185,8 +185,9 @@ public class CircuitCanvas extends ResizableCanvas
 		});
 	}
 	
-	private void onMouseDraggedEnterHandler()
+	private void DragAndDropElements()
 	{
+		// add element when entering the canvas
 		this.setOnMouseDragEntered(new EventHandler<MouseDragEvent>()
 		{
 			@Override
@@ -195,17 +196,41 @@ public class CircuitCanvas extends ResizableCanvas
 				if (click.isPrimaryButtonDown() && BlitzEdit.dragAndDropElement != null)
 				{
 					deselectAll();
-					Component newComp = (Component)BlitzEdit.dragAndDropElement;
+					Component newComp = (Component) BlitzEdit.dragAndDropElement;
 					newComp.move(click.getX(), click.getY());
 					circuit.addElement(newComp);
+					selectElement(newComp);
 					refreshCanvas();
-					
-					
+
 					System.err.println(click.getX() + " " + click.getY());
 					BlitzEdit.dragAndDropElement = null;
 				}
 			}
 		});
+		
+		// refresh element position when still dragging
+		this.setOnMouseDragOver(new EventHandler<MouseDragEvent>()
+		{
+			@Override
+			public void handle(MouseDragEvent click)
+			{
+				currentSelectedElements.get(0).move(click.getX(), click.getY());
+				refreshCanvas();
+			}
+		});
+		
+		/*
+		// delete if exit while dragging
+		this.setOnMouseDragExited(new EventHandler<MouseDragEvent>()
+		{
+			@Override
+			public void handle(MouseDragEvent click)
+			{
+				deleteSelected();
+				refreshCanvas();
+			}
+		});
+		*/
 	}
 
 	private void onMouseReleasedHandler()
@@ -249,7 +274,7 @@ public class CircuitCanvas extends ResizableCanvas
 				clickY = 0;
 				dragX = 0;
 				dragY = 0;
-
+				System.err.println("release");
 			}
 		});
 	}
