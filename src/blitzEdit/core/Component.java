@@ -111,11 +111,6 @@ public class Component extends RotatableElement
 		return false;
 	}
 	
-	public String getSVG()
-	{
-		return new String(_svgFilePath);
-	}
-	
 	//Returns the connector that is connected to conn
 	public Connector getConnectorOfConnection(Connector conn)
 	{

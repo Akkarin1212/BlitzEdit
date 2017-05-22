@@ -23,12 +23,12 @@ public class SvgRenderer
 {	
 	private static Point rotationPoint = new Point();
 	
-	static public String getSvgFileString(String SvgPath)
+	static public String getSvgFileString(String SvgFilePath)
 	{
 		String fileString = null;
 		try
 		{
-			fileString = readFile(SvgPath, StandardCharsets.UTF_8);
+			fileString = readFile(SvgFilePath, StandardCharsets.UTF_8);
 		}
 		catch (IOException e)
 		{

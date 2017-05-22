@@ -77,7 +77,7 @@ public abstract class Element
 	
 	public boolean contains(int x, int y)
 	{
-		Rectangle rect = new Rectangle((int)_position.getX()-_sizeX/2, (int)_position.getY()-_sizeY/2,
+		Rectangle rect = new Rectangle((int)_position.getX(), (int)_position.getY(),
 										_sizeX, _sizeY);
 		return rect.contains(x, y);
 	}

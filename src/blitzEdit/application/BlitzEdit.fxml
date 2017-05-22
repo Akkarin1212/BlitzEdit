@@ -77,7 +77,11 @@
                               <KeyCodeCombination alt="UP" code="D" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                            </accelerator>
                         </MenuItem>
-                        <MenuItem fx:id="Delete" mnemonicParsing="false" onAction="#handleDeleteAction" text="Delete" />
+                        <MenuItem fx:id="Delete" mnemonicParsing="false" onAction="#handleDeleteAction" text="Delete" >
+                        	<accelerator>
+                              <KeyCodeCombination alt="UP" code="DELETE" control="UP" meta="UP" shift="UP" shortcut="UP" />
+                           </accelerator>
+                        </MenuItem>
                         <SeparatorMenuItem mnemonicParsing="false" />
                         <MenuItem fx:id="SelectAll" mnemonicParsing="false" onAction="#handleSelectAllAction" text="Select All">
                            <accelerator>

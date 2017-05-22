@@ -25,6 +25,7 @@ public class BlitzEdit implements javafx.fxml.Initializable
 {
 	public static Element[] elementsToCopy;
 	public static Point2D copyMousePosition;
+	public static Element dragAndDropElement;
 	
 	@FXML
 	private MenuItem New;
@@ -270,6 +271,7 @@ public class BlitzEdit implements javafx.fxml.Initializable
 			Tab tab = new Tab("New Tab");
 			AnchorPane root = new AnchorPane();
 			ScrollPane sp = new ScrollPane();
+			
 			CircuitCanvas canvas = new CircuitCanvas(sp);
 
 			setAnchorForNode(canvas, 0.0);
