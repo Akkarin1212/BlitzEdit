@@ -15,6 +15,7 @@ public class GraphicDesignContainer
 	// connector
 	public static final double connector_line_width = 5;
 	public static final Color connector_line_color = Color.GREEN;
+	public static final Color connector_highlight_color = Color.RED;
 	
 	// element
 	public static final Color elements_color = Color.PURPLE;

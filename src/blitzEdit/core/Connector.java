@@ -42,6 +42,14 @@ public final class Connector extends Element
 		gc.restore();
 	}
 	
+	public void highlight(GraphicsContext gc)
+	{
+		gc.save();
+		gc.setFill(GraphicDesignContainer.connector_highlight_color);
+		gc.fillRect(getX(), getY(), getSizeX(), getSizeY());
+		gc.restore();
+	}
+	
 	public ArrayList<Connector> getConnections()
 	{
 		return _connections;
