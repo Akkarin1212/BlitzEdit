@@ -1,6 +1,11 @@
 package blitzEdit.core;
 
 import java.util.Collection;
+
+import tools.SvgRenderer;
+
+import java.io.File;
+import java.nio.file.Path;
 import java.util.ArrayList;
 
 public class BlueprintContainer 
@@ -69,6 +74,22 @@ public class BlueprintContainer
 	public ArrayList<ComponentBlueprint> getBlueprints()
 	{
 		return new ArrayList<ComponentBlueprint>(_blueprints);
+	}
+	
+	public void addBlueprint(File filepath)
+	{
+		String type = filepath.getName();
+		String svgFilePath = filepath.toString();
+		String svgFileString = SvgRenderer.getSvgFileString(filepath.toString());
+		// TODO
+		int[][] relPos = { { 0, 100 }, { 0, -100 } };
+		short[] relRot = { 0, 180 };
+		int sizeX = (int) SvgRenderer.getSvgWidth(svgFileString);
+		int sizeY = (int) SvgRenderer.getSvgHeight(svgFileString);
+		
+		ComponentBlueprint blueprint = new ComponentBlueprint(type, svgFilePath, relPos, relRot, sizeX, sizeY);
+		
+		_blueprints.add(blueprint);
 	}
 	
 	// returns instance (singleton)

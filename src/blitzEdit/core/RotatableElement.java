@@ -1,7 +1,8 @@
 package blitzEdit.core;
 
 import java.awt.Rectangle;
-import java.awt.geom.AffineTransform;
+
+import tools.RotatableRectangle;
 
 public abstract class RotatableElement extends Element
 {
@@ -12,25 +13,29 @@ public abstract class RotatableElement extends Element
 	
 	public void setRotation(short rotation)
 	{
-		if (rotation > 180 || rotation < -180)
-			return;
-		_rotation = rotation;
+		rotation =  (short)Math.abs((int)rotation);
+		_rotation = (short) (rotation % (short)360);
 	}
 	
 	
-	/*
+	
 	// Tests if the point (x, y) is contained by element
 	// TODO: Test new implemented method
+	@Override
 	public boolean contains(int x, int y)
 	{
-		Rectangle rect = new Rectangle(x-_sizeX/2, y-_sizeY/2, _sizeX, _sizeY);
-		
-		AffineTransform at = AffineTransform.getRotateInstance((Math.PI * 2)*((double)_rotation / 360.0), x, y);
-		
-		return at.createTransformedShape(rect).contains(x, y);
+		RotatableRectangle rect = new RotatableRectangle(this.getX()-_sizeX/2, this.getY()-_sizeY/2, _sizeX, _sizeY);
+		rect.rotateRect(_rotation);
+		return rect.contains(x,y);
 	}
-	*/
 	
+	@Override
+	public boolean intersects(Rectangle rect)
+	{
+		RotatableRectangle rotatableRect = new RotatableRectangle(this.getX()-_sizeX/2, this.getY()-_sizeY/2, _sizeX, _sizeY);
+		rotatableRect.rotateRect(_rotation);
+		return rotatableRect.intersects(rect);
+	}
 	
 	public RotatableElement(int x, int y, int sizeX, int sizeY, short rot)
 	{

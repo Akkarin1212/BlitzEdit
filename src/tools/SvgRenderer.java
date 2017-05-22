@@ -1,20 +1,34 @@
-package blitzEdit.application;
+package tools;
 
+import java.awt.Point;
+import java.awt.Polygon;
+import java.awt.Shape;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Point2D;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+
+import javafx.collections.ObservableList;
+import javafx.geometry.Bounds;
 import javafx.scene.canvas.*;
+import javafx.scene.paint.Color;
+import javafx.scene.transform.Affine;
+import javafx.scene.transform.Transform;
 
 public class SvgRenderer
 {	
-	static public String getSvgFileString(String SvgPath)
+	private static Point rotationPoint = new Point();
+	
+	static public String getSvgFileString(String SvgFilePath)
 	{
 		String fileString = null;
 		try
 		{
-			fileString = readFile(SvgPath, StandardCharsets.UTF_8);
+			fileString = readFile(SvgFilePath, StandardCharsets.UTF_8);
 		}
 		catch (IOException e)
 		{
@@ -65,12 +79,14 @@ public class SvgRenderer
 		double svgWidthMedian = svgWidth*0.5;
 		double svgHeightMedian = svgHeight*0.5;
 		
+		double selectedRectPadding = 10;
+		
 		
 		for(String s: svgElements)
 		{
 			if(s.startsWith("rect"))
 			{
-				renderRect(s,gc,offsetX-svgWidthMedian,offsetY-svgHeightMedian, scale);
+				renderRect(s,gc,offsetX-svgWidthMedian,offsetY-svgHeightMedian, scale, 0);
 			}
 			else if(s.startsWith("polygon"))
 			{
@@ -81,7 +97,57 @@ public class SvgRenderer
 		// draws rect around element when selected
 		if(drawSelectRect)
 		{
-			gc.strokeRect(offsetX-svgWidthMedian, offsetY-svgHeightMedian, svgWidth, svgHeight);
+			gc.save();
+			gc.setStroke(GraphicDesignContainer.selected_element_color);
+			gc.strokeRect(offsetX-svgWidthMedian - selectedRectPadding, offsetY-svgHeightMedian - selectedRectPadding, svgWidth + 2*selectedRectPadding, svgHeight + 2*selectedRectPadding);
+			gc.restore();
+		}
+	}
+	
+	static public void renderSvgString(String svgString, GraphicsContext gc, double offsetX, double offsetY, double scale, double rot, boolean drawSelectRect)
+	{
+		String[] svgElements = svgString.split("<");
+		
+		double svgWidth = scale*getSvgWidth(svgString);
+		double svgHeight =scale*getSvgHeight(svgString);
+		double svgWidthMedian = svgWidth*0.5;
+		double svgHeightMedian = svgHeight*0.5;
+		double selectedRectPadding = 10;
+		
+		rotationPoint.x = (int) offsetX;
+		rotationPoint.y = (int) offsetY;
+		
+		
+		for(String s: svgElements)
+		{
+			if(s.startsWith("rect"))
+			{
+				renderRect(s,gc,offsetX-svgWidthMedian,offsetY-svgHeightMedian, scale, rot);
+			}
+			else if(s.startsWith("polygon"))
+			{
+				//TODO polygin renderer
+			}
+		}
+		
+		
+		// draws rect around element when selected
+		if(drawSelectRect)
+		{
+			double x = offsetX-svgWidthMedian - selectedRectPadding;
+			double y = offsetY-svgHeightMedian - selectedRectPadding;
+			double width = svgWidth + 2*selectedRectPadding;
+			double height = svgHeight + 2*selectedRectPadding;
+			
+			gc.save();
+			gc.setStroke(GraphicDesignContainer.selected_element_color);
+			gc.setLineWidth(GraphicDesignContainer.selected_stroke_width);
+			
+			RotatableRectangle rect = new RotatableRectangle(x,y,width,height);			
+			rect.rotateRect(rot);
+			
+			gc.strokePolygon(rect.getXCoordinates(),rect.getYCoordinates(), 4);
+			gc.restore();
 		}
 	}
 	
@@ -135,8 +201,12 @@ public class SvgRenderer
 		return -1;
 	}
 	
-	private static void renderRect(String rectString, GraphicsContext gc, double offsetX, double offsetY, double scale)
+	private static void renderRect(String rectString, GraphicsContext gc, double offsetX, double offsetY, double scale, double rot)
 	{
+		gc.save();
+		gc.setFill(GraphicDesignContainer.elements_color);
+		gc.setStroke(GraphicDesignContainer.elements_color);
+		
 		double x=0;
 		double y=0;
 		double height=0;
@@ -190,22 +260,60 @@ public class SvgRenderer
 		x *= scale;
 		y *= scale;
 		
+
 		width *= scale;
 		height *= scale;
 		stroke_width *= scale;
-		
-		if(stroke_width != 0)
+
+		if (rot == 0)
 		{
-			gc.setLineWidth(stroke_width);
-			gc.strokeRect(x+offsetX, y+offsetY, width, height);
-		}
-		else if(fill.contains("none"))
-		{
-			gc.rect(x+offsetX, y+offsetY, width, height);
+			if (stroke_width != 0)
+			{
+				gc.save();
+				gc.setLineWidth(stroke_width);
+				gc.strokeRect(x + offsetX, y + offsetY, width, height);
+				gc.restore();
+			}
+			else if (fill.contains("none"))
+			{
+				gc.rect(x + offsetX, y + offsetY, width, height);
+			}
+			else
+			{
+				gc.fillRect(x + offsetX, y + offsetY, width, height);
+			}
 		}
 		else
 		{
-			gc.fillRect(x+offsetX, y+offsetY, width, height);
+			x += offsetX;
+			y += offsetY;
+
+			RotatableRectangle rect = new RotatableRectangle(x,y,width,height, rotationPoint);
+			
+			rect.rotateRect(rot);
+
+			if (stroke_width != 0)
+			{
+				gc.save();
+				gc.setLineWidth(stroke_width);
+				gc.strokePolygon(rect.getXCoordinates(), rect.getYCoordinates(), 4);
+				gc.restore();
+			}
+			else if (fill.contains("none"))
+			{
+				gc.strokePolygon(rect.getXCoordinates(), rect.getYCoordinates(), 4);
+			}
+			else
+			{
+				gc.fillPolygon(rect.getXCoordinates(), rect.getYCoordinates(), 4);
+			}
 		}
+		gc.restore();
 	}
 }
+
+
+
+
+
+

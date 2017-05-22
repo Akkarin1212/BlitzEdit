@@ -5,8 +5,9 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.io.IOException;
 import java.util.ArrayList;
-import blitzEdit.application.SvgRenderer;
+
 import javafx.scene.canvas.GraphicsContext;
+import tools.SvgRenderer;
 
 
 public class Component extends RotatableElement
@@ -59,9 +60,7 @@ public class Component extends RotatableElement
 	//Draws Component on GraphicalContext
 	public void draw(GraphicsContext gc, double scale, boolean selected)
 	{
-		SvgRenderer.renderSvgString(getSvgFileString(), gc, getX(), getY(), scale, selected);
-		for (Connector conn : getConnectors())
-			conn.draw(gc, scale, selected); // TODO event. check ob connector selektiert wurde
+		SvgRenderer.renderSvgString(getSvgFileString(), gc, getX(), getY(), scale, getRotation(), selected);
 	}
 	
 	
@@ -103,18 +102,12 @@ public class Component extends RotatableElement
 	
 	public boolean isConnected(Component comp)
 	{
-		
 		for (Component c : getConnectedComponents())
 		{
 			if (c == comp)
 				return true;
 		}
 		return false;
-	}
-	
-	public String getSVG()
-	{
-		return new String(_svgFilePath);
 	}
 	
 	//Returns the connector that is connected to conn
@@ -167,6 +160,12 @@ public class Component extends RotatableElement
 	{
 		return new String(_type);
 	}
+	
+	public void addConnenctor(Connector conn)
+	{
+		_ports.add(conn);
+	}
+	
 	public Component(int x, int y, short rot, String type, int[][] connRelPos, short [] connRelRot ,String svg)
 	{
 		super(x, y, rot);
@@ -189,6 +188,13 @@ public class Component extends RotatableElement
 		initialize((int)x, (int)y, (short)rot, type, svg, connRelPos, connRelRot);
 	}
 	
+	public Component(double x, double y, double sizeX, double sizeY, double rot, String type,
+			String svg) 
+	{
+		super((int)x, (int)y, (int)sizeX, (int)sizeY, (short)rot);
+		initialize((int)x, (int)y, (short)rot, type, svg);
+	}
+	
 	//Private method called by constructor
 	private void initialize(int x, int y, short rot, String type, String svg, int[][] connRelPos, short[] connRelRot)
 	{
@@ -199,6 +205,16 @@ public class Component extends RotatableElement
 		for (int i = 0; i < connRelPos.length; i++) {
 			_ports.add(new Connector(x + connRelPos[i][0], y + connRelPos[i][1], connRelPos[i], connRelRot[i], this));
 		}
+		rotate(rot);
+	}
+	
+	private void initialize(int x, int y, short rot, String type, String svg)
+	{
+		_type = new String(type);
+		_svgFilePath = new String(svg);
+		_svgFileString = SvgRenderer.getSvgFileString(_svgFilePath);
+		_ports = new ArrayList<Connector>();
+		
 		rotate(rot);
 	}
 	
