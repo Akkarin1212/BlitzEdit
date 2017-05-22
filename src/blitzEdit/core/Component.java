@@ -164,6 +164,7 @@ public class Component extends RotatableElement
 	public void addConnenctor(Connector conn)
 	{
 		_ports.add(conn);
+		conn.setOwner(this);
 	}
 	
 	public Component(int x, int y, short rot, String type, int[][] connRelPos, short [] connRelRot ,String svg)
