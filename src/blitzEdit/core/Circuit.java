@@ -163,21 +163,33 @@ public class Circuit
 		{
 			if (e instanceof Component)
 			{
+				//geht alle Verbindungen des Bauteils durch
 				for (Connector c1 : ((Component)e).getConnectors())
 				{
+					// geht alle verbundenen Connectoren durch
 					for (Connector c2 : c1.getConnections())
 					{
+						// fügt eine neue Linie vom Start zum Endpunkt in die
+						// Rückgabeliste ein
 						lines.add(new Line(c1.getPosition(), c2.getPosition()));
 					}
 				}
 			}
 		}
+		// Verschachtelte Schleife, die die vorhnadenen duplette aus der Liste
+		// filtert.
 		for (Line l1 : lines)
 		{
 			for (Line l2 : lines)
 			{
-				if (l1.equals(l2))
-					lines.remove(l2);
+				// Referenzvergleich: soll verhindern, dass eine Leitung mit sich
+				// selbst verglichen wird
+				if (l1 != l2)
+				{
+					//wenn die Leitungen die selben Punkte hat
+					if (l1.equals(l2))
+						lines.remove(l2); //wird sie aus der Liste entfernt
+				}
 			}
 		}
 		return lines;
