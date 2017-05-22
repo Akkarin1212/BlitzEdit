@@ -7,6 +7,7 @@ import blitzEdit.core.Circuit;
 import blitzEdit.core.Component;
 import blitzEdit.core.Connector;
 import blitzEdit.core.Element;
+import blitzEdit.core.Line;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Cursor;
@@ -31,11 +32,11 @@ public class CircuitCanvas extends ResizableCanvas
 	
 	private CircuitCanvas ref = this;
 	private ContextMenu rightClickMenu;
-	private String currentSvgPath;
 	private Vector<Element> currentSelectedElements = new Vector<Element>();
 	private boolean isSelectingMultipleElements;
 	private boolean hasSelectedMultipleElements;
-	private boolean canSelectMultipleElements; 
+	private boolean canSelectMultipleElements;
+	private boolean hasSelectedConnector;
 	
 	private double canvasScaleFactor = 1;
 	
@@ -51,7 +52,6 @@ public class CircuitCanvas extends ResizableCanvas
 	{
 		gc = getGraphicsContext2D();
 		circuit = new Circuit();
-		currentSvgPath = "img/Widerstand.svg";
 		
 		sp = scrollPane;
 		
@@ -75,26 +75,19 @@ public class CircuitCanvas extends ResizableCanvas
 				
 				if (click.isSecondaryButtonDown()) //TODO
 				{
-					if (click.isControlDown())
-					{
-						int[][] relPos = { { 0, 100 }, { 0, -100 } };
-						short[] relRot = { 0, 180 };
-						Component comp = new Component((int) click.getX(), (int) click.getY(), (short) 0, "dunno",
-								relPos, relRot, currentSvgPath);
-						circuit.addElement(comp);
-						refreshCanvas();
-					}
-					else
-					{
-						rightClickMenu.show(ref, click.getScreenX(), click.getScreenY());
-					}
+					rightClickMenu.show(ref, click.getScreenX(), click.getScreenY());
 
 					System.err.println("secondary click");
 				}
 				else if (click.isPrimaryButtonDown())
 				{
-					if (!hasSelectedMultipleElements)
+					if(hasSelectedConnector)
 					{
+						connectConnectors(click.getX(), click.getY());
+					}
+					else if (!hasSelectedMultipleElements)
+					{
+						hasSelectedConnector = false;
 						selectElement(click.getX(), click.getY());
 					}
 					
@@ -351,6 +344,10 @@ public class CircuitCanvas extends ResizableCanvas
 	{
 		drawGrid();
 		drawAllCircuitElements();
+		if(hasSelectedConnector)
+		{
+			highlightConnectors();
+		}
 	}
 
 	private void drawAllCircuitElements()
@@ -360,6 +357,47 @@ public class CircuitCanvas extends ResizableCanvas
 		{
 			elem.draw(gc, 1.0, elem.getIsSelected());
 		}
+		ArrayList<Line> lines = circuit.getLines();
+		for(Line line : lines)
+		{
+			line.draw(gc);
+		}
+	}
+	
+	private void highlightConnectors()
+	{
+		for(Element e : circuit.getElements())
+		{
+			if(e.getClass() == Connector.class)
+			{
+				Connector c = (Connector) e;
+				c.highlight(gc);
+			}
+		}
+	}
+	
+	public void connectConnectors(double x, double y)
+	{
+		ArrayList<Element> elements = circuit.getElementsByPosition(x, y);
+		if (elements != null) // avoid selection duplicates
+		{
+			Element connector = elements.get(0);
+			// prioritize connectors over components
+			for(Element e : elements)
+			{
+				if(e.getClass() == Connector.class)
+				{
+					connector = e;
+				}
+			}
+			Connector c = (Connector)connector;
+			if(!currentSelectedElements.isEmpty() && (Connector)currentSelectedElements.get(0) != null)
+			{
+				c.connect((Connector)currentSelectedElements.get(0));
+			}
+		}
+		deselectAll();
+		hasSelectedConnector = false;
 	}
 	
 	public Element[] copySelected()
@@ -618,11 +656,13 @@ public class CircuitCanvas extends ResizableCanvas
 		if (elements != null && !currentSelectedElements.contains(elements.get(0))) // avoid selection duplicates
 		{
 			Element elemToAdd = elements.get(0);
+			// prioritize connectors over components
 			for(Element e : elements)
 			{
 				if(e.getClass() == Connector.class)
 				{
 					elemToAdd = e;
+					hasSelectedConnector = true;
 				}
 			}
 			currentSelectedElements.add(elemToAdd.setIsSelected(true)); // take first element found
