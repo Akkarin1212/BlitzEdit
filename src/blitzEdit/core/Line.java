@@ -2,6 +2,8 @@ package blitzEdit.core;
 
 import java.awt.Point;
 
+import javafx.scene.canvas.GraphicsContext;
+import tools.GraphicDesignContainer;
 
 public class Line 
 {
@@ -33,5 +35,14 @@ public class Line
 	{
 		_p1 = (Point)p1.clone();
 		_p2 = (Point)p2.clone();
+	}
+	
+	public void draw(GraphicsContext gc)
+	{
+		gc.save();
+		gc.setStroke(GraphicDesignContainer.line_color);
+		gc.strokeLine(_p1.getX(), _p1.getY(), _p1.getX(), _p2.getY());
+		gc.strokeLine(_p2.getX(), _p2.getY(), _p1.getX(), _p2.getY());
+		gc.restore();
 	}
 }

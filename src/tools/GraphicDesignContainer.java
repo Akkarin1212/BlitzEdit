@@ -18,6 +18,10 @@ public class GraphicDesignContainer
 	
 	// element
 	public static final Color elements_color = Color.PURPLE;
+
+	// line
+	public static final Color line_color = Color.BLACK;
+	public static final double line_width = 5;
 	
 	// canvas grid
 	public static double grid_spacing = 25;
