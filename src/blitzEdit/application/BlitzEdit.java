@@ -2,9 +2,11 @@ package blitzEdit.application;
 
 import java.io.File;
 import java.net.URL;
+import java.nio.file.Paths;
 import java.util.ResourceBundle;
 
 import blitzEdit.core.Element;
+import blitzEdit.storage.XMLParser;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.geometry.Point2D;
@@ -127,7 +129,14 @@ public class BlitzEdit implements javafx.fxml.Initializable
 		FileChooser fileChooser = new FileChooser();
 		fileChooser.setTitle("Open circuit diagram");
 		fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("XML", "*.xml"));
-		fileChooser.showOpenDialog(Main.mainStage);
+		File filepath = fileChooser.showOpenDialog(Main.mainStage);
+		
+		if (filepath != null)
+		{
+			XMLParser parser = new XMLParser();
+			parser.loadCircuit(getCurrentCircuitCanvas().circuit, filepath.getPath());
+			getCurrentCircuitCanvas().refreshCanvas();
+		}
 
 	}
 
@@ -141,6 +150,17 @@ public class BlitzEdit implements javafx.fxml.Initializable
 	private void handleSaveAsAction(Event event)
 	{
 		Debug_Text.setText("Save As...");
+		
+		FileChooser fileChooser = new FileChooser();
+		fileChooser.setTitle("Save circuit diagram");
+		fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("XML", "*.xml"));
+		File destination = fileChooser.showSaveDialog(Main.mainStage);
+
+		if (destination != null)
+		{
+			XMLParser parser = new XMLParser();
+			parser.saveCircuit(getCurrentCircuitCanvas().circuit, destination.getPath());
+		}
 	}
 
 	@FXML

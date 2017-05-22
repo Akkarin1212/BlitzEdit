@@ -201,6 +201,11 @@ public final class Connector extends Element
 		return _owner;
 	}
 	
+	public void setOwner(Component owner)
+	{
+		_owner = owner;
+	}
+	
 	public Connector(Component owner)
 	{
 		super();
