@@ -19,8 +19,8 @@ public final class Connector extends Element
 	public void draw(GraphicsContext gc, double scale, boolean selected) 
 	{
 		short rotation = (short)(_owner.getRotation() + _relRotation);		
-		double px = (Math.sin( (rotation/360.0)*2*Math.PI ));
-		double py = (Math.cos( (rotation/360.0)*2*Math.PI ));
+		double px = (Math.sin( -Math.toRadians(rotation) ));
+		double py = (Math.cos( -Math.toRadians(rotation) ));
 		
 		//monentaner Schwerpunkt des Connectors
 		double x = _position.getX() + getSizeX()/2;
@@ -56,8 +56,8 @@ public final class Connector extends Element
 	public Connector move(int x, int y)
 	{
 		short rotation = (short)(_owner.getRotation() + _relRotation);		
-		double px = (Math.sin( (rotation/360.0)*2*Math.PI ));
-		double py = (Math.cos( (rotation/360.0)*2*Math.PI ));
+		double px = (Math.sin( -Math.toRadians(rotation) ));
+		double py = (Math.cos( -Math.toRadians(rotation) ));
 		//Errechnet die Länge des Connectors
 		int length = (int)(((x-getX()) * px + (y-getY()) * py)/(px * px + py * py));
 		//wäre die Länge negativ, wird sie so gesetzt, das der Connector an seien Ausgangspunkt
