@@ -350,7 +350,7 @@ public class CircuitCanvas extends ResizableCanvas
 		}
 	}
 
-	private void drawAllCircuitElements()
+	private synchronized void drawAllCircuitElements()
 	{
 		ArrayList<Element> array = circuit.getElements();
 		for (Element elem : array)

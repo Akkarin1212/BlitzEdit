@@ -113,7 +113,10 @@ public final class Connector extends Element
 		else
 			_connected = true;
 		
-		_connections.add(conn);
+		ArrayList<Connector> newConnections = new ArrayList<Connector>(_connections);
+		newConnections.add(conn);
+		_connections = newConnections;
+		conn.connect(this);
 	}
 	
 	//Nimmt alle Connectoren aus conns in die Verbindungsliste auf
@@ -140,14 +143,18 @@ public final class Connector extends Element
 	//Löst die Verbindung zum übergebenen Connecor
 	public void disconnect(Connector conn)
 	{
+		ArrayList<Connector> newConnections = new ArrayList<Connector>(_connections);
+		/*
 		if (this.connected())
-		{
+		{	
 			for (Connector c : _connections)
 			{
 				if (c == conn)
 					_connections.remove(conn);
 			}
-		}
+		}*/
+		newConnections.remove(conn);
+		_connections = newConnections;
 		if (_connections.isEmpty())
 			_connected = false;
 	}

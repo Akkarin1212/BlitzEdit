@@ -131,8 +131,12 @@ public class Circuit
 			if (elem.getClass() == Component.class) {
 				Component comp = (Component) elem;
 
-				for (Connector c : comp.getConnectors()) {
-					newElements.remove(c);
+				for (Connector c1 : comp.getConnectors()) {
+					for (Connector c2 : c1.getConnections())
+					{
+						c2.disconnect(c1);
+					}
+					newElements.remove(c1);
 				}
 
 			}
@@ -184,6 +188,7 @@ public class Circuit
 		}
 		// Verschachtelte Schleife, die die vorhnadenen duplette aus der Liste
 		// filtert.
+		ArrayList<Line> toRemove = new ArrayList<Line>(); //prevent ConcurrentComodificationException
 		for (Line l1 : lines)
 		{
 			for (Line l2 : lines)
@@ -194,10 +199,12 @@ public class Circuit
 				{
 					//wenn die Leitungen die selben Punkte hat
 					if (l1.equals(l2))
-						lines.remove(l2); //wird sie aus der Liste entfernt
+						if (!toRemove.contains(l1))
+							toRemove.add(l2); //wird sie aus der Liste entfernt
 				}
 			}
 		}
+		lines.removeAll(toRemove);
 		return lines;
 	}
 	
