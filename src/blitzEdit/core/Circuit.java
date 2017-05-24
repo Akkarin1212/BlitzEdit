@@ -178,8 +178,6 @@ public class Circuit
 						// Rückgabeliste ein
 						Point p1 = c1.getPosition();
 						Point p2 = c2.getPosition();
-						p1.translate(c1.getSizeX()/2, c1.getSizeY()/2);
-						p2.translate(c2.getSizeX()/2, c2.getSizeY()/2);
 						
 						lines.add(new Line(p1, p2));
 					}
