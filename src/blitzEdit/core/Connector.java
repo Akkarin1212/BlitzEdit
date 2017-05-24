@@ -71,23 +71,27 @@ public final class Connector extends Element
 		return _relRotation;
 	}
 	
+	// Verschiebt den Connector auf den linear auf
+	// die Connectorachse projezierten Punkt (x, y)
 	@Override
 	public Connector move(int x, int y)
 	{
 		short rotation = (short)(_owner.getRotation() + _relRotation);		
-		double px = (Math.sin( -Math.toRadians(rotation) ));
-		double py = (Math.cos( -Math.toRadians(rotation) ));
+		double dx = (Math.sin( -Math.toRadians(rotation) ));
+		double dy = (Math.cos( -Math.toRadians(rotation) ));
+				
+		int length = (int)(((x-getX()) * dx + (y-getY()) * dy)/(dx * dx + dy * dy));
 		
-		//Errechnet die Länge des Connectors
-		int length = (int)(((x-getX()) * px + (y-getY()) * py)/(px * px + py * py));
-		
-		//wäre die Länge negativ, wird sie so gesetzt, das der Connector an seien Ausgangspunkt
-		//verschoben wird
+		//waere die Laenge negativ, wird der Connector an seinen Ausgangspunkt
+		//verschobe
 		if (_length + length < 0)
-			length -= (_length + length);
-		_length += length; 
-		
-		_position.translate((int)(px * length), (int)(py * length));
+		{
+			_position.setLocation(getAnkerPoint());
+			_length = 0;
+			return this;
+		}
+		_length += length;
+		_position.translate((int)(dx * length), (int)(dy * length));
 		
 		return this;
 	}
