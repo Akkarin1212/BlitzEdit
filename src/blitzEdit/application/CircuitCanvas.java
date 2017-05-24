@@ -476,7 +476,7 @@ public class CircuitCanvas extends ResizableCanvas
 				if (e.getClass() == Component.class)
 				{
 					Component comp = (Component) e;
-					comp.rotate((short) (rotation + comp.getRotation()));
+					comp.rotate((short) (rotation));
 				}
 			}
 			refreshCanvas();
