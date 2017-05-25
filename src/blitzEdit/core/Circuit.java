@@ -34,6 +34,34 @@ public class Circuit
 		return getElementsByPosition((int)x, (int)y);
 	}
 	
+	public int getWidth()
+	{
+		int width = 0, elemWidth = 0;
+		for (Element elem : _elements)
+		{
+			elemWidth = elem.getX() + elem.getSizeX()/2;
+			if (elemWidth > width)
+				width = elemWidth;
+		}
+		if (width < 2000)
+			width = 2000;
+		return width;
+	}
+	
+	public int getHeight()
+	{
+		int height = 0, elemHeight = 0;
+		for (Element elem : _elements)
+		{
+			elemHeight = elem.getY() + elem.getSizeY()/2;
+			if (elemHeight > height)
+				height = elemHeight;
+		}
+		if (height < 2000)
+			height = 2000;
+		return height;
+	}
+	
 	//Gibt alle Elemente des Schaltplans zurÃ¼ck, die sich im Rechteck befinden, dass durch
 	//die Punkte (x1, y1) und (x2, y2) aufgespannt wird.
 	public ArrayList<Element> getElementsByPosition(int x1, int y1, int x2, int y2)
