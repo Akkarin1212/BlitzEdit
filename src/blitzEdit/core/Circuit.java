@@ -102,6 +102,7 @@ public class Circuit
 		{
 			for (Element elem : elements)
 			{
+				/*
 				if (elem instanceof Component)
 				{
 					for (Connector con : ((Component)elem).getConnectors())
@@ -109,6 +110,7 @@ public class Circuit
 						_elements.add(con);
 					}
 				}
+				*/
 				_elements.add(elem);
 			}
 		}
@@ -198,8 +200,8 @@ public class Circuit
 				{
 					//wenn die Leitungen die selben Punkte hat
 					if (l1.equals(l2))
-						if (!lineToRemove.contains(l1))
-							lineToRemove.add(l2); //wird sie aus der Liste entfernt
+						if (!linesToRemove.contains(l1))
+							linesToRemove.add(l2); //wird sie aus der Liste entfernt
 				}
 			}
 		}

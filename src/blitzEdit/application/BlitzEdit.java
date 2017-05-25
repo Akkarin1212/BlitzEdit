@@ -159,7 +159,7 @@ public class BlitzEdit implements javafx.fxml.Initializable
 		if (destination != null)
 		{
 			XMLParser parser = new XMLParser();
-			parser.saveCircuit(getCurrentCircuitCanvas().circuit, destination.getPath());
+			parser.saveCircuit(getCurrentCircuitCanvas().circuit, destination.getPath(), true); // TODO: option to choose usage of hashes
 		}
 	}
 
