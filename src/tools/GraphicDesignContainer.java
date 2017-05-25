@@ -10,7 +10,7 @@ public class GraphicDesignContainer
 	public static final double selected_stroke_width = 5;
 	public static final Color selection_rect_color = Color.BLACK;
 	public static final Color selected_element_color = Color.DARKGRAY;
-	public static final Color selected_connector_color = Color.GREEN;
+	public static final Color selected_connector_color = Color.CYAN;
 	
 	// connector
 	public static final double connector_line_width = 5;

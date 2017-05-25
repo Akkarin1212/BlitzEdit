@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import javafx.scene.canvas.GraphicsContext;
+import tools.SelectionMode;
 import tools.SvgRenderer;
 
 
@@ -60,9 +61,9 @@ public class Component extends RotatableElement
 	
 	@Override
 	//Draws Component on GraphicalContext
-	public void draw(GraphicsContext gc, double scale, boolean selected)
+	public void draw(GraphicsContext gc, double scale, SelectionMode mode)
 	{
-		SvgRenderer.renderSvgString(getSvgFileString(), gc, getX(), getY(), scale, getRotation(), selected);
+		SvgRenderer.renderSvgString(getSvgFileString(), gc, getX(), getY(), scale, getRotation(), mode);
 	}
 	
 	

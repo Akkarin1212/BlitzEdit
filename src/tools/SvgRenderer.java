@@ -70,7 +70,7 @@ public class SvgRenderer
 		return result;
 	}
 	
-	static public void renderSvgString(String svgString, GraphicsContext gc, double offsetX, double offsetY, double scale, boolean drawSelectRect)
+	static public void renderSvgString(String svgString, GraphicsContext gc, double offsetX, double offsetY, double scale, SelectionMode mode)
 	{
 		String[] svgElements = svgString.split("<");
 		
@@ -95,7 +95,7 @@ public class SvgRenderer
 		}
 		
 		// draws rect around element when selected
-		if(drawSelectRect)
+		if(mode.equals(SelectionMode.SELECTED))
 		{
 			gc.save();
 			gc.setStroke(GraphicDesignContainer.selected_element_color);
@@ -104,7 +104,7 @@ public class SvgRenderer
 		}
 	}
 	
-	static public void renderSvgString(String svgString, GraphicsContext gc, double offsetX, double offsetY, double scale, double rot, boolean drawSelectRect)
+	static public void renderSvgString(String svgString, GraphicsContext gc, double offsetX, double offsetY, double scale, double rot, SelectionMode mode)
 	{
 		String[] svgElements = svgString.split("<");
 		
@@ -132,7 +132,7 @@ public class SvgRenderer
 		
 		
 		// draws rect around element when selected
-		if(drawSelectRect)
+		if(mode.equals(SelectionMode.SELECTED))
 		{
 			double x = offsetX-svgWidthMedian - selectedRectPadding;
 			double y = offsetY-svgHeightMedian - selectedRectPadding;

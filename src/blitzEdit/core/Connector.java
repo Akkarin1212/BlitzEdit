@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import javafx.scene.paint.Color;
 import tools.GraphicDesignContainer;
+import tools.SelectionMode;
 
 import java.awt.Point;
 import java.awt.geom.Ellipse2D;
@@ -17,7 +18,7 @@ import blitzEdit.core.Component;
 public final class Connector extends Element
 {
 	@Override
-	public void draw(GraphicsContext gc, double scale, boolean selected) 
+	public void draw(GraphicsContext gc, double scale, SelectionMode mode) 
 	{
 		double x1 = _position.getX();
 		double y1 = _position.getY();
@@ -31,11 +32,18 @@ public final class Connector extends Element
 		gc.setLineWidth(GraphicDesignContainer.connector_line_width);
 		gc.strokeLine(x2, y2, x1, y1);
 		
-		// wechsel die Farbe wenn ausgewaehlt
-		if (selected)
+		switch(mode)
 		{
-			gc.setFill(GraphicDesignContainer.selected_connector_color);
+			case SELECTED:
+				gc.setFill(GraphicDesignContainer.selected_connector_color);
+				break;
+			case HIGHLIGHTED:
+				gc.setFill(GraphicDesignContainer.connector_highlight_color);
+				break;
+			default:
+				break;
 		}
+		
 		//zeichnet den Verbindungspunkt des Connectors
 		gc.fillOval(getX()-getSizeX()/2, getY()-getSizeY()/2, getSizeX(), getSizeY());
 		gc.restore();
@@ -48,14 +56,6 @@ public final class Connector extends Element
 		//damit die benutzung einfacher wird
 		Ellipse2D shape = new Ellipse2D.Double(_position.x - _sizeX, _position.y - _sizeY, _sizeX*2, _sizeY*2);
 		return shape.contains(x, y);
-	}
-	
-	public void highlight(GraphicsContext gc)
-	{
-		gc.save();
-		gc.setFill(GraphicDesignContainer.connector_highlight_color);
-		gc.fillOval(getX()-_sizeX/2, getY()-_sizeY/2, getSizeX(), getSizeY());
-		gc.restore();
 	}
 	
 	public ArrayList<Connector> getConnections()
@@ -128,17 +128,17 @@ public final class Connector extends Element
 	}
 	
 	//Nimmt conn in die Verbindungsliste auf
-	public void connect(Connector conn)
+	public boolean connect(Connector conn)
 	{
 		if (conn == this)
-			return;
+			return false;
 		if (_connected)
 		{
 			//Überprüft, ob Verbindung schon vorhanden ist
 			for (Connector c : _connections)
 			{
 				if (c == conn)
-					return;
+					return false;
 			}
 		}
 		else
@@ -148,6 +148,7 @@ public final class Connector extends Element
 		newConnections.add(conn);
 		_connections = newConnections;
 		conn.connect(this);
+		return true;
 	}
 	
 	//Nimmt alle Connectoren aus conns in die Verbindungsliste auf

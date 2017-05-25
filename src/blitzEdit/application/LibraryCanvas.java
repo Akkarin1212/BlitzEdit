@@ -9,6 +9,7 @@ import blitzEdit.core.Element;
 import javafx.event.EventHandler;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.MouseEvent;
+import tools.SelectionMode;
 
 public class LibraryCanvas extends ResizableCanvas
 {
@@ -62,7 +63,7 @@ public class LibraryCanvas extends ResizableCanvas
 					if(bp != null)
 					{
 						currentDraggedElement = componentLibrary.createComponent(bp, click.getX(), click.getY());
-						currentDraggedElement.draw(gc, scale, false);
+						currentDraggedElement.draw(gc, scale, SelectionMode.UNSELECTED);
 					}
 				}
 			}
@@ -97,7 +98,7 @@ public class LibraryCanvas extends ResizableCanvas
 				{
 					currentDraggedElement.move((int) click.getX(), (int) click.getY());
 					componentLibrary.draw(gc);
-					currentDraggedElement.draw(gc, scale, false);
+					currentDraggedElement.draw(gc, scale, SelectionMode.UNSELECTED);
 					
 					// create connection between circuitcanvas and librarycanvas
 					BlitzEdit.dragAndDropElement = currentDraggedElement; 

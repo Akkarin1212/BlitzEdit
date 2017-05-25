@@ -1,6 +1,7 @@
 package blitzEdit.core;
 
 import javafx.scene.canvas.GraphicsContext;
+import tools.SelectionMode;
 import tools.SvgRenderer;
 
 import java.awt.Rectangle;
@@ -48,7 +49,7 @@ public class ComponentLibrary
 		for (ComponentBlueprint cb : bc.getBlueprints())
 		{
 			String svgString = SvgRenderer.getSvgFileString(cb.getSvgFilePath());
-			SvgRenderer.renderSvgString(svgString, gc, posX, posY, _scale, false);
+			SvgRenderer.renderSvgString(svgString, gc, posX, posY, _scale, SelectionMode.UNSELECTED);
 			
 			double compSizeX = cb.getSizeX() * _scale;
 			double compSizeY = cb.getSizeY() * _scale;
@@ -85,7 +86,7 @@ public class ComponentLibrary
 			int posY = entry.rect.y + (int)(entry.rect.height * 0.5);
 			
 			String svgString = SvgRenderer.getSvgFileString(entry.bp.getSvgFilePath());
-			SvgRenderer.renderSvgString(svgString, gc, posX, posY, _scale, false);
+			SvgRenderer.renderSvgString(svgString, gc, posX, posY, _scale, SelectionMode.UNSELECTED);
 		}
 	}
 	
