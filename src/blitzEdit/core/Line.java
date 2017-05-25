@@ -77,7 +77,7 @@ public class Line
 		}
 		else if (alpha1 < 135)
 		{
-			p3.x = Math.max(p1.x, p2.x);
+			p3.x = Math.min(p1.x, p2.x);
 			p3.y = (p3.x == p1.x) ? p2.y : p1.y;
 		}
 		else if (alpha1 < 225)

@@ -12,6 +12,7 @@ import tools.SvgRenderer;
 
 public class Component extends RotatableElement
 {
+	@Override
 	public Component setPosition(int x, int y)
 	{
 		for (Connector conn : _ports)
@@ -23,6 +24,7 @@ public class Component extends RotatableElement
 		return this;
 	}
 	
+	@Override
 	public Component setPosition(double x, double y)
 	{
 		return setPosition((int)x, (int)y);
