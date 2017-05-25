@@ -176,10 +176,10 @@ public class Circuit
 					{
 						// fügt eine neue Linie vom Start zum Endpunkt in die
 						// Rückgabeliste ein
-						Point p1 = c1.getPosition();
-						Point p2 = c2.getPosition();
+						Connector conn1 = c1;
+						Connector conn2 = c2;
 						
-						lines.add(new Line(p1, p2));
+						lines.add(new Line(conn1, conn2));
 					}
 				}
 			}

@@ -30,7 +30,7 @@ public class LineTest implements Runnable {
 		
 		for ( Line l : circuit.getLines())
 		{
-			System.out.println(l.getP1() + " ---> " + l.getP2());
+			System.out.println(l.getC1().getPosition() + " ---> " + l.getC2().getPosition());
 		}
 		
 	}

@@ -19,29 +19,24 @@ public final class Connector extends Element
 	@Override
 	public void draw(GraphicsContext gc, double scale, boolean selected) 
 	{
-		short rotation = (short)(_owner.getRotation() + _relRotation);		
-		double px = (Math.sin( -Math.toRadians(rotation) ));
-		double py = (Math.cos( -Math.toRadians(rotation) ));
+		double x1 = _position.getX();
+		double y1 = _position.getY();
+		double x2 = getAnkerPoint().x;
+		double y2 = getAnkerPoint().y;
 		
-		//monentaner Schwerpunkt des Connectors
-		double x = _position.getX();// - getSizeX()/2;
-		double y = _position.getY();// - getSizeY()/2;
-		
+		gc.save();
 		//zeichnet die Linie des Connectors von seinem Ursprungspunkt zu seiner
 		// momentanen Position
-		gc.save();
 		gc.setStroke(GraphicDesignContainer.connector_line_color);
 		gc.setLineWidth(GraphicDesignContainer.connector_line_width);
+		gc.strokeLine(x2, y2, x1, y1);
 		
-		Point ankerPoint = getAnkerPoint();
-		//gc.strokeLine(x - px * _length, y - py * _length, x, y);
-		gc.strokeLine(ankerPoint.x, ankerPoint.y, x, y);
-		
-		// wechsel die Farbe wenn ausgewählt
+		// wechsel die Farbe wenn ausgewaehlt
 		if (selected)
 		{
 			gc.setFill(GraphicDesignContainer.selected_connector_color);
 		}
+		//zeichnet den Verbindungspunkt des Connectors
 		gc.fillOval(getX()-getSizeX()/2, getY()-getSizeY()/2, getSizeX(), getSizeY());
 		gc.restore();
 	}
@@ -49,7 +44,9 @@ public final class Connector extends Element
 	@Override
 	public boolean contains(int x, int y)
 	{
-		Ellipse2D shape = new Ellipse2D.Double(_position.x - _sizeX/2, _position.y - _sizeY/2, _sizeX, _sizeY);
+		//Ellipse wird groesser erstellt als graphisch dargestellt, 
+		//damit die benutzung einfacher wird
+		Ellipse2D shape = new Ellipse2D.Double(_position.x - _sizeX, _position.y - _sizeY, _sizeX*2, _sizeY*2);
 		return shape.contains(x, y);
 	}
 	
@@ -100,6 +97,12 @@ public final class Connector extends Element
 	public Connector move(double x, double y) 
 	{
 		return move((int)x, (int)y);
+	}
+	
+	public short getRotation()
+	{
+		short r = (short)(((int)_owner.getRotation() + _relRotation) % 360);
+		return (short)((r < 0) ?  360 + r : r);
 	}
 	
 	public int [] getRelPos()
