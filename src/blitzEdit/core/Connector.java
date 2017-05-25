@@ -6,6 +6,7 @@ import javafx.scene.paint.Color;
 import tools.GraphicDesignContainer;
 
 import java.awt.Point;
+import java.awt.geom.Ellipse2D;
 import java.awt.geom.AffineTransform;
 
 import javafx.scene.canvas.GraphicsContext;
@@ -18,35 +19,42 @@ public final class Connector extends Element
 	@Override
 	public void draw(GraphicsContext gc, double scale, boolean selected) 
 	{
-		short rotation = (short)(_owner.getRotation() + _relRotation);		
-		double px = (Math.sin( -Math.toRadians(rotation) ));
-		double py = (Math.cos( -Math.toRadians(rotation) ));
+		double x1 = _position.getX();
+		double y1 = _position.getY();
+		double x2 = getAnkerPoint().x;
+		double y2 = getAnkerPoint().y;
 		
-		//monentaner Schwerpunkt des Connectors
-		double x = _position.getX() + getSizeX()/2;
-		double y = _position.getY() + getSizeY()/2;
-		
+		gc.save();
 		//zeichnet die Linie des Connectors von seinem Ursprungspunkt zu seiner
 		// momentanen Position
-		gc.save();
 		gc.setStroke(GraphicDesignContainer.connector_line_color);
 		gc.setLineWidth(GraphicDesignContainer.connector_line_width);
-		gc.strokeLine(x - px * _length, y - py * _length, x, y);
-
-		// wechsel die Farbe wenn ausgewählt
+		gc.strokeLine(x2, y2, x1, y1);
+		
+		// wechsel die Farbe wenn ausgewaehlt
 		if (selected)
 		{
 			gc.setFill(GraphicDesignContainer.selected_connector_color);
 		}
-		gc.fillRect(getX(), getY(), getSizeX(), getSizeY());
+		//zeichnet den Verbindungspunkt des Connectors
+		gc.fillOval(getX()-getSizeX()/2, getY()-getSizeY()/2, getSizeX(), getSizeY());
 		gc.restore();
+	}
+	
+	@Override
+	public boolean contains(int x, int y)
+	{
+		//Ellipse wird groesser erstellt als graphisch dargestellt, 
+		//damit die benutzung einfacher wird
+		Ellipse2D shape = new Ellipse2D.Double(_position.x - _sizeX, _position.y - _sizeY, _sizeX*2, _sizeY*2);
+		return shape.contains(x, y);
 	}
 	
 	public void highlight(GraphicsContext gc)
 	{
 		gc.save();
 		gc.setFill(GraphicDesignContainer.connector_highlight_color);
-		gc.fillRect(getX(), getY(), getSizeX(), getSizeY());
+		gc.fillOval(getX()-_sizeX/2, getY()-_sizeY/2, getSizeX(), getSizeY());
 		gc.restore();
 	}
 	
@@ -60,22 +68,27 @@ public final class Connector extends Element
 		return _relRotation;
 	}
 	
+	// Verschiebt den Connector auf den linear auf
+	// die Connectorachse projezierten Punkt (x, y)
 	@Override
 	public Connector move(int x, int y)
 	{
 		short rotation = (short)(_owner.getRotation() + _relRotation);		
-		double px = (Math.sin( -Math.toRadians(rotation) ));
-		double py = (Math.cos( -Math.toRadians(rotation) ));
-		//Errechnet die Länge des Connectors
-		int length = (int)(((x-getX()) * px + (y-getY()) * py)/(px * px + py * py));
-		//wäre die Länge negativ, wird sie so gesetzt, das der Connector an seien Ausgangspunkt
-		//verschoben wird
+		double dx = (Math.sin( -Math.toRadians(rotation) ));
+		double dy = (Math.cos( -Math.toRadians(rotation) ));
+				
+		int length = (int)(((x-getX()) * dx + (y-getY()) * dy)/(dx * dx + dy * dy));
+		
+		//waere die Laenge negativ, wird der Connector an seinen Ausgangspunkt
+		//verschobe
 		if (_length + length < 0)
-			length -= (_length + length);
-		_length += length; 
-		
-		
-		_position.translate((int)(px * length), (int)(py * length));
+		{
+			_position.setLocation(getAnkerPoint());
+			_length = 0;
+			return this;
+		}
+		_length += length;
+		_position.translate((int)(dx * length), (int)(dy * length));
 		
 		return this;
 	}
@@ -84,6 +97,12 @@ public final class Connector extends Element
 	public Connector move(double x, double y) 
 	{
 		return move((int)x, (int)y);
+	}
+	
+	public short getRotation()
+	{
+		short r = (short)(((int)_owner.getRotation() + _relRotation) % 360);
+		return (short)((r < 0) ?  360 + r : r);
 	}
 	
 	public int [] getRelPos()
@@ -98,9 +117,21 @@ public final class Connector extends Element
 		return null;
 	}
 	
+	public Point getAnkerPoint()
+	{
+		AffineTransform at = AffineTransform.getRotateInstance(Math.toRadians(_owner.getRotation()), _owner.getX(), _owner.getY());
+		Point originalPosition = new Point(_owner.getX() + _conRelPos[0], _owner.getY() + _conRelPos[1]);
+		Point transformedPosition = new Point();
+		at.transform(originalPosition, transformedPosition);
+		
+		return transformedPosition;
+	}
+	
 	//Nimmt conn in die Verbindungsliste auf
 	public void connect(Connector conn)
 	{
+		if (conn == this)
+			return;
 		if (_connected)
 		{
 			//Überprüft, ob Verbindung schon vorhanden ist
@@ -113,7 +144,10 @@ public final class Connector extends Element
 		else
 			_connected = true;
 		
-		_connections.add(conn);
+		ArrayList<Connector> newConnections = new ArrayList<Connector>(_connections);
+		newConnections.add(conn);
+		_connections = newConnections;
+		conn.connect(this);
 	}
 	
 	//Nimmt alle Connectoren aus conns in die Verbindungsliste auf
@@ -125,6 +159,8 @@ public final class Connector extends Element
 			//Überprüft, ob Verbindungen schon vorhanden sind
 			for (Connector c : conns)
 			{
+				if (c == this) 
+					continue;
 				if (_connections.contains(c))
 					continue;
 				else
@@ -140,14 +176,18 @@ public final class Connector extends Element
 	//Löst die Verbindung zum übergebenen Connecor
 	public void disconnect(Connector conn)
 	{
+		ArrayList<Connector> newConnections = new ArrayList<Connector>(_connections);
+		/*
 		if (this.connected())
-		{
+		{	
 			for (Connector c : _connections)
 			{
 				if (c == conn)
 					_connections.remove(conn);
 			}
-		}
+		}*/
+		newConnections.remove(conn);
+		_connections = newConnections;
 		if (_connections.isEmpty())
 			_connected = false;
 	}
@@ -228,7 +268,7 @@ public final class Connector extends Element
 	
 	public Connector(int x, int y, int[] conRelPos, short relRotation)
 	{
-		super(x-5, y-5, 10, 10); //Standartwerte: breite 6, höhe 6
+		super(x, y, 12, 12); //Standartwerte: breite 6, höhe 6
 	
 		_conRelPos = conRelPos.clone();
 		_relRotation = relRotation;
@@ -239,7 +279,7 @@ public final class Connector extends Element
 	
 	public Connector(int x, int y, int[] conRelPos, short relRotation, Component owner)
 	{
-		super(x-5, y-5, 10, 10); //Standartwerte: breite 6, höhe 6
+		super(x, y, 12, 12); //Standartwerte: breite 6, höhe 6
 		if (owner != null)
 		{
 			_owner = owner;

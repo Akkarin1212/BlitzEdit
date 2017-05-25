@@ -3,6 +3,7 @@ package blitzEdit.core;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.awt.Point;
 import java.awt.Rectangle;
 import blitzEdit.core.Component;
 
@@ -130,8 +131,12 @@ public class Circuit
 			if (elem.getClass() == Component.class) {
 				Component comp = (Component) elem;
 
-				for (Connector c : comp.getConnectors()) {
-					newElements.remove(c);
+				for (Connector c1 : comp.getConnectors()) {
+					for (Connector c2 : c1.getConnections())
+					{
+						c2.disconnect(c1);
+					}
+					newElements.remove(c1);
 				}
 
 			}
@@ -171,7 +176,10 @@ public class Circuit
 					{
 						// f�gt eine neue Linie vom Start zum Endpunkt in die
 						// R�ckgabeliste ein
-						lines.add(new Line(c1.getPosition(), c2.getPosition()));
+						Connector conn1 = c1;
+						Connector conn2 = c2;
+						
+						lines.add(new Line(conn1, conn2));
 					}
 				}
 			}
@@ -190,7 +198,8 @@ public class Circuit
 				{
 					//wenn die Leitungen die selben Punkte hat
 					if (l1.equals(l2))
-						linesToRemove.remove(l2); //wird sie aus der Liste entfernt
+						if (!lineToRemove.contains(l1))
+							lineToRemove.add(l2); //wird sie aus der Liste entfernt
 				}
 			}
 		}

@@ -17,7 +17,11 @@ public abstract class RotatableElement extends Element
 		_rotation = (short) (rotation % (short)360);
 	}
 	
-	
+	public void rotate(short rotation)
+	{
+		short r = (short)(((int)_rotation + rotation) % 360);
+		_rotation = (short)((r < 0) ?  360 + r : r);
+	}
 	
 	// Tests if the point (x, y) is contained by element
 	// TODO: Test new implemented method

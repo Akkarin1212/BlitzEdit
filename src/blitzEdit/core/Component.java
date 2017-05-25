@@ -12,6 +12,7 @@ import tools.SvgRenderer;
 
 public class Component extends RotatableElement
 {
+	@Override
 	public Component setPosition(int x, int y)
 	{
 		for (Connector conn : _ports)
@@ -23,6 +24,7 @@ public class Component extends RotatableElement
 		return this;
 	}
 	
+	@Override
 	public Component setPosition(double x, double y)
 	{
 		return setPosition((int)x, (int)y);
@@ -219,15 +221,15 @@ public class Component extends RotatableElement
 		rotate(rot);
 	}
 	
-	// @Override TODO rotate in element/rotatableElement?
 	//Rotates Componenet to the specified angle
+	@Override
 	public void rotate(short rotation)
 	{
 		// Erstellt AffineTransform Objekt, um die connectoren um den schwerpunkt der component zu drehen
 		// die rotation ist negativ, damit nach rechts gedreht wird
-		double rot = rotation - _rotation;
+		//double rot = rotation - _rotation;
 		
-		AffineTransform at = AffineTransform.getRotateInstance(Math.toRadians(rot),
+		AffineTransform at = AffineTransform.getRotateInstance(Math.toRadians(rotation),
 																_position.getX(), _position.getY());						
 
 		//change connectors absolute position according to components rotation
@@ -238,7 +240,7 @@ public class Component extends RotatableElement
 			at.transform(p, p2);
 			con.setPosition((int)p2.getX(), (int)p2.getY());
 		}
-		super.setRotation(rotation);
+		super.rotate(rotation);
 	}
 	
 	public ComponentProperty [] getProperties()
