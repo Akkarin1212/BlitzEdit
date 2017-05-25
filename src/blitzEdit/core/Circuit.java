@@ -174,8 +174,8 @@ public class Circuit
 					// geht alle verbundenen Connectoren durch
 					for (Connector c2 : c1.getConnections())
 					{
-						// fügt eine neue Linie vom Start zum Endpunkt in die
-						// Rückgabeliste ein
+						// fï¿½gt eine neue Linie vom Start zum Endpunkt in die
+						// Rï¿½ckgabeliste ein
 						Connector conn1 = c1;
 						Connector conn2 = c2;
 						
@@ -184,9 +184,10 @@ public class Circuit
 				}
 			}
 		}
+		
+		ArrayList<Line> linesToRemove = new ArrayList<Line>();
 		// Verschachtelte Schleife, die die vorhnadenen duplette aus der Liste
 		// filtert.
-		ArrayList<Line> toRemove = new ArrayList<Line>(); //prevent ConcurrentComodificationException
 		for (Line l1 : lines)
 		{
 			for (Line l2 : lines)
@@ -197,12 +198,12 @@ public class Circuit
 				{
 					//wenn die Leitungen die selben Punkte hat
 					if (l1.equals(l2))
-						if (!toRemove.contains(l1))
-							toRemove.add(l2); //wird sie aus der Liste entfernt
+						if (!lineToRemove.contains(l1))
+							lineToRemove.add(l2); //wird sie aus der Liste entfernt
 				}
 			}
 		}
-		lines.removeAll(toRemove);
+		lines.removeAll(linesToRemove);
 		return lines;
 	}
 	
