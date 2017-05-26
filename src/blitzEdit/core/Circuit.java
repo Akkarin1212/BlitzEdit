@@ -43,8 +43,8 @@ public class Circuit
 			if (elemWidth > width)
 				width = elemWidth;
 		}
-		if (width < 2000)
-			width = 2000;
+		//if (width < 2000)
+		//	width = 2000;
 		return width;
 	}
 	
@@ -57,8 +57,8 @@ public class Circuit
 			if (elemHeight > height)
 				height = elemHeight;
 		}
-		if (height < 2000)
-			height = 2000;
+		//if (height < 2000)
+		//	height = 2000;
 		return height;
 	}
 	

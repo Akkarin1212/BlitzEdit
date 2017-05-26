@@ -268,6 +268,13 @@ public class Component extends RotatableElement
 		setRotation(rot);
 	}
 
+	public Component(int x, int y, short rot, ComponentBlueprint cb)
+	{
+		super (x, y, rot);
+		initialize(x, y, rot, cb.getType(), cb.getSvgFilePath(), cb.getRelPos(), cb.getConRelRot());
+		setRotation(rot);
+	}
+	
 	public Component(int x, int y, short rot, String type, int[][] connRelPos, short [] connRelRot ,String svg)
 	{
 		super(x, y, rot);
