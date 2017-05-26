@@ -283,8 +283,8 @@ public class Component extends RotatableElement
 		initialize(x, y, rot, type, svg, connRelPos, connRelRot);
 	}
 	
-	public Component(double x, double y, double sizeX, double sizeY, double rot, String type, int[][] connRelPos, short[] connRelRot,
-			String svg) 
+	public Component(double x, double y, double sizeX, double sizeY, double rot, String type
+			, int[][] connRelPos, short[] connRelRot, String svg) 
 	{
 		super((int)x, (int)y, (int)sizeX, (int)sizeY, (short)rot);
 		initialize((int)x, (int)y, (short)rot, type, svg, connRelPos, connRelRot);
