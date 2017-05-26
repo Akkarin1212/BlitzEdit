@@ -169,58 +169,6 @@ public class Component extends RotatableElement
 		conn.setOwner(this);
 	}
 	
-	public Component(int x, int y, short rot, String type, int[][] connRelPos, short [] connRelRot ,String svg)
-	{
-		super(x, y, rot);
-		initialize(x, y, rot, type, svg, connRelPos, connRelRot);
-		super.setSize(SvgRenderer.getSvgWidth(_svgFileString), SvgRenderer.getSvgHeight(_svgFileString));
-	}
-	
-	
-	public Component(int x, int y, int sizeX, int sizeY, short rot, String type,
-						int[][] connRelPos, short [] connRelRot ,String svg)
-	{
-		super(x, y , sizeX, sizeY, rot);
-		initialize(x, y, rot, type, svg, connRelPos, connRelRot);
-	}
-	
-	public Component(double x, double y, double sizeX, double sizeY, double rot, String type, int[][] connRelPos, short[] connRelRot,
-			String svg) 
-	{
-		super((int)x, (int)y, (int)sizeX, (int)sizeY, (short)rot);
-		initialize((int)x, (int)y, (short)rot, type, svg, connRelPos, connRelRot);
-	}
-	
-	public Component(double x, double y, double sizeX, double sizeY, double rot, String type,
-			String svg) 
-	{
-		super((int)x, (int)y, (int)sizeX, (int)sizeY, (short)rot);
-		initialize((int)x, (int)y, (short)rot, type, svg);
-	}
-	
-	//Private method called by constructor
-	private void initialize(int x, int y, short rot, String type, String svg, int[][] connRelPos, short[] connRelRot)
-	{
-		_type = new String(type);
-		_svgFilePath = new String(svg);
-		_svgFileString = SvgRenderer.getSvgFileString(_svgFilePath);
-		_ports = new ArrayList<Connector>();
-		for (int i = 0; i < connRelPos.length; i++) {
-			_ports.add(new Connector(x + connRelPos[i][0], y + connRelPos[i][1], connRelPos[i], connRelRot[i], this));
-		}
-		setRotation(rot);
-	}
-	
-	private void initialize(int x, int y, short rot, String type, String svg)
-	{
-		_type = new String(type);
-		_svgFilePath = new String(svg);
-		_svgFileString = SvgRenderer.getSvgFileString(_svgFilePath);
-		_ports = new ArrayList<Connector>();
-		
-		setRotation(rot);
-	}
-	
 	@Override
 	public void setRotation(short rotation)
 	{
@@ -296,6 +244,59 @@ public class Component extends RotatableElement
 		}
 	}
 	
+	// Private method called by constructor
+	private void initialize(int x, int y, short rot, String type, String svg, int[][] connRelPos, short[] connRelRot) 
+	{
+		_type = new String(type);
+		_svgFilePath = new String(svg);
+		_svgFileString = SvgRenderer.getSvgFileString(_svgFilePath);
+		_ports = new ArrayList<Connector>();
+		for (int i = 0; i < connRelPos.length; i++) 
+		{
+			_ports.add(new Connector(x + connRelPos[i][0], y + connRelPos[i][1], connRelPos[i], connRelRot[i], this));
+		}
+		setRotation(rot);
+	}
+
+	private void initialize(int x, int y, short rot, String type, String svg) 
+	{
+		_type = new String(type);
+		_svgFilePath = new String(svg);
+		_svgFileString = SvgRenderer.getSvgFileString(_svgFilePath);
+		_ports = new ArrayList<Connector>();
+
+		setRotation(rot);
+	}
+
+	public Component(int x, int y, short rot, String type, int[][] connRelPos, short [] connRelRot ,String svg)
+	{
+		super(x, y, rot);
+		initialize(x, y, rot, type, svg, connRelPos, connRelRot);
+		super.setSize(SvgRenderer.getSvgWidth(_svgFileString), SvgRenderer.getSvgHeight(_svgFileString));
+	}
+	
+	
+	public Component(int x, int y, int sizeX, int sizeY, short rot, String type,
+						int[][] connRelPos, short [] connRelRot ,String svg)
+	{
+		super(x, y , sizeX, sizeY, rot);
+		initialize(x, y, rot, type, svg, connRelPos, connRelRot);
+	}
+	
+	public Component(double x, double y, double sizeX, double sizeY, double rot, String type, int[][] connRelPos, short[] connRelRot,
+			String svg) 
+	{
+		super((int)x, (int)y, (int)sizeX, (int)sizeY, (short)rot);
+		initialize((int)x, (int)y, (short)rot, type, svg, connRelPos, connRelRot);
+	}
+	
+	public Component(double x, double y, double sizeX, double sizeY, double rot, String type,
+			String svg) 
+	{
+		super((int)x, (int)y, (int)sizeX, (int)sizeY, (short)rot);
+		initialize((int)x, (int)y, (short)rot, type, svg);
+	}	
+
 	private ComponentProperty [] _properties;
 	private ArrayList<Connector> _ports;
 	private String _svgFilePath;
