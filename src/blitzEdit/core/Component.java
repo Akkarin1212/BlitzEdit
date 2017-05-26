@@ -208,7 +208,7 @@ public class Component extends RotatableElement
 		for (int i = 0; i < connRelPos.length; i++) {
 			_ports.add(new Connector(x + connRelPos[i][0], y + connRelPos[i][1], connRelPos[i], connRelRot[i], this));
 		}
-		rotate(rot);
+		setRotation(rot);
 	}
 	
 	private void initialize(int x, int y, short rot, String type, String svg)
@@ -218,16 +218,36 @@ public class Component extends RotatableElement
 		_svgFileString = SvgRenderer.getSvgFileString(_svgFilePath);
 		_ports = new ArrayList<Connector>();
 		
-		rotate(rot);
+		setRotation(rot);
 	}
 	
-	//Rotates Componenet to the specified angle
+	@Override
+	public void setRotation(short rotation)
+	{
+		// Erstellt AffineTransform Objekt, um die connectoren um den schwerpunkt der component zu drehen
+		// die rotation ist negativ, damit nach rechts gedreht wird
+		short rot = (short)(rotation - _rotation);
+		
+		AffineTransform at = AffineTransform.getRotateInstance(-Math.toRadians(rot),
+																_position.getX(), _position.getY());						
+
+		//change connectors absolute position according to components rotation
+		for (Connector con: getConnectors())
+		{
+			Point2D p = new Point(con.getX(), con.getY());
+			Point2D p2 = new Point();
+			at.transform(p, p2);
+			con.setPosition((int)p2.getX(), (int)p2.getY());
+		}
+		super.setRotation(rot);
+	}
+	
+	//Rotates Component to the specified angle
 	@Override
 	public void rotate(short rotation)
 	{
 		// Erstellt AffineTransform Objekt, um die connectoren um den schwerpunkt der component zu drehen
 		// die rotation ist negativ, damit nach rechts gedreht wird
-		//double rot = rotation - _rotation;
 		
 		AffineTransform at = AffineTransform.getRotateInstance(Math.toRadians(rotation),
 																_position.getX(), _position.getY());						
