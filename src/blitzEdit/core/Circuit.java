@@ -34,6 +34,34 @@ public class Circuit
 		return getElementsByPosition((int)x, (int)y);
 	}
 	
+	public int getWidth()
+	{
+		int width = 0, elemWidth = 0;
+		for (Element elem : _elements)
+		{
+			elemWidth = elem.getX() + elem.getSizeX()/2;
+			if (elemWidth > width)
+				width = elemWidth;
+		}
+		//if (width < 2000)
+		//	width = 2000;
+		return width;
+	}
+	
+	public int getHeight()
+	{
+		int height = 0, elemHeight = 0;
+		for (Element elem : _elements)
+		{
+			elemHeight = elem.getY() + elem.getSizeY()/2;
+			if (elemHeight > height)
+				height = elemHeight;
+		}
+		//if (height < 2000)
+		//	height = 2000;
+		return height;
+	}
+	
 	//Gibt alle Elemente des Schaltplans zurÃ¼ck, die sich im Rechteck befinden, dass durch
 	//die Punkte (x1, y1) und (x2, y2) aufgespannt wird.
 	public ArrayList<Element> getElementsByPosition(int x1, int y1, int x2, int y2)
@@ -188,6 +216,7 @@ public class Circuit
 		ArrayList<Line> linesToRemove = new ArrayList<Line>();
 		// Verschachtelte Schleife, die die vorhnadenen duplette aus der Liste
 		// filtert.
+		ArrayList<Line> toRemove = new ArrayList<Line>(); //prevent ConcurrentComodificationException
 		for (Line l1 : lines)
 		{
 			for (Line l2 : lines)
@@ -198,8 +227,8 @@ public class Circuit
 				{
 					//wenn die Leitungen die selben Punkte hat
 					if (l1.equals(l2))
-						if (!lineToRemove.contains(l1))
-							lineToRemove.add(l2); //wird sie aus der Liste entfernt
+						if (!linesToRemove.contains(l1))
+							linesToRemove.add(l2); //wird sie aus der Liste entfernt
 				}
 			}
 		}
