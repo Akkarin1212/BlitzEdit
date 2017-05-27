@@ -9,10 +9,28 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 
+import javax.swing.JOptionPane;
+
+import blitzEdit.application.BlitzEdit;
+import blitzEdit.application.Main;
 import blitzEdit.core.Circuit;
 import blitzEdit.core.Component;
 import blitzEdit.core.Connector;
 import blitzEdit.core.Element;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.input.ScrollEvent;
+import javafx.scene.layout.VBox;
+import javafx.scene.layout.VBoxBuilder;
+import javafx.scene.shape.Circle;
+import javafx.scene.text.Text;
+import javafx.stage.Modality;
+import javafx.stage.Popup;
+import javafx.stage.Stage;
 
 public class XMLParser implements IParser{
 	private Circuit currentCircuit = null;
@@ -53,6 +71,7 @@ public class XMLParser implements IParser{
 		Path path = Paths.get(destination);
 
 		String result = elementsString + connectionsString;
+		result = result.hashCode() + "\n" + result;
 
 		try
 		{
@@ -85,15 +104,49 @@ public class XMLParser implements IParser{
 		}
 		
 		String [] xmlElements = fileString.split("<");
+		
+		//check if file was modified
+		String fileStringWithoutHash = fileString.replace(xmlElements[0], "");
+		String hash = xmlElements[0].replace("\n", "");
+		if(!hash.equals(createHash(fileStringWithoutHash)))
+		{
+			int accepted = JOptionPane.showConfirmDialog(null, "Modifications have been made in this file. Do you still want to load it?", "Loading Error", JOptionPane.YES_NO_OPTION);
+			if(accepted != 0)
+			{
+				System.err.println("blub");
+				return;
+			}
+		}
+		
+		
 		for(String s: xmlElements)
 		{
+			s = s.replace("/>", "");
 			if(s.startsWith("component"))
 			{
-				elements.add(readComponent(s));
+				Element e = readComponent(s);
+				if(e != null)
+				{
+					elements.add(e);
+				}
+				else
+				{
+					System.err.println("Stopped loading process.");
+					return;
+				}
 			}
 			else if(s.startsWith("connector"))
 			{
-				elements.add(readConnector(s));
+				Element e = readConnector(s);
+				if(e != null)
+				{
+					elements.add(e);
+				}
+				else
+				{
+					System.err.println("Stopped loading process.");
+					return;
+				}
 			}
 			else if(s.startsWith("connection"))
 			{
@@ -196,9 +249,15 @@ public class XMLParser implements IParser{
 			
 		}
 		
-		return new Component (x, y, width, height, rot, type, svgPath);
-		
-		// TODO: if(hash == gethast)
+		if (checkHash(hash, xml))
+		{
+			return new Component(x, y, width, height, rot, type, svgPath);
+		}
+		else
+		{
+			System.err.println("Changes have been made in the component: " + xml + ". The component wasn't created.");
+		}
+		return null;
 		
 	}
 	
@@ -253,8 +312,16 @@ public class XMLParser implements IParser{
 			}
 		}
 		int[] relPos = {relX,relY};
-		return new Connector((int)x,(int)y,relPos,(short)rot);
 		
+		if (checkHash(hash, xml))
+		{
+			return new Connector((int)x,(int)y,relPos,(short)rot);
+		}
+		else
+		{
+			System.err.println("Changes have been made in the connector: " + xml + ". The connector wasn't created.");
+		}
+		return null;
 	}
 	
 	private void createConnection(String xml)
@@ -283,10 +350,25 @@ public class XMLParser implements IParser{
 				hash = sElem[1];
 			}
 		}
-		Connector connector1 = (Connector) elements.get((int) conn1);
-		Connector connector2 = (Connector) elements.get((int) conn2);
 		
-		connector1.connect(connector2);
+		if (checkHash(hash, xml))
+		{
+			try
+			{
+				Connector connector1 = (Connector) elements.get((int) conn1);
+				Connector connector2 = (Connector) elements.get((int) conn2);
+
+				connector1.connect(connector2);
+			}
+			catch (IndexOutOfBoundsException e)
+			{
+				System.err.println("Error in generating connections between connectors: Tried to access " + e.getMessage());
+			}
+		}
+		else
+		{
+			System.err.println("Changes have been made in the connection: " + xml + ". The connection wasn't created.");
+		}
 	}
 	
 	private void addComponentChilds(String xml)
@@ -319,13 +401,20 @@ public class XMLParser implements IParser{
 				hash = sElem[1];
 			}
 		}
-		if (!elements.isEmpty())
+		if (checkHash(hash, xml))
 		{
-			Component component = (Component) elements.get((int) comp);
-			for (int i : conn)
+			if (!elements.isEmpty())
 			{
-				component.addConnenctor((Connector) elements.get(i));
+				Component component = (Component) elements.get((int) comp);
+				for (int i : conn)
+				{
+					component.addConnenctor((Connector) elements.get(i));
+				}
 			}
+		}
+		else
+		{
+			System.err.println("Changes have been made in the child property: " + xml + ". The connectors weren't added.");
 		}
 	}
 	
@@ -363,8 +452,8 @@ public class XMLParser implements IParser{
 	
 	private String saveConnection(Connector conn, Connector conn2)
 	{
-		String result = "connection conn=" + elements.indexOf(conn) +
-						" conn=" + elements.indexOf(conn2);
+		String result = "connection conn1=" + elements.indexOf(conn) +
+						" conn2=" + elements.indexOf(conn2);
 			
 		result += " hash=" + createHash(result);
 		result = "<" + result + "/>\n";
@@ -391,13 +480,59 @@ public class XMLParser implements IParser{
 	
 	private boolean checkHash(String hash, String xml)
 	{
-		return false;
+		xml = xml.replace('<', ' ');
+		xml = xml.replace("/>", " ");
+		xml = xml.trim();
+		xml = xml.replace("hash=", "");
+		xml = xml.replace(hash, "");
+		xml = xml.trim();
+
+		try{
+			int hashInt = Integer.parseInt(hash);
+			return (xml.hashCode() == hashInt);
+		}catch (NumberFormatException e)
+		{
+			System.err.println("Changes to the hash code have been made. " + e.getMessage());
+			return false;
+		}
 	}
 	
 	private String createHash(String xml)
 	{
-		return new String("nA ");
+		return new String(Integer.toString(xml.hashCode()));
 	}
-	
-	
+	/*
+	// returns weather the user wants to load corrupted file or not
+	private void createPopupScene()
+	{
+		final Stage dialog = new Stage();
+        dialog.initModality(Modality.WINDOW_MODAL);
+        dialog.initOwner(Main.mainStage);
+        VBox dialogVbox = new VBox(20);
+        
+        Button cancel = new Button("Cancel");
+        cancel.setOnAction(new EventHandler<ActionEvent>(){
+			@Override
+			public void handle(ActionEvent click)
+			{
+				accepted = false;
+				dialog.hide();
+			}
+        });
+        Button confirm = new Button("Confirm");
+        confirm.setOnAction(new EventHandler<ActionEvent>(){
+			@Override
+			public void handle(ActionEvent click)
+			{
+				accepted = true;
+				dialog.hide();
+			}
+        });
+        
+        dialogVbox.getChildren().addAll(new Text("This is a Dialog"), cancel, confirm);
+        Scene dialogScene = new Scene(dialogVbox, 300, 200);        
+        dialog.setScene(dialogScene);
+        dialog.show();
+	}
+	*/
 }
