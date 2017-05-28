@@ -3,7 +3,7 @@ package blitzEdit.core;
 import java.awt.Rectangle;
 import java.awt.Point;
 import javafx.scene.canvas.*;
-
+import tools.SelectionMode;
 
 public abstract class Element 
 {
@@ -44,14 +44,14 @@ public abstract class Element
 		return new Point(_position);
 	}
 	
-	public boolean getIsSelected()
+	public SelectionMode getSelectionMode()
 	{
-		return _isSelected;
+		return _selectionMode;
 	}
 	
-	public Element setIsSelected(boolean isSelected)
+	public Element setSelectionMode(SelectionMode mode)
 	{
-		_isSelected = isSelected;
+		_selectionMode = mode;
 		return this;
 	}
 	
@@ -71,7 +71,7 @@ public abstract class Element
 	
 	public abstract Element move(double x, double y);
 	
-	public abstract void draw(GraphicsContext gc, double scale, boolean selected);
+	public abstract void draw(GraphicsContext gc, double scale, SelectionMode mode);
 		
 	public abstract Element clone();
 	
@@ -113,7 +113,7 @@ public abstract class Element
 	}
 	
 	protected Point _position;
-	protected boolean _isSelected;
+	protected SelectionMode _selectionMode = SelectionMode.UNSELECTED;
 	protected int _sizeX;
 	protected int _sizeY;
 	

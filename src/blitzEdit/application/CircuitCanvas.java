@@ -20,6 +20,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.paint.Color;
 import tools.GraphicDesignContainer;
+import tools.SelectionMode;
 import javafx.geometry.Point2D;
 
 public class CircuitCanvas extends ResizableCanvas
@@ -36,7 +37,7 @@ public class CircuitCanvas extends ResizableCanvas
 	private boolean isSelectingMultipleElements;
 	private boolean hasSelectedMultipleElements;
 	private boolean canSelectMultipleElements;
-	private boolean hasSelectedConnector;
+	private Connector currentSelectedConnector;
 	
 	private double canvasScaleFactor = 1;
 	
@@ -81,13 +82,28 @@ public class CircuitCanvas extends ResizableCanvas
 				}
 				else if (click.isPrimaryButtonDown())
 				{
-					if(hasSelectedConnector)
+					if(currentSelectedConnector != null)
 					{
-						connectConnectors(click.getX(), click.getY());
+						if(connectConnector(click.getX(), click.getY())) // connect worked
+						{
+							
+						}
+						else if(disconnectConnector(click.getX(), click.getY())) // disconnect worked
+						{
+							
+						}
+						else
+						{
+							deselectAll();
+							currentSelectedConnector = null;
+							selectElement(click.getX(), click.getY());
+						}
+						
+						refreshCanvas();
 					}
 					else if (!hasSelectedMultipleElements)
 					{
-						hasSelectedConnector = false;
+						currentSelectedConnector = null;
 						selectElement(click.getX(), click.getY());
 					}
 					
@@ -344,10 +360,7 @@ public class CircuitCanvas extends ResizableCanvas
 	{
 		drawGrid();
 		drawAllCircuitElements();
-		if(hasSelectedConnector)
-		{
-			highlightConnectors();
-		}
+
 	}
 
 	private synchronized void drawAllCircuitElements()
@@ -355,51 +368,98 @@ public class CircuitCanvas extends ResizableCanvas
 		ArrayList<Element> array = circuit.getElements();
 		for (Element elem : array)
 		{
-			elem.draw(gc, 1.0, elem.getIsSelected());
+			elem.draw(gc, 1.0, elem.getSelectionMode());
 		}
+		
 		ArrayList<Line> lines = circuit.getLines();
 		for(Line line : lines)
 		{
 			line.draw(gc);
 		}
+		
+		highlightConnectors();
 	}
 	
+	// needs a selected Connector
 	private void highlightConnectors()
 	{
-		for(Element e : circuit.getElements())
+		ArrayList<Element> array = circuit.getElements();
+		if (currentSelectedConnector != null)
 		{
-			if(e.getClass() == Connector.class)
+			ArrayList<Connector> connectedConn = currentSelectedConnector.getConnections();
+			// draw again to prevent overlap effects when highlighting
+			for (Element elem : array)
 			{
-				Connector c = (Connector) e;
-				c.highlight(gc);
+				if (elem.getClass() == Connector.class
+						&& ((Connector)elem).getOwner() != currentSelectedConnector.getOwner() // don't highlight connectors with same owner
+						&& !connectedConn.contains(elem)) // don't highlight already connected connectors
+				{
+					elem.draw(gc, 1.0, SelectionMode.HIGHLIGHTED);
+				}
 			}
 		}
 	}
 	
-	public void connectConnectors(double x, double y)
+	// connects or disconnects connector at x,y
+	private boolean connectConnector(double x, double y)
 	{
 		ArrayList<Element> elements = circuit.getElementsByPosition(x, y);
 		if (elements != null) // avoid selection duplicates
 		{
-			Element connector = null;
+			Connector connector = null; // selected connector
 			for(Element e : elements)
 			{
 				if(e.getClass() == Connector.class)
 				{
-					connector = e;
+					connector = (Connector)e;
 				}
 			}
-			if(connector != null)
+			
+			if(connector != null
+					&& currentSelectedConnector != null
+					&& currentSelectedConnector.getOwner() != connector.getOwner()) // don't connect 2 connector with same owner
 			{
-				Connector c = (Connector) connector;
-				if (!currentSelectedElements.isEmpty() && (Connector) currentSelectedElements.get(0) != null)
+				// try to connect
+				return(connector.connect((Connector) currentSelectedElements.get(0)));
+			}
+		}
+		return false;
+	}
+	
+	private boolean disconnectConnector(double x, double y)
+	{
+		ArrayList<Element> elements = circuit.getElementsByPosition(x, y);
+		if (elements != null)
+		{
+			Connector connector = null; // get clicked connector
+			for(Element e : elements)
+			{
+				if(e.getClass() == Connector.class)
 				{
-					c.connect((Connector) currentSelectedElements.get(0));
+					connector = (Connector)e;
+				}
+			}
+			
+			if(connector != null
+					&& currentSelectedConnector != null
+					&& currentSelectedConnector.getOwner() != connector.getOwner()) // don't connect 2 connector with same owner
+			{
+				ArrayList<Connector> connectedConnectors = currentSelectedConnector.getConnections();
+				
+				// check if connected and disconnect if true
+				if (connectedConnectors != null)
+				{
+					for (Connector conn : connectedConnectors)
+					{
+						if (conn.equals(connector)) // is already connected
+						{
+							return(currentSelectedConnector.disconnect(connector));
+						}
+					}
 				}
 			}
 		}
-		deselectAll();
-		hasSelectedConnector = false;
+		return false;
 	}
 	
 	public Element[] copySelected()
@@ -452,7 +512,7 @@ public class CircuitCanvas extends ResizableCanvas
 		{
 			if(e.getClass() == Component.class)
 			{
-				currentSelectedElements.add(e.setIsSelected(true));
+				currentSelectedElements.add(e.setSelectionMode(SelectionMode.SELECTED));
 			}
 		}
 		
@@ -642,7 +702,7 @@ public class CircuitCanvas extends ResizableCanvas
 		{
 			for (Element e : currentSelectedElements)
 			{
-				e.setIsSelected(false);
+				e.setSelectionMode(SelectionMode.UNSELECTED);
 			}
 			currentSelectedElements.clear();
 			
@@ -664,10 +724,10 @@ public class CircuitCanvas extends ResizableCanvas
 				if(e.getClass() == Connector.class)
 				{
 					elemToAdd = e;
-					hasSelectedConnector = true;
+					currentSelectedConnector = (Connector) e;
 				}
 			}
-			currentSelectedElements.add(elemToAdd.setIsSelected(true)); // take first element found
+			currentSelectedElements.add(elemToAdd.setSelectionMode(SelectionMode.SELECTED)); // take first element found
 		}
 	}
 	
@@ -675,7 +735,7 @@ public class CircuitCanvas extends ResizableCanvas
 	{
 		if(element != null)
 		{
-			currentSelectedElements.add(element.setIsSelected(true));
+			currentSelectedElements.add(element.setSelectionMode(SelectionMode.SELECTED));
 		}
 	}
 	
@@ -706,7 +766,7 @@ public class CircuitCanvas extends ResizableCanvas
 			{
 				if (e.getClass() == Component.class)
 				{
-					currentSelectedElements.add(e.setIsSelected(true));
+					currentSelectedElements.add(e.setSelectionMode(SelectionMode.SELECTED));
 				}
 			}
 		}
@@ -718,7 +778,7 @@ public class CircuitCanvas extends ResizableCanvas
 		{
 			for(Element e : elements)
 			{
-				currentSelectedElements.add(e.setIsSelected(true));
+				currentSelectedElements.add(e.setSelectionMode(SelectionMode.SELECTED));
 			}
 		}
 	}
