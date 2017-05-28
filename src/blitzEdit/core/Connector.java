@@ -175,7 +175,7 @@ public final class Connector extends Element
 	}
 	
 	//Löst die Verbindung zum übergebenen Connecor
-	public void disconnect(Connector conn)
+	public boolean disconnect(Connector conn)
 	{
 		ArrayList<Connector> newConnections = new ArrayList<Connector>(_connections);
 		/*
@@ -187,10 +187,16 @@ public final class Connector extends Element
 					_connections.remove(conn);
 			}
 		}*/
-		newConnections.remove(conn);
-		_connections = newConnections;
-		if (_connections.isEmpty())
-			_connected = false;
+		if(newConnections.remove(conn))
+		{
+			_connections = newConnections;
+			if (_connections.isEmpty())
+				_connected = false;
+			
+			conn.disconnect(this);
+			return true;
+		}
+		return false;
 	}
 	
 	public void disconnect(Collection<Element> elems)

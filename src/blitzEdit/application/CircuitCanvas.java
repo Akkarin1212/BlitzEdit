@@ -37,7 +37,7 @@ public class CircuitCanvas extends ResizableCanvas
 	private boolean isSelectingMultipleElements;
 	private boolean hasSelectedMultipleElements;
 	private boolean canSelectMultipleElements;
-	private boolean hasSelectedConnector;
+	private Connector currentSelectedConnector;
 	
 	private double canvasScaleFactor = 1;
 	
@@ -82,22 +82,28 @@ public class CircuitCanvas extends ResizableCanvas
 				}
 				else if (click.isPrimaryButtonDown())
 				{
-					if(hasSelectedConnector)
+					if(currentSelectedConnector != null)
 					{
-						if(connectConnectors(click.getX(), click.getY())) // connect worked
+						if(connectConnector(click.getX(), click.getY())) // connect worked
+						{
+							
+						}
+						else if(disconnectConnector(click.getX(), click.getY())) // disconnect worked
 						{
 							
 						}
 						else
 						{
 							deselectAll();
-							hasSelectedConnector = false;
+							currentSelectedConnector = null;
 							selectElement(click.getX(), click.getY());
 						}
+						
+						refreshCanvas();
 					}
 					else if (!hasSelectedMultipleElements)
 					{
-						hasSelectedConnector = false;
+						currentSelectedConnector = null;
 						selectElement(click.getX(), click.getY());
 					}
 					
@@ -371,17 +377,21 @@ public class CircuitCanvas extends ResizableCanvas
 			line.draw(gc);
 		}
 		
-		if (hasSelectedConnector
-				&& !currentSelectedElements.isEmpty() 
-				&& currentSelectedElements.get(0).getClass() == Connector.class)
+		highlightConnectors();
+	}
+	
+	// needs a selected Connector
+	private void highlightConnectors()
+	{
+		ArrayList<Element> array = circuit.getElements();
+		if (currentSelectedConnector != null)
 		{
-			Connector conn = (Connector) currentSelectedElements.get(0);
-			ArrayList<Connector> connectedConn = conn.getConnections();
+			ArrayList<Connector> connectedConn = currentSelectedConnector.getConnections();
 			// draw again to prevent overlap effects when highlighting
 			for (Element elem : array)
 			{
 				if (elem.getClass() == Connector.class
-						&& ((Connector)elem).getOwner() != conn.getOwner() // don't highlight connectors with same owner
+						&& ((Connector)elem).getOwner() != currentSelectedConnector.getOwner() // don't highlight connectors with same owner
 						&& !connectedConn.contains(elem)) // don't highlight already connected connectors
 				{
 					elem.draw(gc, 1.0, SelectionMode.HIGHLIGHTED);
@@ -390,12 +400,13 @@ public class CircuitCanvas extends ResizableCanvas
 		}
 	}
 	
-	public boolean connectConnectors(double x, double y)
+	// connects or disconnects connector at x,y
+	private boolean connectConnector(double x, double y)
 	{
 		ArrayList<Element> elements = circuit.getElementsByPosition(x, y);
 		if (elements != null) // avoid selection duplicates
 		{
-			Connector connector = null;
+			Connector connector = null; // selected connector
 			for(Element e : elements)
 			{
 				if(e.getClass() == Connector.class)
@@ -403,12 +414,49 @@ public class CircuitCanvas extends ResizableCanvas
 					connector = (Connector)e;
 				}
 			}
-			Connector connectorToConnect = (Connector) currentSelectedElements.get(0);
+			
 			if(connector != null
-					&& connectorToConnect != null
-					&& connectorToConnect.getOwner() != connector.getOwner()) // don't connect 2 connector with same owner
+					&& currentSelectedConnector != null
+					&& currentSelectedConnector.getOwner() != connector.getOwner()) // don't connect 2 connector with same owner
 			{
-				return (connector.connect((Connector) currentSelectedElements.get(0)));
+				// try to connect
+				return(connector.connect((Connector) currentSelectedElements.get(0)));
+			}
+		}
+		return false;
+	}
+	
+	private boolean disconnectConnector(double x, double y)
+	{
+		ArrayList<Element> elements = circuit.getElementsByPosition(x, y);
+		if (elements != null)
+		{
+			Connector connector = null; // get clicked connector
+			for(Element e : elements)
+			{
+				if(e.getClass() == Connector.class)
+				{
+					connector = (Connector)e;
+				}
+			}
+			
+			if(connector != null
+					&& currentSelectedConnector != null
+					&& currentSelectedConnector.getOwner() != connector.getOwner()) // don't connect 2 connector with same owner
+			{
+				ArrayList<Connector> connectedConnectors = currentSelectedConnector.getConnections();
+				
+				// check if connected and disconnect if true
+				if (connectedConnectors != null)
+				{
+					for (Connector conn : connectedConnectors)
+					{
+						if (conn.equals(connector)) // is already connected
+						{
+							return(currentSelectedConnector.disconnect(connector));
+						}
+					}
+				}
 			}
 		}
 		return false;
@@ -676,7 +724,7 @@ public class CircuitCanvas extends ResizableCanvas
 				if(e.getClass() == Connector.class)
 				{
 					elemToAdd = e;
-					hasSelectedConnector = true;
+					currentSelectedConnector = (Connector) e;
 				}
 			}
 			currentSelectedElements.add(elemToAdd.setSelectionMode(SelectionMode.SELECTED)); // take first element found
