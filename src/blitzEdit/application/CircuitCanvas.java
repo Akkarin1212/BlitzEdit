@@ -377,6 +377,12 @@ public class CircuitCanvas extends ResizableCanvas
 			line.draw(gc);
 		}
 		
+		// prevent overlapping from lines etc. and draw current selected connector last
+		if(currentSelectedConnector != null)
+		{
+			currentSelectedConnector.draw(gc, 1.0, currentSelectedConnector.getSelectionMode());
+		}
+		
 		highlightConnectors();
 	}
 	
