@@ -87,8 +87,8 @@ public class BlitzEdit implements javafx.fxml.Initializable
 	@Override
 	public void initialize(URL location, ResourceBundle resources)
 	{
-		addTab();
-		addLibrary("New Library");
+		addTab("New Circuit");
+		addLibrary("Template Library");
 	}
 	
 	public Tab getCurrentTab()
@@ -118,7 +118,7 @@ public class BlitzEdit implements javafx.fxml.Initializable
 	{
 		Debug_Text.setText("New");
 
-		addTab();
+		addTab("New Circuit");
 	}
 
 	@FXML
@@ -133,6 +133,7 @@ public class BlitzEdit implements javafx.fxml.Initializable
 		
 		if (filepath != null)
 		{
+			addTab(filepath.getName());
 			XMLParser parser = new XMLParser();
 			parser.loadCircuit(getCurrentCircuitCanvas().circuit, filepath.getPath());
 			getCurrentCircuitCanvas().refreshCanvas();
@@ -159,7 +160,10 @@ public class BlitzEdit implements javafx.fxml.Initializable
 		if (destination != null)
 		{
 			XMLParser parser = new XMLParser();
-			parser.saveCircuit(getCurrentCircuitCanvas().circuit, destination.getPath());
+			parser.saveCircuit(getCurrentCircuitCanvas().circuit, destination.getPath(), true); // TODO: option to choose usage of hashes
+			
+			String filename = destination.getName().replace(".xml", "");
+			getCurrentTab().setText(filename);
 		}
 	}
 
@@ -283,12 +287,12 @@ public class BlitzEdit implements javafx.fxml.Initializable
 		Debug_Text.setText("About");
 	}
 
-	private void addTab()
+	private void addTab(String name)
 	{
 		// check if the TabPanel exists before creating tabs
 		if (CircuitsTabPane != null)
 		{
-			Tab tab = new Tab("New Tab");
+			Tab tab = new Tab(name);
 			AnchorPane root = new AnchorPane();
 			ScrollPane sp = new ScrollPane();
 			

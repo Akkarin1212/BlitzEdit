@@ -11,37 +11,23 @@ import java.util.ArrayList;
 
 import javax.swing.JOptionPane;
 
-import blitzEdit.application.BlitzEdit;
-import blitzEdit.application.Main;
 import blitzEdit.core.Circuit;
 import blitzEdit.core.Component;
 import blitzEdit.core.Connector;
 import blitzEdit.core.Element;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
-import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.input.ScrollEvent;
-import javafx.scene.layout.VBox;
-import javafx.scene.layout.VBoxBuilder;
-import javafx.scene.shape.Circle;
-import javafx.scene.text.Text;
-import javafx.stage.Modality;
-import javafx.stage.Popup;
-import javafx.stage.Stage;
 
 public class XMLParser implements IParser{
 	private Circuit currentCircuit = null;
 	private ArrayList<Element> elements = new ArrayList<Element>();
+	private boolean useHashes;
+	private boolean ignoreHashes;
 	
-	public void saveCircuit (Circuit circuit, String destination) 
+	public void saveCircuit (Circuit circuit, String destination, boolean useHashes) 
 	{
 		currentCircuit = circuit;
+		this.useHashes = useHashes;
 		
-		String elementsString = new String();
-		String connectionsString = new String();
+		String circuitString = new String();
 		
 		elements = currentCircuit.getElements();
 		for(int i=0; i<elements.size();i++)
@@ -49,30 +35,37 @@ public class XMLParser implements IParser{
 			Element elem = elements.get(i);
 			if(elem.getClass() == Component.class)
 			{
-				elementsString += saveComponent((Component)elem, i);
-				connectionsString += saveComponentChilds((Component)elem);
-			}
-			else if(elem.getClass() == Connector.class)
-			{
-				Connector conn = (Connector) elem;
-				elementsString += saveConnector(conn,i);
-				if(conn.connected())
+				Component comp = (Component) elem;
+				
+				circuitString += "\t" + saveComponent((Component)elem, i);
+				circuitString += "\t\t" + saveComponentChilds((Component)elem);
+				
+				ArrayList<Connector> connectors = comp.getConnectors();
+				for(Connector connector : connectors)
 				{
-					ArrayList<Connector> connections = conn.getConnections();
-					for(Connector c : connections)
+					circuitString += "\t\t" + saveConnector(connector, elements.indexOf(connector));
+					if (connector.connected())
 					{
-						connectionsString += saveConnection(conn, c);
+						ArrayList<Connector> connections = connector.getConnections();
+						for (Connector connectedConn : connections)
+						{
+							circuitString += "\t\t\t" + saveConnection(connector, connectedConn);
+						}
 					}
 				}
 			}
 		}
 		
-		// TODO: String in file speichern
+		String result = circuitString;
+		if(useHashes)
+		{
+			result = "\t" + createCircuitHash(result) + result;
+		}
+		result = "<Circuit>\n" + result + "</Circuit>";
+			
+		
 		Path path = Paths.get(destination);
-
-		String result = elementsString + connectionsString;
-		result = result.hashCode() + "\n" + result;
-
+		// safe string in file
 		try
 		{
 			FileOutputStream fos = new FileOutputStream(path.toString());
@@ -103,77 +96,118 @@ public class XMLParser implements IParser{
 			e.printStackTrace();
 		}
 		
+		// remove unnecessary tokens
+		fileString = fileString.replace("/>", "");
+		fileString = fileString.replace("\n", "");
+		fileString = fileString.replace("\t", "");
+		
 		String [] xmlElements = fileString.split("<");
 		
-		//check if file was modified
-		String fileStringWithoutHash = fileString.replace(xmlElements[0], "");
-		String hash = xmlElements[0].replace("\n", "");
-		if(!hash.equals(createHash(fileStringWithoutHash)))
+		ArrayList<String> components = new ArrayList<String>();
+		ArrayList<String> connectors = new ArrayList<String>();
+		ArrayList<String> connections = new ArrayList<String>();
+		ArrayList<String> childs = new ArrayList<String>();
+		
+		for(String xml : xmlElements)
 		{
-			int accepted = JOptionPane.showConfirmDialog(null, "Modifications have been made in this file. Do you still want to load it?", "Loading Error", JOptionPane.YES_NO_OPTION);
-			if(accepted != 0)
+			xml = xml.replace("\"", "");
+			if(xml.startsWith("component"))
 			{
-				System.err.println("blub");
+				components.add(xml);
+			}
+			else if(xml.startsWith("connector"))
+			{
+				connectors.add(xml);
+			}
+			else if(xml.startsWith("connection"))
+			{
+				connections.add(xml);
+			}
+			else if(xml.startsWith("child"))
+			{
+				childs.add(xml);
+			}
+			else if(xml.startsWith("circuithash"))
+			{
+				String hash = xml.replace("circuithash=", "");
+				if (!checkCircuitHash(hash, fileString))
+				{
+					int accepted = JOptionPane.showConfirmDialog(null,
+							"Modifications have been made in this file. Do you still want to load it?", "Loading Error",
+							JOptionPane.YES_NO_OPTION);
+					if (accepted != 0)
+					{
+						System.err.println("blub");
+						return;
+					}
+					else
+					{
+						ignoreHashes = true;
+					}
+				}
+			}
+		}
+		
+		// make sure elements array is large enough
+		for (int i = 0; i < components.size() + connectors.size(); i++)
+		{
+			elements.add(null);
+		}
+		
+		for(String xml : components)
+		{
+			if(!readComponent(xml))
+			{
+				System.err.println("Stopped loading process.");
 				return;
 			}
 		}
 		
-		
-		for(String s: xmlElements)
+		for(String xml : connectors)
 		{
-			s = s.replace("/>", "");
-			if(s.startsWith("component"))
+			if(!readConnector(xml))
 			{
-				Element e = readComponent(s);
-				if(e != null)
-				{
-					elements.add(e);
-				}
-				else
-				{
-					System.err.println("Stopped loading process.");
-					return;
-				}
-			}
-			else if(s.startsWith("connector"))
-			{
-				Element e = readConnector(s);
-				if(e != null)
-				{
-					elements.add(e);
-				}
-				else
-				{
-					System.err.println("Stopped loading process.");
-					return;
-				}
-			}
-			else if(s.startsWith("connection"))
-			{
-				createConnection(s);
-			}
-			else if(s.startsWith("child"))
-			{
-				addComponentChilds(s);
+				System.err.println("Stopped loading process.");
+				return;
 			}
 		}
 		
-		//check for connectors without owner
-		ArrayList<Element> elemsToRemove = new ArrayList<Element>();
-		for(Element e : elements)
+		for(String xml : childs)
 		{
-			if(e.getClass() == Connector.class)
+			if(!addComponentChilds(xml))
 			{
-				Connector c = (Connector)e;
-				if(c.getOwner() == null)
+				System.err.println("Stopped loading process.");
+				return;
+			}
+		}
+		
+		for(String xml : connections)
+		{
+			if(!createConnection(xml))
+			{
+				System.err.println("Stopped loading process.");
+				return;
+			}
+		}
+
+		// check for connectors without owner
+		ArrayList<Element> elemsToRemove = new ArrayList<Element>();
+		for (Element e : elements)
+		{
+			if (e.getClass() == Connector.class)
+			{
+				Connector c = (Connector) e;
+				if (c.getOwner() == null)
 				{
 					System.err.println("Error in file: Connector " + elements.indexOf(e) + " has no owner.");
 					elemsToRemove.add(e);
 				}
 			}
 		}
+		
 		if(elemsToRemove.isEmpty() || elements.removeAll(elemsToRemove))
 		{
+			circuit.clearElements();
 			circuit.addElements(elements);
 		}
 	}
@@ -185,9 +219,9 @@ public class XMLParser implements IParser{
 		return new String(encoded, encoding);
 	}
 	
-	private Element readComponent (String xml) 
+	private boolean readComponent (String xml) 
 	{
-		double id=0;
+		int id=0;
 		double x=0;
 		double y=0;
 		double height=0;
@@ -196,6 +230,7 @@ public class XMLParser implements IParser{
 		String type = null;
 		String svgPath = null;
 		String hash = null;
+		boolean hasHash = false;
 		
 		String[] rectElements = xml.split(" ");
 		for(String s : rectElements)
@@ -204,7 +239,7 @@ public class XMLParser implements IParser{
 			if(s.contains("id="))
 			{
 				String[] sElem = s.split("=");
-				id = Double.parseDouble(sElem[1]);
+				id = Integer.parseInt(sElem[1]);
 			}
 			if(s.contains("x="))
 			{
@@ -245,31 +280,34 @@ public class XMLParser implements IParser{
 			{
 				String[] sElem = s.split("=");
 				hash = sElem[1];
+				hasHash = true;
 			}
 			
 		}
 		
-		if (checkHash(hash, xml))
+		if (!hasHash || (hasHash && checkHash(hash, xml)))
 		{
-			return new Component(x, y, width, height, rot, type, svgPath);
+			elements.set((int)id, new Component(x, y, width, height, rot, type, svgPath));
+			return true;
 		}
 		else
 		{
 			System.err.println("Changes have been made in the component: " + xml + ". The component wasn't created.");
 		}
-		return null;
+		return false;
 		
 	}
 	
-	private Element readConnector (String xml)
+	private boolean readConnector (String xml)
 	{
-		double id=0;
+		int id=0;
 		double x=0;
 		double y=0;
 		double rot=0;
 		int relX=0;
 		int relY=0;
 		String hash = null;
+		boolean hasHash = false;
 		
 		String[] rectElements = xml.split(" ");
 		for(String s : rectElements)
@@ -278,7 +316,7 @@ public class XMLParser implements IParser{
 			if(s.contains("id="))
 			{
 				String[] sElem = s.split("=");
-				id = Double.parseDouble(sElem[1]);
+				id = Integer.parseInt(sElem[1]);
 			}
 			else if(s.contains("x="))
 			{
@@ -309,26 +347,29 @@ public class XMLParser implements IParser{
 			{
 				String[] sElem = s.split("=");
 				hash = sElem[1];
+				hasHash = true;
 			}
 		}
-		int[] relPos = {relX,relY};
-		
-		if (checkHash(hash, xml))
+		int[] relPos = { relX, relY };
+
+		if (!hasHash || (hasHash && checkHash(hash, xml)))
 		{
-			return new Connector((int)x,(int)y,relPos,(short)rot);
+			elements.set((int)id, new Connector((int) x, (int) y, relPos, (short) rot));
+			return true;
 		}
 		else
 		{
 			System.err.println("Changes have been made in the connector: " + xml + ". The connector wasn't created.");
 		}
-		return null;
+		return false;
 	}
 	
-	private void createConnection(String xml)
+	private boolean createConnection(String xml)
 	{
 		double conn1=0;
 		double conn2=0;
 		String hash = null;
+		boolean hasHash = false;
 		
 		String[] rectElements = xml.split(" ");
 		for(String s : rectElements)
@@ -348,10 +389,11 @@ public class XMLParser implements IParser{
 			{
 				String[] sElem = s.split("=");
 				hash = sElem[1];
+				hasHash = true;
 			}
 		}
-		
-		if (checkHash(hash, xml))
+
+		if (!hasHash || (hasHash && checkHash(hash, xml)))
 		{
 			try
 			{
@@ -359,23 +401,27 @@ public class XMLParser implements IParser{
 				Connector connector2 = (Connector) elements.get((int) conn2);
 
 				connector1.connect(connector2);
+				return true;
 			}
 			catch (IndexOutOfBoundsException e)
 			{
-				System.err.println("Error in generating connections between connectors: Tried to access " + e.getMessage());
+				System.err.println(
+						"Error in generating connections between connectors: Tried to access " + e.getMessage());
 			}
 		}
 		else
 		{
 			System.err.println("Changes have been made in the connection: " + xml + ". The connection wasn't created.");
 		}
+		return false;
 	}
 	
-	private void addComponentChilds(String xml)
+	private boolean addComponentChilds(String xml)
 	{
 		double comp=0;
 		ArrayList<Integer> conn= new ArrayList<Integer>();
 		String hash = null;
+		boolean hasHash = false;
 		
 		String[] rectElements = xml.split(" ");
 		for(String s : rectElements)
@@ -399,9 +445,11 @@ public class XMLParser implements IParser{
 			{
 				String[] sElem = s.split("=");
 				hash = sElem[1];
+				hasHash = true;
 			}
 		}
-		if (checkHash(hash, xml))
+		
+		if (!hasHash || (hasHash && checkHash(hash, xml)))
 		{
 			if (!elements.isEmpty())
 			{
@@ -410,27 +458,33 @@ public class XMLParser implements IParser{
 				{
 					component.addConnenctor((Connector) elements.get(i));
 				}
+				return true;
 			}
 		}
 		else
 		{
-			System.err.println("Changes have been made in the child property: " + xml + ". The connectors weren't added.");
+			System.err.println(
+					"Changes have been made in the child property: " + xml + ". The connectors weren't added.");
 		}
+		return false;
 	}
 	
 	private String saveComponent(Component comp, int id)
 	{
-		String result = "component id=" + id + 
-						" x=" + comp.getX() +
-						" y=" + comp.getY() +
-						" width=" + comp.getSizeX() +
-						" height=" + comp.getSizeY() +
-						" rot=" + comp.getRotation() +
-						" type=" + comp.getType() +
-						" svgPath=" + comp.getSvgFilePath();
+		String result = "component id=\"" + id + 
+						"\" x=\"" + comp.getX() +
+						"\" y=\"" + comp.getY() +
+						"\" width=\"" + comp.getSizeX() +
+						"\" height=\"" + comp.getSizeY() +
+						"\" rot=\"" + comp.getRotation() +
+						"\" type=\"" + comp.getType() +
+						"\" svgPath=\"" + comp.getSvgFilePath();
 		
-		result += " hash=" + createHash(result);
-		result = "<" +result + "/>\n";
+		if(useHashes)
+		{
+			result += "\" hash=\"" + createHash(result);
+		}
+		result = "<" +result + "\"/>\n";
 		return result;
 	}
 	
@@ -438,25 +492,30 @@ public class XMLParser implements IParser{
 	{
 		int[] relPos = conn.getRelPos();
 		
-		String result = "connector id=" + id +
-						" x=" + (conn.getX()+5) +
-						" y=" + (conn.getY()+5) + 
-						" rot=" + conn.getRelativeRotation() +
-						" relX=" + relPos[0] +
-						" relY=" + relPos[1] ;
-		
-		result += " hash=" + createHash(result);
-		result = "<" + result + "/>\n";
+		String result = "connector id=\"" + id +
+						"\" x=\"" + conn.getX() +
+						"\" y=\"" + conn.getY() + 
+						"\" rot=\"" + conn.getRelativeRotation() +
+						"\" relX=\"" + relPos[0] +
+						"\" relY=\"" + relPos[1] ;
+		if(useHashes)
+		{
+			result += "\" hash=\"" + createHash(result);
+		}
+		result = "<" + result + "\"/>\n";
 		return result;
 	}
 	
 	private String saveConnection(Connector conn, Connector conn2)
 	{
-		String result = "connection conn1=" + elements.indexOf(conn) +
-						" conn2=" + elements.indexOf(conn2);
-			
-		result += " hash=" + createHash(result);
-		result = "<" + result + "/>\n";
+		String result = "connection conn1=\"" + elements.indexOf(conn) +
+						"\" conn2=\"" + elements.indexOf(conn2);
+		
+		if(useHashes)
+		{
+			result += "\" hash=\"" + createHash(result);
+		}
+		result = "<" + result + "\"/>\n";
 		return result;
 	}
 	
@@ -465,28 +524,77 @@ public class XMLParser implements IParser{
 		String result;
 		ArrayList<Connector> connectors = comp.getConnectors();
 		
-		result = "child comp=" + elements.indexOf(comp) + 
-				 " conn=";
+		result = "child comp=\"" + elements.indexOf(comp) + 
+				 "\" conn=\"";
 		
 		for(Connector conn : connectors)
 		{
 			result += elements.indexOf(conn) + ";";
 		}
 		
-		result += " hash=" + createHash(result);
-		result = "<" + result + "/>\n";
+		if(useHashes)
+		{
+			result += "\" hash=\"" + createHash(result);
+		}
+		result = "<" + result + "\"/>\n";
 		return result;
 	}
 	
 	private boolean checkHash(String hash, String xml)
 	{
-		xml = xml.replace('<', ' ');
-		xml = xml.replace("/>", " ");
-		xml = xml.trim();
-		xml = xml.replace("hash=", "");
-		xml = xml.replace(hash, "");
-		xml = xml.trim();
+		if (!ignoreHashes)
+		{
+			xml = xml.replace("<", "");
+			xml = xml.replace("/>", "");
+			xml = xml.trim();
+			xml = xml.replace("hash=", "");
+			xml = xml.replace(hash, "");
+			xml = xml.trim();
 
+			try
+			{
+				int hashInt = Integer.parseInt(hash);
+				int test = xml.hashCode();
+				return (xml.hashCode() == hashInt);
+			}
+			catch (NumberFormatException e)
+			{
+				System.err.println("Changes to the hash code have been made. " + e.getMessage());
+				return false;
+			}
+		}
+		else
+		{
+			return true;
+		}
+	}
+	
+	private String createHash(String xml)
+	{
+		xml = xml.replace("\"", "");
+		return new String(Integer.toString(xml.hashCode()));
+	}
+	
+	private String createCircuitHash(String xml)
+	{
+		xml = xml.replace("<", "");
+		xml = xml.replace("/>", "");
+		xml = xml.replace("\n", "");
+		xml = xml.replace("\t", "");
+		
+		return new String("<circuithash=\"" + xml.hashCode() + "\"/>\n");
+	}
+	
+	private boolean checkCircuitHash(String hash, String xml)
+	{
+		xml = xml.replace("</Circuit>", "");
+		xml = xml.replace("<Circuit>", "");
+		xml = xml.replace("<", "");
+		xml = xml.replace("/>", "");
+		xml = xml.replace("circuithash=\"" + hash + "\"", "");
+		xml = xml.replace("\n", "");
+		xml = xml.replace("\t", "");
+		
 		try{
 			int hashInt = Integer.parseInt(hash);
 			return (xml.hashCode() == hashInt);
@@ -496,43 +604,4 @@ public class XMLParser implements IParser{
 			return false;
 		}
 	}
-	
-	private String createHash(String xml)
-	{
-		return new String(Integer.toString(xml.hashCode()));
-	}
-	/*
-	// returns weather the user wants to load corrupted file or not
-	private void createPopupScene()
-	{
-		final Stage dialog = new Stage();
-        dialog.initModality(Modality.WINDOW_MODAL);
-        dialog.initOwner(Main.mainStage);
-        VBox dialogVbox = new VBox(20);
-        
-        Button cancel = new Button("Cancel");
-        cancel.setOnAction(new EventHandler<ActionEvent>(){
-			@Override
-			public void handle(ActionEvent click)
-			{
-				accepted = false;
-				dialog.hide();
-			}
-        });
-        Button confirm = new Button("Confirm");
-        confirm.setOnAction(new EventHandler<ActionEvent>(){
-			@Override
-			public void handle(ActionEvent click)
-			{
-				accepted = true;
-				dialog.hide();
-			}
-        });
-        
-        dialogVbox.getChildren().addAll(new Text("This is a Dialog"), cancel, confirm);
-        Scene dialogScene = new Scene(dialogVbox, 300, 200);        
-        dialog.setScene(dialogScene);
-        dialog.show();
-	}
-	*/
 }

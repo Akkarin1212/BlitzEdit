@@ -130,6 +130,7 @@ public class Circuit
 		{
 			for (Element elem : elements)
 			{
+				/*
 				if (elem instanceof Component)
 				{
 					for (Connector con : ((Component)elem).getConnectors())
@@ -137,6 +138,7 @@ public class Circuit
 						_elements.add(con);
 					}
 				}
+				*/
 				_elements.add(elem);
 			}
 		}
