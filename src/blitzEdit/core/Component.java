@@ -212,9 +212,14 @@ public class Component extends RotatableElement
 		super.rotate(rotation);
 	}
 	
-	public ComponentProperty [] getProperties()
+	public ArrayList<ComponentProperty> getProperties()
 	{
-		return _properties.clone();
+		return new ArrayList<ComponentProperty>(_properties);
+	}
+	
+	public void addProperty(ComponentProperty prop)
+	{
+		_properties.add(prop);
 	}
 	
 	public ComponentProperty getProperty(String name)
@@ -265,15 +270,13 @@ public class Component extends RotatableElement
 		_svgFilePath = new String(svg);
 		_svgFileString = SvgRenderer.getSvgFileString(_svgFilePath);
 		_ports = new ArrayList<Connector>();
-
-		setRotation(rot);
+		_properties = new ArrayList<ComponentProperty>();
 	}
 
 	public Component(int x, int y, short rot, ComponentBlueprint cb)
 	{
 		super (x, y, rot);
 		initialize(x, y, rot, cb.getType(), cb.getSvgFilePath(), cb.getRelPos(), cb.getConRelRot());
-		setRotation(rot);
 	}
 	
 	public Component(int x, int y, short rot, String type, int[][] connRelPos, short [] connRelRot ,String svg)
@@ -305,7 +308,7 @@ public class Component extends RotatableElement
 		initialize((int)x, (int)y, (short)rot, type, svg);
 	}	
 
-	private ComponentProperty [] _properties;
+	private ArrayList<ComponentProperty>_properties;
 	private ArrayList<Connector> _ports;
 	private String _svgFilePath;
 	private String _svgFileString;

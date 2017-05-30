@@ -14,6 +14,7 @@ public class ComponentBlueprint
 	{
 		return new String(_svgFilePath);
 	}
+	
 	public int [][] getRelPos() 
 	{
 		return _conRelPos.clone();
@@ -43,6 +44,7 @@ public class ComponentBlueprint
 		_sizeX = sizeX;
 		_sizeY = sizeY;
 	}
+	
 	
 	private String _type;
 	private String _svgFilePath;
