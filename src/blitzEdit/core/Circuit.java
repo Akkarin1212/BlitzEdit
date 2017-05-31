@@ -1,11 +1,8 @@
 package blitzEdit.core;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.awt.Point;
 import java.awt.Rectangle;
-import blitzEdit.core.Component;
+import java.util.ArrayList;
+import java.util.Collection;
 
 // Circuit Klasse:
 // Speichert Bauelemente und deren Verbindungen
@@ -43,8 +40,6 @@ public class Circuit
 			if (elemWidth > width)
 				width = elemWidth;
 		}
-		//if (width < 2000)
-		//	width = 2000;
 		return width;
 	}
 	
@@ -57,8 +52,6 @@ public class Circuit
 			if (elemHeight > height)
 				height = elemHeight;
 		}
-		//if (height < 2000)
-		//	height = 2000;
 		return height;
 	}
 	
