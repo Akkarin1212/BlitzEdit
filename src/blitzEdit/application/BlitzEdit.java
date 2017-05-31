@@ -145,6 +145,16 @@ public class BlitzEdit implements javafx.fxml.Initializable
 	private void handleSaveAction(Event event)
 	{
 		Debug_Text.setText("Save");
+		
+		File destination = getCurrentCircuitCanvas().currentSaveDirection;
+		if (destination != null)
+		{
+			XMLParser parser = new XMLParser();
+			parser.saveCircuit(getCurrentCircuitCanvas().circuit, destination.getPath(), true); // TODO: option to choose usage of hashes
+			
+			String filename = destination.getName().replace(".xml", "");
+			getCurrentTab().setText(filename);
+		}
 	}
 
 	@FXML
@@ -161,6 +171,7 @@ public class BlitzEdit implements javafx.fxml.Initializable
 		{
 			XMLParser parser = new XMLParser();
 			parser.saveCircuit(getCurrentCircuitCanvas().circuit, destination.getPath(), true); // TODO: option to choose usage of hashes
+			getCurrentCircuitCanvas().currentSaveDirection = destination;
 			
 			String filename = destination.getName().replace(".xml", "");
 			getCurrentTab().setText(filename);

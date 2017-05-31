@@ -1,5 +1,6 @@
 package blitzEdit.application;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Vector;
 
@@ -28,16 +29,18 @@ public class CircuitCanvas extends ResizableCanvas
 	GraphicsContext gc;
 	Circuit circuit;
 	ScrollPane sp;
+	File currentSaveDirection;
 	
 	private MouseEvent currentMousePosition;
 	
 	private CircuitCanvas ref = this;
 	private ContextMenu rightClickMenu;
 	private Vector<Element> currentSelectedElements = new Vector<Element>();
+	private Connector currentSelectedConnector;
+	
 	private boolean isSelectingMultipleElements;
 	private boolean hasSelectedMultipleElements;
 	private boolean canSelectMultipleElements;
-	private Connector currentSelectedConnector;
 	
 	private double canvasScaleFactor = 1;
 	
