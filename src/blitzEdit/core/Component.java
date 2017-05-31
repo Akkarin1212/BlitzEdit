@@ -5,6 +5,7 @@ import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 
 import javafx.scene.canvas.GraphicsContext;
 import tools.SelectionMode;
@@ -250,6 +251,11 @@ public class Component extends RotatableElement
 		}
 	}
 	
+	public void setProperties(Collection<ComponentProperty> properties)
+	{
+		_properties = new ArrayList<ComponentProperty>(properties);
+	}
+	
 	// Private method called by constructor
 	private void initialize(int x, int y, short rot, String type, String svg, int[][] connRelPos, short[] connRelRot) 
 	{
@@ -257,6 +263,7 @@ public class Component extends RotatableElement
 		_svgFilePath = new String(svg);
 		_svgFileString = SvgRenderer.getSvgFileString(_svgFilePath);
 		_ports = new ArrayList<Connector>();
+		_properties = new ArrayList<ComponentProperty>();
 		for (int i = 0; i < connRelPos.length; i++) 
 		{
 			_ports.add(new Connector(x + connRelPos[i][0], y + connRelPos[i][1], connRelPos[i], connRelRot[i], this));

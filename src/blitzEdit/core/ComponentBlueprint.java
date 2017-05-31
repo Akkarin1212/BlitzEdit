@@ -1,5 +1,8 @@
 package blitzEdit.core;
 
+import java.util.ArrayList;
+import java.util.List;
+
 // Class ComponentBlueprint:
 // holds constructor parameters for a
 // specific component.
@@ -35,7 +38,8 @@ public class ComponentBlueprint
 		return _sizeY;
 	}
 	
-	public ComponentBlueprint(String type, String svgFilePath, int [][] relPos, short [] conRelRot, int sizeX, int sizeY)
+	public ComponentBlueprint(String type, String svgFilePath, int [][] relPos, 
+							short [] conRelRot, int sizeX, int sizeY, List<ComponentProperty> properties)
 	{
 		_type = new String(type);
 		_svgFilePath = new String(svgFilePath);
@@ -43,6 +47,7 @@ public class ComponentBlueprint
 		_conRelRot = conRelRot.clone();
 		_sizeX = sizeX;
 		_sizeY = sizeY;
+		_properties = new ArrayList<ComponentProperty>(properties);
 	}
 	
 	
@@ -52,4 +57,5 @@ public class ComponentBlueprint
 	private short [] _conRelRot;
 	private int _sizeX;
 	private int _sizeY;
+	private ArrayList<ComponentProperty> _properties;
 }
