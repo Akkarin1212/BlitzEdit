@@ -24,6 +24,11 @@
                            </accelerator>
                         </MenuItem>
                         <SeparatorMenuItem mnemonicParsing="false" />
+                        <MenuItem fx:id="Reload" mnemonicParsing="false" onAction="#handleReloadAction" text="Reload..." >
+                        	<accelerator>
+                              <KeyCodeCombination alt="UP" code="F5" control="UP" meta="UP" shift="UP" shortcut="UP" />
+                           </accelerator>
+                        </MenuItem>
                         <MenuItem fx:id="Open" mnemonicParsing="false" onAction="#handleOpenAction" text="Open...">
                            <accelerator>
                               <KeyCodeCombination alt="UP" code="O" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
@@ -77,7 +82,7 @@
                               <KeyCodeCombination alt="UP" code="D" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                            </accelerator>
                         </MenuItem>
-                        <MenuItem fx:id="Delete" mnemonicParsing="false" onAction="#handleDeleteAction" text="Delete" >
+                        <MenuItem fx:id="Delete" mnemonicParsing="false" onAction="#handleDeleteAction" text="Delete">
                         	<accelerator>
                               <KeyCodeCombination alt="UP" code="DELETE" control="UP" meta="UP" shift="UP" shortcut="UP" />
                            </accelerator>

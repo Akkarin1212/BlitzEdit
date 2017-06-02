@@ -145,12 +145,11 @@ public class XMLParser implements IParser{
 					int accepted = JOptionPane.showConfirmDialog(null,
 							"Modifications have been made in this file. Do you still want to load it?", "Loading Error",
 							JOptionPane.YES_NO_OPTION);
-					if (accepted != 0)
+					if (accepted != 0) // declined loading with changes
 					{
-						System.err.println("blub");
 						return;
 					}
-					else
+					else // accepted loading with changes
 					{
 						ignoreHashes = true;
 					}

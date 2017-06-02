@@ -34,6 +34,8 @@ public class BlitzEdit implements javafx.fxml.Initializable
 	@FXML
 	private MenuItem New;
 	@FXML
+	private MenuItem Reload;
+	@FXML
 	private MenuItem Open;
 	@FXML
 	private MenuItem Save;
@@ -121,6 +123,24 @@ public class BlitzEdit implements javafx.fxml.Initializable
 		Debug_Text.setText("New");
 
 		addTab("New Circuit");
+	}
+	
+	@FXML
+	private void handleReloadAction(Event event)
+	{
+		Debug_Text.setText("Reload");
+
+		File filepath = getCurrentCircuitCanvas().currentSaveDirection;
+		if (filepath != null)
+		{
+			XMLParser parser = new XMLParser();
+			parser.loadCircuit(getCurrentCircuitCanvas().circuit, filepath.getPath());
+			getCurrentCircuitCanvas().refreshCanvas();
+		}
+		else
+		{
+			Debug_Text.setText("Need a valid document to reload.");
+		}
 	}
 
 	@FXML
