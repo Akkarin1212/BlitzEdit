@@ -22,6 +22,8 @@ public class XMLParser implements IParser{
 	private boolean useHashes;
 	private boolean ignoreHashes;
 	
+	private final String xmlTag = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
+	
 	public void saveCircuit (Circuit circuit, String destination, boolean useHashes) 
 	{
 		currentCircuit = circuit;
@@ -29,6 +31,7 @@ public class XMLParser implements IParser{
 		
 		String circuitString = new String();
 		
+		// save elements in String
 		elements = currentCircuit.getElements();
 		for(int i=0; i<elements.size();i++)
 		{
@@ -52,7 +55,9 @@ public class XMLParser implements IParser{
 							circuitString += "\t\t\t" + saveConnection(connector, connectedConn);
 						}
 					}
+					circuitString += "\t\t" + "</connector>" + "\n";
 				}
+				circuitString += "\t" + "</component>" + "\n";
 			}
 		}
 		
@@ -61,7 +66,7 @@ public class XMLParser implements IParser{
 		{
 			result = "\t" + createCircuitHash(result) + result;
 		}
-		result = "<Circuit>\n" + result + "</Circuit>";
+		result = xmlTag + "\n" + "<Circuit>\n" + result + "</Circuit>";
 			
 		
 		Path path = Paths.get(destination);
@@ -96,8 +101,13 @@ public class XMLParser implements IParser{
 			e.printStackTrace();
 		}
 		
+		String originalFileString = fileString; // used for hash check
 		// remove unnecessary tokens
+		fileString = fileString.replace(xmlTag, "");
+		fileString = fileString.replace("</component>", "");
+		fileString = fileString.replace("</connector>", "");
 		fileString = fileString.replace("/>", "");
+		fileString = fileString.replace(">", "");
 		fileString = fileString.replace("\n", "");
 		fileString = fileString.replace("\t", "");
 		
@@ -129,8 +139,8 @@ public class XMLParser implements IParser{
 			}
 			else if(xml.startsWith("circuithash"))
 			{
-				String hash = xml.replace("circuithash=", "");
-				if (!checkCircuitHash(hash, fileString))
+				String hash = xml.replace("circuithash hash=", "");
+				if (!checkCircuitHash(hash, originalFileString))
 				{
 					int accepted = JOptionPane.showConfirmDialog(null,
 							"Modifications have been made in this file. Do you still want to load it?", "Loading Error",
@@ -484,7 +494,7 @@ public class XMLParser implements IParser{
 		{
 			result += "\" hash=\"" + createHash(result);
 		}
-		result = "<" +result + "\"/>\n";
+		result = "<" +result + "\">\n";
 		return result;
 	}
 	
@@ -502,7 +512,7 @@ public class XMLParser implements IParser{
 		{
 			result += "\" hash=\"" + createHash(result);
 		}
-		result = "<" + result + "\"/>\n";
+		result = "<" + result + "\">\n";
 		return result;
 	}
 	
@@ -582,16 +592,17 @@ public class XMLParser implements IParser{
 		xml = xml.replace("\n", "");
 		xml = xml.replace("\t", "");
 		
-		return new String("<circuithash=\"" + xml.hashCode() + "\"/>\n");
+		return new String("<circuithash hash=\"" + xml.hashCode() + "\"/>\n");
 	}
 	
 	private boolean checkCircuitHash(String hash, String xml)
 	{
+		xml = xml.replace(xmlTag, "");
 		xml = xml.replace("</Circuit>", "");
 		xml = xml.replace("<Circuit>", "");
 		xml = xml.replace("<", "");
 		xml = xml.replace("/>", "");
-		xml = xml.replace("circuithash=\"" + hash + "\"", "");
+		xml = xml.replace("circuithash hash=\"" + hash + "\"", "");
 		xml = xml.replace("\n", "");
 		xml = xml.replace("\t", "");
 		
