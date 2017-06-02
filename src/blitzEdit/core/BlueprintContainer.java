@@ -78,7 +78,7 @@ public class BlueprintContainer
 	
 	public void addBlueprint(File filepath)
 	{
-		String type = filepath.getName();
+		String type = filepath.getName().replace(".svg", "");
 		String svgFilePath = filepath.toString();
 		String svgFileString = SvgRenderer.getSvgFileString(filepath.toString());
 		// TODO
