@@ -1,6 +1,8 @@
 package blitzEdit.core;
 
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.text.Font;
+import javafx.scene.text.TextAlignment;
 import tools.SelectionMode;
 import tools.SvgRenderer;
 
@@ -34,15 +36,15 @@ public class ComponentLibrary
 	{
 		bc 		 		= BlueprintContainer.get();
 		blueprints 		= new ArrayList<LibraryEntry>();
-		_marginX 		= 10;
-		_marginY 		= 10;
+		_marginX 		= 20;
+		_marginY 		= 20;
 		_scale			= 0.5;
 	}
 	
 	public void initiate(GraphicsContext gc)
 	{
-		int posY = 50;
-		int posX = 25;
+		int posY = 60;
+		int posX = 40;
 		int maxY = 0;
 		blueprints.clear();
 		
@@ -69,7 +71,7 @@ public class ComponentLibrary
 					
 			if (posX > 150)
 			{
-				posX  = 25;
+				posX  = 40;
 				posY += maxY + _marginY;
 				maxY  = 0;
 			}
@@ -82,11 +84,14 @@ public class ComponentLibrary
 		gc.clearRect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
 		for (LibraryEntry entry : blueprints)
 		{
+			entry.draw(gc);
+			/*
 			int posX = entry.rect.x + (int)(entry.rect.width * 0.5);
 			int posY = entry.rect.y + (int)(entry.rect.height * 0.5);
 			
 			String svgString = SvgRenderer.getSvgFileString(entry.bp.getSvgFilePath());
 			SvgRenderer.renderSvgString(svgString, gc, posX, posY, _scale, SelectionMode.UNSELECTED);
+			*/
 		}
 	}
 	
@@ -130,6 +135,18 @@ public class ComponentLibrary
 	{
 		public Rectangle rect = null;
 		public ComponentBlueprint bp = null;
+		
+		public void draw(GraphicsContext gc)
+		{
+			int posX = rect.x + (int)(rect.width * 0.5);
+			int posY = rect.y + (int)(rect.height * 0.5);
+			
+			gc.setFont(new Font(9));
+			gc.setTextAlign(TextAlignment.CENTER);
+			gc.strokeText(bp.getType(), rect.x + rect.width * 0.5, rect.y + 10 + rect.height);
+			String svgString = SvgRenderer.getSvgFileString(bp.getSvgFilePath());
+			SvgRenderer.renderSvgString(svgString, gc, posX, posY, _scale, SelectionMode.UNSELECTED);
+		}
 		
 		public LibraryEntry(double posX, double posY, double sizeX, double sizeY, ComponentBlueprint bp)
 		{

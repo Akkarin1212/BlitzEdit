@@ -2,6 +2,7 @@ package blitzEdit.core;
 
 import java.util.Collection;
 
+import blitzEdit.storage.XMLParser;
 import tools.SvgRenderer;
 
 import java.io.File;
@@ -78,7 +79,7 @@ public class BlueprintContainer
 	
 	public void addBlueprint(File filepath)
 	{
-		String type = filepath.getName();
+		/*String type = filepath.getName().replace(".svg", "");
 		String svgFilePath = filepath.toString();
 		String svgFileString = SvgRenderer.getSvgFileString(filepath.toString());
 		// TODO
@@ -87,7 +88,11 @@ public class BlueprintContainer
 		int sizeX = (int) SvgRenderer.getSvgWidth(svgFileString);
 		int sizeY = (int) SvgRenderer.getSvgHeight(svgFileString);
 		
-		ComponentBlueprint blueprint = new ComponentBlueprint(type, svgFilePath, relPos, relRot, sizeX, sizeY);
+		ComponentBlueprint blueprint = new ComponentBlueprint(type, svgFilePath, relPos, 
+					relRot, sizeX, sizeY, new ArrayList<ComponentProperty>());
+		*/
+		
+		ComponentBlueprint blueprint = XMLParser.readBlueprint(filepath.toString());
 		
 		_blueprints.add(blueprint);
 	}

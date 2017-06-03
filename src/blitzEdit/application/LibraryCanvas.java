@@ -27,10 +27,10 @@ public class LibraryCanvas extends ResizableCanvas
 		gc = getGraphicsContext2D();
 		componentLibrary = new ComponentLibrary();
 		
-		entries.add(new File("img/Widerstand.svg"));
-		entries.add(new File("img/Kondensator.svg"));
-		entries.add(new File("img/Spannungsquelle.svg"));
-		entries.add(new File("img/Spule.svg"));
+		entries.add(new File("blueprints/Widerstand.xml"));
+		entries.add(new File("blueprints/Kondensator.xml"));
+		entries.add(new File("blueprints/Spannungsquelle.xml"));
+		entries.add(new File("blueprints/Spule.xml"));
 		
 		for(File f : entries)
 		{

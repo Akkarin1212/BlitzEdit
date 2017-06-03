@@ -5,6 +5,8 @@ import java.net.URL;
 import java.nio.file.Paths;
 import java.util.ResourceBundle;
 
+import javax.swing.JOptionPane;
+
 import blitzEdit.core.Element;
 import blitzEdit.storage.XMLParser;
 import javafx.event.Event;
@@ -31,6 +33,8 @@ public class BlitzEdit implements javafx.fxml.Initializable
 	
 	@FXML
 	private MenuItem New;
+	@FXML
+	private MenuItem Reload;
 	@FXML
 	private MenuItem Open;
 	@FXML
@@ -120,6 +124,24 @@ public class BlitzEdit implements javafx.fxml.Initializable
 
 		addTab("New Circuit");
 	}
+	
+	@FXML
+	private void handleReloadAction(Event event)
+	{
+		Debug_Text.setText("Reload");
+
+		File filepath = getCurrentCircuitCanvas().currentSaveDirection;
+		if (filepath != null)
+		{
+			XMLParser parser = new XMLParser();
+			parser.loadCircuit(getCurrentCircuitCanvas().circuit, filepath.getPath());
+			getCurrentCircuitCanvas().refreshCanvas();
+		}
+		else
+		{
+			Debug_Text.setText("Need a valid document to reload.");
+		}
+	}
 
 	@FXML
 	private void handleOpenAction(Event event)
@@ -133,18 +155,43 @@ public class BlitzEdit implements javafx.fxml.Initializable
 		
 		if (filepath != null)
 		{
-			addTab(filepath.getName());
+			addTab(filepath.getName().replace(".xml", ""));
 			XMLParser parser = new XMLParser();
 			parser.loadCircuit(getCurrentCircuitCanvas().circuit, filepath.getPath());
 			getCurrentCircuitCanvas().refreshCanvas();
+			getCurrentCircuitCanvas().currentSaveDirection = filepath;
 		}
-
 	}
 
 	@FXML
 	private void handleSaveAction(Event event)
 	{
 		Debug_Text.setText("Save");
+		
+		File destination = getCurrentCircuitCanvas().currentSaveDirection;
+		if(destination ==  null)
+		{
+			FileChooser fileChooser = new FileChooser();
+			fileChooser.setTitle("Save circuit diagram");
+			fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("XML", "*.xml"));
+			destination = fileChooser.showSaveDialog(Main.mainStage);
+		}
+		
+		if (destination != null)
+		{
+			XMLParser parser = new XMLParser();
+			parser.saveCircuit(getCurrentCircuitCanvas().circuit, destination.getPath(), true); // TODO: option to choose usage of hashes
+			getCurrentCircuitCanvas().currentSaveDirection = destination;
+			
+			String filename = destination.getName().replace(".xml", "");
+			getCurrentTab().setText(filename);
+			
+			Debug_Text.setText("Circuit saved under" + destination);
+		}
+		else
+		{
+			Debug_Text.setText("Failed to save Circuit under" + destination);
+		}
 	}
 
 	@FXML
@@ -161,9 +208,18 @@ public class BlitzEdit implements javafx.fxml.Initializable
 		{
 			XMLParser parser = new XMLParser();
 			parser.saveCircuit(getCurrentCircuitCanvas().circuit, destination.getPath(), true); // TODO: option to choose usage of hashes
+			getCurrentCircuitCanvas().currentSaveDirection = destination;
 			
 			String filename = destination.getName().replace(".xml", "");
 			getCurrentTab().setText(filename);
+			
+			JOptionPane.showConfirmDialog(null,
+					"Circuit saved under" + destination, "Save as",
+					JOptionPane.OK_OPTION);
+		}
+		else
+		{
+			Debug_Text.setText("Failed to save Circuit under" + destination);
 		}
 	}
 

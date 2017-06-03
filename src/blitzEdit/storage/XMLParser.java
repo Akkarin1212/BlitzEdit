@@ -8,19 +8,26 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JOptionPane;
 
+import blitzEdit.core.BlueprintContainer;
 import blitzEdit.core.Circuit;
 import blitzEdit.core.Component;
+import blitzEdit.core.ComponentBlueprint;
+import blitzEdit.core.ComponentProperty;
 import blitzEdit.core.Connector;
 import blitzEdit.core.Element;
+import tools.SvgRenderer;
 
 public class XMLParser implements IParser{
 	private Circuit currentCircuit = null;
 	private ArrayList<Element> elements = new ArrayList<Element>();
 	private boolean useHashes;
 	private boolean ignoreHashes;
+	
+	private static final String xmlTag = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
 	
 	public void saveCircuit (Circuit circuit, String destination, boolean useHashes) 
 	{
@@ -29,6 +36,7 @@ public class XMLParser implements IParser{
 		
 		String circuitString = new String();
 		
+		// save elements in String
 		elements = currentCircuit.getElements();
 		for(int i=0; i<elements.size();i++)
 		{
@@ -52,7 +60,9 @@ public class XMLParser implements IParser{
 							circuitString += "\t\t\t" + saveConnection(connector, connectedConn);
 						}
 					}
+					circuitString += "\t\t" + "</connector>" + "\n";
 				}
+				circuitString += "\t" + "</component>" + "\n";
 			}
 		}
 		
@@ -61,7 +71,7 @@ public class XMLParser implements IParser{
 		{
 			result = "\t" + createCircuitHash(result) + result;
 		}
-		result = "<Circuit>\n" + result + "</Circuit>";
+		result = xmlTag + "\n" + "<Circuit>\n" + result + "</Circuit>";
 			
 		
 		Path path = Paths.get(destination);
@@ -92,12 +102,18 @@ public class XMLParser implements IParser{
 		}
 		catch (IOException e)
 		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			JOptionPane.showConfirmDialog(null,
+					"Error occured while trying to read the Circuit from " + filepath, "Loading Error",
+					JOptionPane.CANCEL_OPTION);
 		}
 		
+		String originalFileString = fileString; // used for hash check
 		// remove unnecessary tokens
+		fileString = fileString.replace(xmlTag, "");
+		fileString = fileString.replace("</component>", "");
+		fileString = fileString.replace("</connector>", "");
 		fileString = fileString.replace("/>", "");
+		fileString = fileString.replace(">", "");
 		fileString = fileString.replace("\n", "");
 		fileString = fileString.replace("\t", "");
 		
@@ -129,18 +145,17 @@ public class XMLParser implements IParser{
 			}
 			else if(xml.startsWith("circuithash"))
 			{
-				String hash = xml.replace("circuithash=", "");
-				if (!checkCircuitHash(hash, fileString))
+				String hash = xml.replace("circuithash hash=", "");
+				if (!checkCircuitHash(hash, originalFileString))
 				{
 					int accepted = JOptionPane.showConfirmDialog(null,
 							"Modifications have been made in this file. Do you still want to load it?", "Loading Error",
 							JOptionPane.YES_NO_OPTION);
-					if (accepted != 0)
+					if (accepted != 0) // declined loading with changes
 					{
-						System.err.println("blub");
 						return;
 					}
-					else
+					else // accepted loading with changes
 					{
 						ignoreHashes = true;
 					}
@@ -212,8 +227,169 @@ public class XMLParser implements IParser{
 		}
 	}
 	
+	public static ComponentBlueprint readBlueprint(String filepath)
+	{
+		String fileString;
+		try
+		{
+			fileString = readFile(filepath, StandardCharsets.UTF_8);
+		}
+		catch (IOException e)
+		{
+			JOptionPane.showConfirmDialog(null,
+					"Error occured while trying to read a Blueprint from " + filepath + ".\n" + e.getLocalizedMessage(), "Loading Error",
+					JOptionPane.CANCEL_OPTION);
+			return null;
+		}
+		
+		// remove unnecessary tokens
+		fileString = fileString.replace(xmlTag, "");
+		fileString = fileString.replace("</component>", "");
+		fileString = fileString.replace("/>", "");
+		fileString = fileString.replace(">", "");
+		fileString = fileString.replace("\n", "");
+		fileString = fileString.replace("\t", "");
+		
+		String [] xmlElements = fileString.split("<");
+		
+		String component = null;
+		String svg = null;
+		ArrayList<String> connectors = new ArrayList<String>();
+		ArrayList<String> properties = new ArrayList<String>();
+		
+		for(String xml : xmlElements)
+		{
+			xml = xml.replace("\"", "");
+			if(xml.startsWith("component"))
+			{
+				component = xml;
+			}
+			else if(xml.startsWith("svg"))
+			{
+				svg = xml;
+			}
+			else if(xml.startsWith("connector"))
+			{
+				connectors.add(xml);
+			}
+			else if(xml.startsWith("property"))
+			{
+				properties.add(xml);
+			}
+		}
+		
+		if(component != null)
+		{
+			return readBlueprintValues(component, svg, connectors, properties);
+		}
+		return null;
+	}
+	
+	private static ComponentBlueprint readBlueprintValues(String component, String svg, ArrayList<String> connectors, ArrayList<String> properties)
+	{
+		String type = null;
+		String svgFilePath = null;
+		int[][] relPos = new int[connectors.size()][2];
+		short[] relRot = new short[connectors.size()];
+		int width = 0;
+		int height = 0;
+		ArrayList<ComponentProperty> propertyList = new ArrayList<ComponentProperty>();
+		String propertyName = null;
+		String propertyValue = "";
+		ComponentProperty.Unit propertyUnit = null;
+		ComponentProperty.PropType propertyType = null;
+		
+		// component values
+		String[] elem = component.split(" ");
+		for(String s : elem)
+		{
+			s = s.trim();
+			if(s.contains("type="))
+			{
+				String[] sElem = s.split("=");
+				type = sElem[1];
+			}
+		}
+		
+		// svg values
+		elem = svg.split(" ");
+		for (String s : elem)
+		{
+			s = s.trim();
+			if (s.contains("path="))
+			{
+				String[] sElem = s.split("=");
+				svgFilePath = sElem[1];
+				
+				String svgFileSting = SvgRenderer.getSvgFileString(svgFilePath);
+				width = (int) SvgRenderer.getSvgWidth(svgFileSting);
+				height = (int) SvgRenderer.getSvgHeight(svgFileSting);
+			}
+		}
+
+		//connector values
+		for (int i = 0; i<connectors.size(); i++)
+		{
+			String conn = connectors.get(i);
+			elem = conn.split(" ");
+			for (String s : elem)
+			{
+				s = s.trim();
+				if (s.contains("x="))
+				{
+					String[] sElem = s.split("=");
+					relPos[i][0] = Integer.parseInt(sElem[1]);
+				}
+				else if (s.contains("y="))
+				{
+					String[] sElem = s.split("=");
+					relPos[i][1] = Integer.parseInt(sElem[1]);
+				}
+				else if (s.contains("rot="))
+				{
+					String[] sElem = s.split("=");
+					relRot[i] = Short.parseShort(sElem[1]);
+				}
+			}
+		}
+		
+		// property values
+		for(String prop : properties)
+		{
+			elem = prop.split(" ");
+			for(String s : elem)
+			{
+				s = s.trim();
+				if(s.contains("type="))
+				{
+					String[] sElem = s.split("=");
+					propertyType = ComponentProperty.toPropType(sElem[1]);
+				}
+				else if(s.contains("unit="))
+				{
+					String[] sElem = s.split("=");
+					propertyUnit = ComponentProperty.toUnit(sElem[1]);
+				}
+				else if(s.contains("name="))
+				{
+					String[] sElem = s.split("=");
+					propertyName = sElem[1];
+				}
+				else if(s.contains("value="))
+				{
+					String[] sElem = s.split("=");
+					propertyValue = sElem[1];
+				}
+			}
+			
+			propertyList.add(new ComponentProperty(propertyName,propertyValue,propertyUnit,propertyType));
+		}
+		
+		return new ComponentBlueprint(type, svgFilePath, relPos, relRot, width, height, propertyList);
+	}
+	
 	// creates String from file
-	private String readFile(String path, Charset encoding) throws IOException 
+	private static String readFile(String path, Charset encoding) throws IOException 
 	{
 		byte[] encoded = Files.readAllBytes(Paths.get(path));
 		return new String(encoded, encoding);
@@ -484,7 +660,7 @@ public class XMLParser implements IParser{
 		{
 			result += "\" hash=\"" + createHash(result);
 		}
-		result = "<" +result + "\"/>\n";
+		result = "<" +result + "\">\n";
 		return result;
 	}
 	
@@ -502,7 +678,7 @@ public class XMLParser implements IParser{
 		{
 			result += "\" hash=\"" + createHash(result);
 		}
-		result = "<" + result + "\"/>\n";
+		result = "<" + result + "\">\n";
 		return result;
 	}
 	
@@ -582,16 +758,17 @@ public class XMLParser implements IParser{
 		xml = xml.replace("\n", "");
 		xml = xml.replace("\t", "");
 		
-		return new String("<circuithash=\"" + xml.hashCode() + "\"/>\n");
+		return new String("<circuithash hash=\"" + xml.hashCode() + "\"/>\n");
 	}
 	
 	private boolean checkCircuitHash(String hash, String xml)
 	{
+		xml = xml.replace(xmlTag, "");
 		xml = xml.replace("</Circuit>", "");
 		xml = xml.replace("<Circuit>", "");
 		xml = xml.replace("<", "");
 		xml = xml.replace("/>", "");
-		xml = xml.replace("circuithash=\"" + hash + "\"", "");
+		xml = xml.replace("circuithash hash=\"" + hash + "\"", "");
 		xml = xml.replace("\n", "");
 		xml = xml.replace("\t", "");
 		
