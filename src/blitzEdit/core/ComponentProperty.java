@@ -19,6 +19,10 @@ public class ComponentProperty
 		VOLT,
 		AMPERE,
 		HENRY,
+		WATT,
+		COULOMB,
+		HERTZ,
+		WINDUNGEN,
 		INVALID;
 	}
 	
@@ -66,6 +70,18 @@ public class ComponentProperty
 			
 		case "henry":
 			return Unit.HENRY;
+			
+		case "watt":
+			return Unit.WATT;
+
+		case "coulomb":
+			return Unit.COULOMB;
+
+		case "hertz":
+			return Unit.HERTZ;
+			
+		case "windungen":
+			return Unit.WINDUNGEN;
 
 		default:
 			return Unit.INVALID;

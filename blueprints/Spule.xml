@@ -7,4 +7,5 @@
 	<connector x="0" y="100" rot="0"/>
 	<connector x="0" y="-100" rot="180"/>
 	<property name="Spule" type="decimal" unit="henry"/>
+	<property name="Windungen" type="integral" unit="windungen" value="5"/>
 </component>
