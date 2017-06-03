@@ -140,8 +140,9 @@ public class CircuitCanvas extends ResizableCanvas
 	{
 		this.setOnMouseDragged(new EventHandler<MouseEvent>()
 		{
-			//
-			boolean initialDrag = true;
+			//moved wird mit true initialisiert, damit dragX und Y beim ersten aufruf
+			//gesetzt sind
+			boolean moved = true;
 			@Override
 			public void handle(MouseEvent click)
 			{
@@ -152,21 +153,14 @@ public class CircuitCanvas extends ResizableCanvas
 					{
 						//wurde der drag handler gerade erst aufgerufen, wird
 						//der mauspunkt als ursprungspunkt für die translation uebernommen
-						if (initialDrag)
+						if (moved)
 						{
 							dragX = click.getX();
 							dragY = click.getY();
 						}
-						initialDrag = false;
-						boolean moved = translateElements(currentSelectedElements, click.getX() - dragX, click.getY() - dragY);
+						//initialDrag = false;
+						moved = translateElements(currentSelectedElements, click.getX() - dragX, click.getY() - dragY);
 						
-						// wurden objekte bewegt, wird der ursprungspunkt für die
-						// nächste translation neu gesetzt
-						if(moved){
-							dragX = click.getX();
-							dragY = click.getY();
-						}
-							
 						changeCursorStyle(GraphicDesignContainer.move_cursor);
 						refreshCanvas();
 
@@ -178,7 +172,6 @@ public class CircuitCanvas extends ResizableCanvas
 						for (Element e : currentSelectedElements)
 						{
 							moveElement(e, click.getX(), click.getY());
-							//e.move(click.getX(), click.getY());
 						}
 						changeCursorStyle(GraphicDesignContainer.move_cursor);
 						refreshCanvas();
@@ -217,7 +210,7 @@ public class CircuitCanvas extends ResizableCanvas
 			if (snapped[0] == 0 && snapped[1] == 0)
 				return false;
 			//prevent elements from moving out of canvas
-			if(e.getX() + snapped[0] <= 0 || e.getY() + snapped[1] <= 0)
+			if(e.getX() + dx <= 0 || e.getY() + dy <= 0)
 				return false;
 			e.move(e.getX() + snapped[0], e.getY() + snapped[1]);
 		}
