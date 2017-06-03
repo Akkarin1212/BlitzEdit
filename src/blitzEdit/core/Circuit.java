@@ -142,6 +142,8 @@ public class Circuit
 	{
 		if (elem != null)
 		{
+			if (elem instanceof Connector)
+				removeElement(((Connector)elem).getOwner());
 			ArrayList<Element> newElements = new ArrayList<Element>();
 			for (Element element : _elements)
 			{
