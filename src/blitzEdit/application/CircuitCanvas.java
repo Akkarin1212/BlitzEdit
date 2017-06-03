@@ -216,10 +216,16 @@ public class CircuitCanvas extends ResizableCanvas
 			int [] snapped = snapToGrid(dx, dy);
 			if (snapped[0] == 0 && snapped[1] == 0)
 				return false;
+			//prevent elements from moving out of canvas
+			if(e.getX() + snapped[0] <= 0 || e.getY() + snapped[1] <= 0)
+				return false;
 			e.move(e.getX() + snapped[0], e.getY() + snapped[1]);
 		}
 		else
 		{
+			//prevent elements from moving out of canvas
+			if(e.getX() + dx <= 0 || e.getY() + dy <= 0)
+				return false;
 			e.move(e.getX() + dx, e.getY() + dy);
 		}
 		return true;
@@ -241,6 +247,8 @@ public class CircuitCanvas extends ResizableCanvas
 				{
 					moved = translateElement(e, x, y);
 				}
+				if (!moved)
+					return false;
 			}
 		}
 		return moved;
@@ -248,7 +256,8 @@ public class CircuitCanvas extends ResizableCanvas
 	
 	private boolean moveElement(Element e, double x, double y)
 	{
-		if(x == 0 && y == 0)
+		//prevent elements from moving out of canvas
+		if(x <= 0 || y <= 0)
 			return false;
 		if (GlobalSettings.SNAP_TO_GRID)
 		{
