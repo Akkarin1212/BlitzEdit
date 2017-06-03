@@ -4,7 +4,7 @@ import java.io.IOException;
 
 // class Component Property
 // speichert eigenschaften der Bauteile
-// Beispiel für Widerstand: name="resistance" value="24.0" unit=OHM type=DECIMAL 
+// Beispiel fï¿½r Widerstand: name="resistance" value="24.0" unit=OHM type=DECIMAL 
 public class ComponentProperty 
 {
 	private String _name;
@@ -17,14 +17,59 @@ public class ComponentProperty
 		OHM,
 		FARRAD,
 		VOLT,
-		AMPERE;
+		AMPERE,
+		HENRY,
+		INVALID;
 	}
 	
 	public enum PropType
 	{
 		DECIMAL,
 		INTEGRAL,
-		STRING;
+		STRING,
+		INVALID;
+	}
+	
+	public static PropType toPropType(String propType)
+	{
+		switch (propType)
+		{
+		case "decimal":
+			return PropType.DECIMAL;
+
+		case "integral":
+			return PropType.INTEGRAL;
+
+		case "string":
+			return PropType.STRING;
+
+		default:
+			return PropType.INVALID;
+		}
+	}
+	
+	public static Unit toUnit(String unit)
+	{
+		switch (unit)
+		{
+		case "ohm":
+			return Unit.OHM;
+
+		case "farrad":
+			return Unit.FARRAD;
+
+		case "volt":
+			return Unit.VOLT;
+
+		case "ampere":
+			return Unit.AMPERE;
+			
+		case "henry":
+			return Unit.HENRY;
+
+		default:
+			return Unit.INVALID;
+		}
 	}
 	
 	public String getValue()
@@ -51,32 +96,46 @@ public class ComponentProperty
 	{
 		switch (_type)
 		{
-			//Parser werden aufgerufen, nicht aus funktionalen Gründen
-			// sondern lediglich um das Format zu checken und eine Exception zu werfen,
-			// falls das Format nicht passt.
-			case DECIMAL:
-			{
-				Double.parseDouble(value);
-				_value = value;
-			}
-			case INTEGRAL:
-			{
-				Integer.parseInt(value);
-				_value = value;
-			}
-			case STRING:
-			{
-				_value = value;
-			}
+		// Parser werden aufgerufen, nicht aus funktionalen Grï¿½nden
+		// sondern lediglich um das Format zu checken und eine Exception zu
+		// werfen,
+		// falls das Format nicht passt.
+		case DECIMAL:
+		{
+			if(value == "")
+				value = "0";
+			Double.parseDouble(value);
+			_value = value;
+		}
+		case INTEGRAL:
+		{
+			if(value == "")
+				value = "0";
+			Integer.parseInt(value);
+			_value = value;
+		}
+		case STRING:
+		{
+			_value = value;
+		}
+		case INVALID:
+			break;
+		default:
+			break;
 		}
 	}
 	
-	public ComponentProperty(String name, String value, Unit unit, PropType type) throws IOException
+	public ComponentProperty(String name, String value, Unit unit, PropType type)
 	{
 		_name = name;
 		_type = type;
 		_unit = unit;
-		setValue(value);
+		try
+		{
+			setValue(value);
+		}
+		catch (IOException e)
+		{}
 	}
 	
 	public ComponentProperty(ComponentProperty prop)
