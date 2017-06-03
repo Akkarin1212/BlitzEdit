@@ -39,7 +39,7 @@ public class Component extends RotatableElement
 		{
 			conn.setPosition((conn.getX() - getX()) + x, (conn.getY() - getY()) + y);
 		}
-		_position.move(x, y);
+		_position.setLocation(x, y);
 		
 		return this;
 	}

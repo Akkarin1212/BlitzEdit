@@ -2,6 +2,7 @@ package blitzEdit.application;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Vector;
 
 import blitzEdit.core.Circuit;
@@ -9,6 +10,7 @@ import blitzEdit.core.Component;
 import blitzEdit.core.Connector;
 import blitzEdit.core.Element;
 import blitzEdit.core.Line;
+import tools.GlobalSettings;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Cursor;
@@ -138,6 +140,8 @@ public class CircuitCanvas extends ResizableCanvas
 	{
 		this.setOnMouseDragged(new EventHandler<MouseEvent>()
 		{
+			//
+			boolean initialDrag = true;
 			@Override
 			public void handle(MouseEvent click)
 			{
@@ -146,16 +150,23 @@ public class CircuitCanvas extends ResizableCanvas
 					// moves multiple elements at same time
 					if (hasSelectedMultipleElements)
 					{
-						for (Element e : currentSelectedElements)
+						//wurde der drag handler gerade erst aufgerufen, wird
+						//der mauspunkt als ursprungspunkt für die translation uebernommen
+						if (initialDrag)
 						{
-							if (e.getClass() == Component.class)
-							{
-								e.setPosition(e.getX() + click.getX() - dragX, e.getY() + click.getY() - dragY);
-							}
+							dragX = click.getX();
+							dragY = click.getY();
 						}
-						dragX = click.getX();
-						dragY = click.getY();
-
+						initialDrag = false;
+						boolean moved = translateElements(currentSelectedElements, click.getX() - dragX, click.getY() - dragY);
+						
+						// wurden objekte bewegt, wird der ursprungspunkt für die
+						// nächste translation neu gesetzt
+						if(moved){
+							dragX = click.getX();
+							dragY = click.getY();
+						}
+							
 						changeCursorStyle(GraphicDesignContainer.move_cursor);
 						refreshCanvas();
 
@@ -166,7 +177,8 @@ public class CircuitCanvas extends ResizableCanvas
 					{
 						for (Element e : currentSelectedElements)
 						{
-							e.move((int) click.getX(), (int) click.getY());
+							moveElement(e, click.getX(), click.getY());
+							//e.move(click.getX(), click.getY());
 						}
 						changeCursorStyle(GraphicDesignContainer.move_cursor);
 						refreshCanvas();
@@ -195,6 +207,69 @@ public class CircuitCanvas extends ResizableCanvas
 				}
 			}
 		});
+	}
+	
+	private boolean translateElement(Element e, double dx, double dy)
+	{
+		if (GlobalSettings.SNAP_TO_GRID)
+		{
+			int [] snapped = snapToGrid(dx, dy);
+			if (snapped[0] == 0 && snapped[1] == 0)
+				return false;
+			e.move(e.getX() + snapped[0], e.getY() + snapped[1]);
+		}
+		else
+		{
+			e.move(e.getX() + dx, e.getY() + dy);
+		}
+		return true;
+	}
+	
+	private boolean translateElements(Collection<Element> elements, double x, double y)
+	{
+		boolean moved = false;
+		for (Element e : elements)
+		{
+			if (e instanceof Component)
+			{
+				if (GlobalSettings.SNAP_TO_GRID)
+				{
+					int [] newPos = snapToGrid(x, y);
+					moved = translateElement(e, newPos[0], newPos[1]);
+				}
+				else
+				{
+					moved = translateElement(e, x, y);
+				}
+			}
+		}
+		return moved;
+	}
+	
+	private boolean moveElement(Element e, double x, double y)
+	{
+		if(x == 0 && y == 0)
+			return false;
+		if (GlobalSettings.SNAP_TO_GRID)
+		{
+			int [] newPos = snapToGrid(x, y);
+			if (newPos[0] == 0 && newPos[1] == 0)
+				return false;
+			e.move(newPos[0], newPos[1]);
+		}
+		else{
+			e.move(x, y);
+		}
+		return true;
+	}
+	
+	private int [] snapToGrid(double x, double y)
+	{
+		int [] ret = new int[2];
+		int gridWidth = (int)GraphicDesignContainer.grid_spacing;
+		ret[0] = (int)((int)(x / gridWidth) * gridWidth);
+		ret[1] = (int)((int)(y / gridWidth) * gridWidth);
+		return ret;
 	}
 	
 	private void DragAndDropElements()

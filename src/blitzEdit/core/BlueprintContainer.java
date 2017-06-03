@@ -87,7 +87,8 @@ public class BlueprintContainer
 		int sizeX = (int) SvgRenderer.getSvgWidth(svgFileString);
 		int sizeY = (int) SvgRenderer.getSvgHeight(svgFileString);
 		
-		ComponentBlueprint blueprint = new ComponentBlueprint(type, svgFilePath, relPos, relRot, sizeX, sizeY);
+		ComponentBlueprint blueprint = new ComponentBlueprint(type, svgFilePath, relPos, 
+					relRot, sizeX, sizeY, new ArrayList<ComponentProperty>());
 		
 		_blueprints.add(blueprint);
 	}
