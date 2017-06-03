@@ -221,6 +221,23 @@ public class XMLParser implements IParser{
 		}
 	}
 	
+	public String readBlueprint(String filepath)
+	{
+		String fileString;
+		try
+		{
+			fileString = readFile(filepath, StandardCharsets.UTF_8);
+		}
+		catch (IOException e)
+		{
+			JOptionPane.showConfirmDialog(null,
+					"Error occured while trying to read a Blueprint from " + filepath, "Loading Error",
+					JOptionPane.CANCEL_OPTION);
+		}
+		
+		return null;
+	}
+	
 	// creates String from file
 	private String readFile(String path, Charset encoding) throws IOException 
 	{
