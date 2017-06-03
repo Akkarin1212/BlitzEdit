@@ -284,7 +284,7 @@ public class CircuitCanvas extends ResizableCanvas
 				{
 					deselectAll();
 					Component newComp = (Component) BlitzEdit.dragAndDropElement;
-					newComp.move(click.getX(), click.getY());
+					moveElement(newComp, click.getX(), click.getY());
 					circuit.addElement(newComp);
 					selectElement(newComp);
 					refreshCanvas();
@@ -301,7 +301,7 @@ public class CircuitCanvas extends ResizableCanvas
 			@Override
 			public void handle(MouseDragEvent click)
 			{
-				currentSelectedElements.get(0).move(click.getX(), click.getY());
+				moveElement(currentSelectedElements.get(0), click.getX(), click.getY());
 				refreshCanvas();
 			}
 		});
