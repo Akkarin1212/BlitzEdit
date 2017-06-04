@@ -9,10 +9,19 @@ import java.io.File;
 import java.nio.file.Path;
 import java.util.ArrayList;
 
+/**
+ * Organizes {@link ComponentBlueprint blueprints} in a container
+ * 
+ * @author David Schick
+ * @author Christian Gärtner
+ */
 public class BlueprintContainer 
 {
-	// put new Blueprint in container.
-	// the old one will be overwritten, if already existing. 
+	/**
+	 * adds new {@link ComponentBlueprint Blueprint} to container.
+	 *  The old one will be overwritten, if already existing. 
+	 * @param blueprint {@link ComponentBlueprint} to be added
+	 */
 	public void setBlueprint(ComponentBlueprint blueprint)
 	{
 		for (ComponentBlueprint cb : _blueprints)
@@ -23,8 +32,11 @@ public class BlueprintContainer
 		_blueprints.add(blueprint);
 	}
 	
-	// Checks if blueprints with same type
-	// are identical.
+	/**
+	 * Checks if blueprints with same type are identical.
+	 * @param blueprint {@link ComponentBlueprint} to be compared
+	 * @return true if blueprints are equal, else false
+	 */
 	public boolean checkBlueprint(ComponentBlueprint blueprint)
 	{
 		for (ComponentBlueprint cb : _blueprints)
@@ -35,8 +47,12 @@ public class BlueprintContainer
 		return false;
 	}
 	
-	// compares all blueprints to those in the designated Collection
-	// returns all blueprints which have changed.
+	/**
+	 * compares all blueprints to those in the designated Collection
+	 * returns all blueprints which have changed.
+	 * @param cbs {@link ComponentBlueprint blueprints} to be compared
+	 * @return List of all Blueprints which did change
+	 */
 	public ArrayList<ComponentBlueprint> compareAll(Collection<ComponentBlueprint> cbs)
 	{
 		ArrayList<ComponentBlueprint> ret = new ArrayList<ComponentBlueprint>();
@@ -51,6 +67,11 @@ public class BlueprintContainer
 		return ret;
 	}
 	
+	/**
+	 * Checks, if {@link ComponentBlueprint} with specified name already exists in container
+	 * @param type typename of blueprint
+	 * @return true if exists, else false
+	 */
 	public boolean hasBlueprint(String type)
 	{
 		for (ComponentBlueprint cb : _blueprints)
@@ -61,7 +82,12 @@ public class BlueprintContainer
 		return false;
 	}
 	
-	// returns blueprint for the designated type
+	/**
+	 * Returns blueprint that matches typename type
+	 * @param type
+	 * @return matching {@link ComponentBlueprint} or null, if the blueprint is not 
+	 * contained in this BlueprintContainer
+	 */
 	public ComponentBlueprint getBlueprint(String type)
 	{
 		for (ComponentBlueprint cb : _blueprints)
@@ -72,11 +98,18 @@ public class BlueprintContainer
 		return null;
 	}
 	
+	/**
+	 * @return List of all {@link ComponentBlueprints} in this BlueprintContainer
+	 */
 	public ArrayList<ComponentBlueprint> getBlueprints()
 	{
 		return new ArrayList<ComponentBlueprint>(_blueprints);
 	}
 	
+	/**
+	 * adds {@link ComponentBlueprint} to this Container
+	 * @param filepath path of xml-representation on the filesystem
+	 */
 	public void addBlueprint(File filepath)
 	{
 		/*String type = filepath.getName().replace(".svg", "");
@@ -97,7 +130,6 @@ public class BlueprintContainer
 		_blueprints.add(blueprint);
 	}
 	
-	// returns instance (singleton)
 	public static BlueprintContainer get()
 	{
 		if (_instance == null)
@@ -105,6 +137,9 @@ public class BlueprintContainer
 		return _instance;
 	}
 	
+	/**
+	 * Constructs new BlueprintContainer
+	 */
 	private BlueprintContainer()
 	{
 		_blueprints = new ArrayList<ComponentBlueprint>();
