@@ -9,6 +9,7 @@ import tools.SelectionMode;
  * Superclass for Circuit Elements
  *  
  * @author David Schick
+ * @author Christian Gärtner
  */
 public abstract class Element 
 {
