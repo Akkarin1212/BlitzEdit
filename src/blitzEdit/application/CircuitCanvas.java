@@ -287,7 +287,8 @@ public class CircuitCanvas extends ResizableCanvas
 					deselectAll();
 					Component newComp = (Component) BlitzEdit.dragAndDropElement;
 					moveElement(newComp, click.getX(), click.getY());
-					circuit.addElement(newComp);
+					if (!circuit.containsElement(newComp))
+						circuit.addElement(newComp);
 					selectElement(newComp);
 					refreshCanvas();
 

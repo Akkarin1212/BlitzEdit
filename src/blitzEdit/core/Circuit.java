@@ -4,6 +4,8 @@ import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import javax.swing.event.AncestorEvent;
+
 /**
  * Represents an electric Circuit
  * 
@@ -33,6 +35,16 @@ public class Circuit
 		if (resultList.isEmpty()) //kein Element an position
 			return null;
 		return resultList;
+	}
+	
+	/**
+	 * checks, if an {@link Element} is already existing in the circuit
+	 * @param elem {@link Element}
+	 * @return true if element is contained, else false
+	 */
+	public boolean containsElement(Element elem)
+	{
+		return _elements.contains(elem);
 	}
 	
 	/**
