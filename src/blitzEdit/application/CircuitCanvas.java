@@ -127,8 +127,8 @@ public class CircuitCanvas extends ResizableCanvas
 				{
 					clickX = click.getX();
 					clickY = click.getY();
-					dragX = sp.getVvalue();
-					dragY = sp.getHvalue();
+					dragX = clickX;
+					dragY = clickY;
 					System.err.println("middle mouse click");
 				}
 				
@@ -143,6 +143,7 @@ public class CircuitCanvas extends ResizableCanvas
 			//moved wird mit true initialisiert, damit dragX und Y beim ersten aufruf
 			//gesetzt sind
 			boolean moved = true;
+			double prevScaleFactor = 1;
 			@Override
 			public void handle(MouseEvent click)
 			{
@@ -189,12 +190,20 @@ public class CircuitCanvas extends ResizableCanvas
 				}
 				else if(click.isMiddleButtonDown())
 				{
-					double vvalue = (clickX - click.getX())/ref.getWidth();
-					double hvalue = (clickY - click.getY())/ref.getHeight();
+					// checkt, ob sich die zoomstufe geändert hat, um zu verhindern
+					// dass sich durch den veränderten coordinatenursprung eine falsche
+					// differenz zwischen vorherigem und neuem wert bildet.
+					if (prevScaleFactor == canvasScaleFactor)
+					{
+						double diffx = (click.getX() - dragX)/(ref.getWidth() * Math.pow(canvasScaleFactor, -1));
+						double diffy = (click.getY() - dragY)/(ref.getHeight() * Math.pow(canvasScaleFactor, -1));
 					
-					
-					sp.setHvalue(dragX + vvalue);
-					sp.setVvalue(dragY + hvalue);
+						sp.setHvalue(sp.getHvalue() - diffx);
+						sp.setVvalue(sp.getVvalue() - diffy);
+					}
+					prevScaleFactor = canvasScaleFactor;
+					dragX = click.getX();
+					dragY = click.getY();
 					
 					changeCursorStyle(GraphicDesignContainer.move_cursor);
 				}
@@ -634,24 +643,7 @@ public class CircuitCanvas extends ResizableCanvas
 	{
 		if(canvasScaleFactor < 1)
 		{
-			canvasScaleFactor += GraphicDesignContainer.zoom_factor;
-			
-			double posX = sp.getVvalue();
-			double posY = sp.getHvalue();
-			
-			setScaleX(canvasScaleFactor);
-			setScaleY(canvasScaleFactor);
-			
-			sp.setHvalue(canvasScaleFactor * 0.5);
-			sp.setVvalue(canvasScaleFactor * 0.5);
-			
-			sp.setHmin((1-canvasScaleFactor)/2);
-			sp.setVmin((1-canvasScaleFactor)/2);
-			
-			sp.setVvalue(posX);
-			sp.setHvalue(posY);
-			
-			refreshCanvas();
+			zoom(GraphicDesignContainer.zoom_factor);
 		}
 		else
 		{
@@ -663,29 +655,35 @@ public class CircuitCanvas extends ResizableCanvas
 	{
 		if(canvasScaleFactor > 0.5)
 		{
-			canvasScaleFactor -= GraphicDesignContainer.zoom_factor;
+			zoom(-GraphicDesignContainer.zoom_factor);
 			
-			double posX = sp.getVvalue();
-			double posY = sp.getHvalue();
-			
-			setScaleX(canvasScaleFactor);
-			setScaleY(canvasScaleFactor);
-			
-			sp.setHvalue(canvasScaleFactor * 0.5);
-			sp.setVvalue(canvasScaleFactor * 0.5);
-			
-			sp.setHmin((1-canvasScaleFactor)/2);
-			sp.setVmin((1-canvasScaleFactor)/2);
-			
-			sp.setVvalue(posX);
-			sp.setHvalue(posY);
-			
-			refreshCanvas();
 		}
 		else
 		{
 			canvasScaleFactor = 0.55;
 		}
+	}
+	
+	private void zoom(double step)
+	{
+		canvasScaleFactor += step;
+		
+		double posX = sp.getVvalue();
+		double posY = sp.getHvalue();
+		
+		setScaleX(canvasScaleFactor);
+		setScaleY(canvasScaleFactor);
+		
+		sp.setHvalue(canvasScaleFactor * 0.5);
+		sp.setVvalue(canvasScaleFactor * 0.5);
+		
+		sp.setHmin((1-canvasScaleFactor)/2);
+		sp.setVmin((1-canvasScaleFactor)/2);
+		
+		sp.setVvalue(posX);
+		sp.setHvalue(posY);
+		
+		refreshCanvas();
 	}
 	
 	public Point2D getMousePosition()
