@@ -11,6 +11,11 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.MouseEvent;
 import tools.SelectionMode;
 
+/**
+ * Canvas used for displaying the library and its entries.
+ * 
+ * @author Chrisian Gärtner
+ */
 public class LibraryCanvas extends ResizableCanvas
 {
 	Vector<File> entries = new Vector<File>();
@@ -45,11 +50,18 @@ public class LibraryCanvas extends ResizableCanvas
 		onMouseReleasedHandler();
 	}
 	
+	/**
+	 * Uses the {@link ComponentLibrary} to draw all entries of this library.
+	 */
 	public void drawLibraryEntries()
 	{
 		componentLibrary.draw(gc);
 	}
 	
+	/**
+	 * Adds the event handler for mouse press.
+	 * When clicked on the library canvas, saves the blueprint clicked on and and creates component.
+	 */
 	private void onMousePressedHandler()
 	{
 		this.setOnMousePressed(new EventHandler<MouseEvent>()
@@ -70,6 +82,10 @@ public class LibraryCanvas extends ResizableCanvas
 		});
 	}
 	
+	/**
+	 * Adds the event handler for drag detection.
+	 * Calls startFullDrag().
+	 */
 	private void onMouseDragDetectedHandler()
 	{
 		this.setOnDragDetected(new EventHandler<MouseEvent>()
@@ -87,6 +103,11 @@ public class LibraryCanvas extends ResizableCanvas
 		});
 	}
 	
+	/**
+	 * Adds the event handler for mouse drag.
+	 * Moves the currentDraggedElement according to mouse position. 
+	 * Sets dragAndDropElement in BlitzEdit to currentDraggedElement.
+	 */
 	private void onMouseDraggedHandler()
 	{
 		this.setOnMouseDragged(new EventHandler<MouseEvent>()
@@ -107,6 +128,10 @@ public class LibraryCanvas extends ResizableCanvas
 		});
 	}
 	
+	/**
+	 * Adds the event handler for mouse release.
+	 * Resets references to the current dragged element.
+	 */
 	private void onMouseReleasedHandler()
 	{
 		this.setOnMouseReleased(new EventHandler<MouseEvent>()

@@ -19,10 +19,21 @@ import javafx.scene.paint.Color;
 import javafx.scene.transform.Affine;
 import javafx.scene.transform.Transform;
 
+/**
+ * Used for drawing svg images on graphical context.
+ * 
+ * @author Chrisian Gärtner
+ */
 public class SvgRenderer
 {	
 	private static Point rotationPoint = new Point();
 	
+	/**
+	 * Used to get the xml string of a svg file.
+	 * 
+	 * @param	SvgFilePath		Location of the svg file on the operating system
+	 * @return	String			Contains the content of the svg file as string
+	 */
 	static public String getSvgFileString(String SvgFilePath)
 	{
 		String fileString = null;
@@ -43,14 +54,25 @@ public class SvgRenderer
 		return null;
 	}
 	
-	// creates String from file
+	/**
+	 * Used to create a string out of the content of a file.
+	 * 
+	 * @param	path		Location of the file on the operating system
+	 * @param	encoding	Charset the file is encoded with
+	 * @return	String		Contains the content of the file
+	 */
 	private static String readFile(String path, Charset encoding) throws IOException 
 	{
 		byte[] encoded = Files.readAllBytes(Paths.get(path));
 		return new String(encoded, encoding);
 	}
 	
-	// scans String for rectangles and polygons
+	/**
+	 * Scans a String for xml rectangle and polygon tags.
+	 * 
+	 * @param	fileString	String containing the xml
+	 * @return	String		Contains the truncated content of the original string
+	 */
 	private static String scanFileString(String fileString)
 	{
 		String result = new String();
@@ -70,6 +92,17 @@ public class SvgRenderer
 		return result;
 	}
 	
+	/**
+	 * Used for drawing a svg image of an {@link Element} on a graphical context.
+	 * Considers SelectionMode and draws an image according to GraphicDesignContainer constants if an element is selected or unselected
+	 * 
+	 * @param	svgString	String containing the xml
+	 * @param	gc			Graphical context of the canvas
+	 * @param	offsetX		X position of the element (center)
+	 * @param	offsetY		X position of the element (center)
+	 * @param	scale		Scale of the image
+	 * @param 	mode		Selection mode of the component
+	 */
 	static public void renderSvgString(String svgString, GraphicsContext gc, double offsetX, double offsetY, double scale, SelectionMode mode)
 	{
 		String[] svgElements = svgString.split("<");
@@ -104,6 +137,18 @@ public class SvgRenderer
 		}
 	}
 	
+	/**
+	 * Used for drawing a rotated svg image of an {@link Element} on a graphical context.
+	 * Considers SelectionMode and draws an image according to GraphicDesignContainer constants if an element is selected or unselected
+	 * 
+	 * @param	svgString	String containing the xml
+	 * @param	gc			Graphical context of the canvas
+	 * @param	offsetX		X position of the element (center)
+	 * @param	offsetY		X position of the element (center)
+	 * @param	scale		Scale of the image
+	 * @param	rot			Rotation of the image
+	 * @param 	mode		Selection mode of the component
+	 */
 	static public void renderSvgString(String svgString, GraphicsContext gc, double offsetX, double offsetY, double scale, double rot, SelectionMode mode)
 	{
 		String[] svgElements = svgString.split("<");
@@ -151,6 +196,12 @@ public class SvgRenderer
 		}
 	}
 	
+	/**
+	 * Searches the svgString for <svg> tag and extracts the height property.
+	 * 
+	 * @param	svgString	String containing the xml
+	 * @return	double		Height of the svg, -1 if height property wasn't found
+	 */
 	public static double getSvgHeight(String svgString)
 	{
 		String[] svgElements = svgString.split("<");
@@ -176,6 +227,12 @@ public class SvgRenderer
 		return -1;
 	}
 	
+	/**
+	 * Searches the svgString for <svg> tag and extracts the width property.
+	 * 
+	 * @param	svgString	String containing the xml
+	 * @return	double		Width of the svg, -1 if width property wasn't found
+	 */
 	public static double getSvgWidth(String svgString)
 	{
 		String[] svgElements = svgString.split("<");
@@ -201,6 +258,16 @@ public class SvgRenderer
 		return -1;
 	}
 	
+	/**
+	 * Used for drawing a rotated rectangle on a graphical context.
+	 * 
+	 * @param	rectString	String containing the xml of the rect
+	 * @param	gc			Graphical context of the canvas
+	 * @param	offsetX		X position of the element
+	 * @param	offsetY		X position of the element
+	 * @param	scale		Scale of the image
+	 * @param	rot			Rotation of the image
+	 */
 	private static void renderRect(String rectString, GraphicsContext gc, double offsetX, double offsetY, double scale, double rot)
 	{
 		gc.save();
