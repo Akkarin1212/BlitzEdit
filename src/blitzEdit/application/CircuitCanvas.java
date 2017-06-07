@@ -43,6 +43,7 @@ public class CircuitCanvas extends ResizableCanvas
 	private boolean isSelectingMultipleElements;
 	private boolean hasSelectedMultipleElements;
 	private boolean canSelectMultipleElements;
+	private boolean grid = true;
 	
 	private double canvasScaleFactor = 1;
 	
@@ -412,28 +413,50 @@ public class CircuitCanvas extends ResizableCanvas
 			}
 		});
 	}
+	
+	public void gridOnOff()
+	{
+		if(grid)
+		{
+			grid = false;
+		}
+		else
+		{
+			grid = true;
+		}
+	}
 
 	public void drawGrid()
 	{
-		gc.save();
-		gc.clearRect(0, 0, getWidth(), getHeight());
+		if(grid) 
+		{
+			gc.save();
+			gc.clearRect(0, 0, getWidth(), getHeight());
+			
+			gc.setStroke(GraphicDesignContainer.grid_color);
+			gc.setLineWidth(GraphicDesignContainer.grid_line_width);
+			double lineSpace = GraphicDesignContainer.grid_spacing;
+
+			// vertical lines
+			for (int i = 0; i < getWidth(); i += lineSpace)
+			{
+				gc.strokeLine(i, 0, i, getHeight());
+			}
+
+			// horizontal lines
+			for (int i = (int) lineSpace; i < getHeight(); i += lineSpace)
+			{
+				gc.strokeLine(0, i, getWidth(), i);
+			}
+			gc.restore();
+		}
+		else 
+		{
+			gc.save();
+			gc.clearRect(0, 0, getWidth(), getHeight());
+			gc.restore();
+		}
 		
-		gc.setStroke(GraphicDesignContainer.grid_color);
-		gc.setLineWidth(GraphicDesignContainer.grid_line_width);
-		double lineSpace = GraphicDesignContainer.grid_spacing;
-
-		// vertical lines
-		for (int i = 0; i < getWidth(); i += lineSpace)
-		{
-			gc.strokeLine(i, 0, i, getHeight());
-		}
-
-		// horizontal lines
-		for (int i = (int) lineSpace; i < getHeight(); i += lineSpace)
-		{
-			gc.strokeLine(0, i, getWidth(), i);
-		}
-		gc.restore();
 	}
 
 	public void refreshCanvas()

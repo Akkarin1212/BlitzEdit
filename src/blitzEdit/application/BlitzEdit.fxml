@@ -24,11 +24,6 @@
                            </accelerator>
                         </MenuItem>
                         <SeparatorMenuItem mnemonicParsing="false" />
-                        <MenuItem fx:id="Reload" mnemonicParsing="false" onAction="#handleReloadAction" text="Reload..." >
-                        	<accelerator>
-                              <KeyCodeCombination alt="UP" code="F5" control="UP" meta="UP" shift="UP" shortcut="UP" />
-                           </accelerator>
-                        </MenuItem>
                         <MenuItem fx:id="Open" mnemonicParsing="false" onAction="#handleOpenAction" text="Open...">
                            <accelerator>
                               <KeyCodeCombination alt="UP" code="O" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
@@ -107,6 +102,7 @@
                 </Menu>
                   <Menu mnemonicParsing="false" text="View">
                      <items>
+                        <MenuItem fx:id="GridOnOff" mnemonicParsing="false" onAction="#handleViewGridOnOffAction" text="Grid On/Off" />
                         <MenuItem fx:id="ZoomIn" mnemonicParsing="false" onAction="#handleViewZoomInAction" text="Zoom In" />
                         <MenuItem fx:id="ZoomOut" mnemonicParsing="false" onAction="#handleViewZoomOutAction" text="Zoom Out" />
                      </items>

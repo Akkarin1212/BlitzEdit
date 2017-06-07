@@ -70,6 +70,8 @@ public class BlitzEdit implements javafx.fxml.Initializable
 	@FXML
 	private MenuItem ZoomOut;
 	@FXML
+	private MenuItem GridOnOff;
+	@FXML
 	private MenuItem About;
 
 	@FXML
@@ -335,6 +337,15 @@ public class BlitzEdit implements javafx.fxml.Initializable
 		Debug_Text.setText("Zoom Out");
 		
 		getCurrentCircuitCanvas().zoomOut();
+	}
+	
+	@FXML
+	private void handleViewGridOnOffAction(Event event)
+	{
+		Debug_Text.setText("Grid On/Off");
+		
+		getCurrentCircuitCanvas().gridOnOff();
+		getCurrentCircuitCanvas().refreshCanvas();
 	}
 
 	@FXML
