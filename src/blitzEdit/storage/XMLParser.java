@@ -1,5 +1,6 @@
 package blitzEdit.storage;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -103,7 +104,7 @@ public class XMLParser implements IParser{
 		}
 		catch (IOException e)
 		{
-			JOptionPane.showConfirmDialog(null,
+			JOptionPane.showMessageDialog(null,
 					"Error occured while trying to read the Circuit from " + filepath, "Loading Error",
 					JOptionPane.CANCEL_OPTION);
 		}
@@ -231,8 +232,13 @@ public class XMLParser implements IParser{
 	public static ComponentBlueprint readBlueprint(String filepath)
 	{
 		String fileString;
+		File parent;
+		
 		try
 		{
+			File file = new File(filepath);
+			parent = file.getParentFile();
+			
 			fileString = FileTools.readFile(filepath, StandardCharsets.UTF_8);
 		}
 		catch (IOException e)
@@ -279,14 +285,14 @@ public class XMLParser implements IParser{
 			}
 		}
 		
-		if(component != null)
+		if(component != null && svg != null)
 		{
-			return readBlueprintValues(component, svg, connectors, properties);
+			return readBlueprintValues(component, svg, connectors, properties, parent);
 		}
 		return null;
 	}
 	
-	private static ComponentBlueprint readBlueprintValues(String component, String svg, ArrayList<String> connectors, ArrayList<String> properties)
+	private static ComponentBlueprint readBlueprintValues(String component, String svg, ArrayList<String> connectors, ArrayList<String> properties, File parentDirectory)
 	{
 		String type = null;
 		String svgFilePath = null;
@@ -322,6 +328,16 @@ public class XMLParser implements IParser{
 				String[] sElem = s.split("=");
 				svgFilePath = sElem[1];
 				
+				File file = new File(svgFilePath);
+				if(!file.exists())
+				{
+					file = new File(parentDirectory.toString() + "\\" + svgFilePath);
+					if(!file.exists())
+					{
+						return null;
+					}
+				}
+				svgFilePath = file.toString();
 				String svgFileSting = SvgRenderer.getSvgFileString(svgFilePath);
 				width = (int) SvgRenderer.getSvgWidth(svgFileSting);
 				height = (int) SvgRenderer.getSvgHeight(svgFileSting);
@@ -440,8 +456,18 @@ public class XMLParser implements IParser{
 		if (!hasHash || (hasHash && checkHash(hash, xml)))
 		{
 			ComponentBlueprint bp = BlueprintContainer.get().getBlueprint(type);
-			elements.set((int)id, bp.createComponent((int) x, (int) y, (short) rot));
-			return true;
+			if (bp != null)
+			{
+				elements.set((int) id, bp.createComponent((int) x, (int) y, (short) rot));
+				return true;
+			}
+			else
+			{
+				JOptionPane.showMessageDialog(null,
+						"Missing blueprint component. Type: " + type, "Loading Error",
+						JOptionPane.ERROR_MESSAGE);
+				return false;
+			}
 		}
 		else
 		{

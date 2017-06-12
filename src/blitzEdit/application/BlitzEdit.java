@@ -245,7 +245,7 @@ public class BlitzEdit implements javafx.fxml.Initializable
 			
 			JOptionPane.showConfirmDialog(null,
 					"Circuit saved under" + destination, "Save as",
-					JOptionPane.OK_OPTION);
+					JOptionPane.CLOSED_OPTION);
 		}
 		else
 		{

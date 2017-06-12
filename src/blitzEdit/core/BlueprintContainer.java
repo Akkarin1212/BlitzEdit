@@ -115,7 +115,7 @@ public class BlueprintContainer
 	{
 		ComponentBlueprint blueprint = XMLParser.readBlueprint(filepath.toString());
 		
-		if(!_blueprints.contains(blueprint))
+		if(blueprint != null && !_blueprints.contains(blueprint))
 		{
 			_blueprints.add(blueprint);
 			return blueprint;

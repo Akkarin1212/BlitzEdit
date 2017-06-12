@@ -53,28 +53,28 @@ public class ComponentLibrary
 		{
 			String svgString = SvgRenderer.getSvgFileString(cb.getSvgFilePath());
 			SvgRenderer.renderSvgString(svgString, gc, posX, posY, _scale, SelectionMode.UNSELECTED);
-			
+
 			double compSizeX = cb.getSizeX() * _scale;
 			double compSizeY = cb.getSizeY() * _scale;
-			
+
 			LibraryEntry entry = new LibraryEntry(posX, posY, compSizeX, compSizeY, cb);
-			
+
 			entries.add(entry);
-			
+
 			posX += compSizeX + _marginX;
-			
-			//Setzt die H�he auf den Wert des h�chsten Elements in der Reihe
+
+			// Setzt die H�he auf den Wert des h�chsten Elements in der
+			// Reihe
 			if (maxY < compSizeY)
 			{
 				maxY = (int) compSizeY;
 			}
-					
-					
+
 			if (posX > 150)
 			{
-				posX  = 40;
+				posX = 40;
 				posY += maxY + _marginY;
-				maxY  = 0;
+				maxY = 0;
 			}
 		}
 	}
@@ -101,7 +101,12 @@ public class ComponentLibrary
 	
 	public void addBlueprint(File filepath)
 	{
-		blueprints.add(BlueprintContainer.get().addBlueprint(filepath));
+		ComponentBlueprint bp = BlueprintContainer.get().addBlueprint(filepath);
+		if(bp != null)
+		{
+			blueprints.add(bp);
+		}
+		
 	}
 	
 	//gibt das angeklickte Element in der Bibliothek zur�ck
