@@ -25,6 +25,12 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 
+/**
+ * Controller class for BlitzEdit JavaFX application.
+ * 
+ * @author Nico Pfaff
+ * @author Chrisian Gärtner
+ */
 public class BlitzEdit implements javafx.fxml.Initializable
 {
 	public static Element[] elementsToCopy;
@@ -95,28 +101,48 @@ public class BlitzEdit implements javafx.fxml.Initializable
 		addLibrary("Template Library");
 	}
 	
+	/**
+	 * Uses the TabPane class to check which circuit tab is currently selected.
+	 * 
+	 * @return the selected tab, or null if there is none
+	 */
 	public Tab getCurrentTab()
 	{
 		return CircuitsTabPane.getSelectionModel().getSelectedItem();
 	}
 	
+	/**
+	 * Uses the Accordion class to check which library is currently selected.
+	 * 
+	 * @return the selected library pane, or null if there is none
+	 */
 	public TitledPane getCurrentLibraryTitledPane()
 	{
 		return LibrariesAccordion.getExpandedPane();
 	}
 	
+	/**
+	 * Uses the TabPane to check which circuit canvas is currently active.
+	 * 
+	 * @return the selected canvas, or null if there is none
+	 */
 	public CircuitCanvas getCurrentCircuitCanvas()
 	{
 		ScrollPane sp = (ScrollPane) getCurrentTab().getContent();
 		return (CircuitCanvas) sp.getContent();
 	}
 	
+	/**
+	 * Uses the Accordion to check which library canvas is currently active.
+	 * 
+	 * @return the selected canvas, or null if there is none
+	 */
 	public LibraryCanvas getCurrentLibraryCanvas()
 	{
 		ScrollPane sp = (ScrollPane) getCurrentLibraryTitledPane().getContent();
 		return (LibraryCanvas) sp.getContent();
 	}
-
+	
 	@FXML
 	private void handleNewAction(Event event)
 	{
@@ -343,6 +369,11 @@ public class BlitzEdit implements javafx.fxml.Initializable
 		Debug_Text.setText("About");
 	}
 
+	/**
+	 * Adds a new tab to the tabpane that contains a {@link CircuitCanvas} and selects the new one.
+	 * 
+	 * @param	name	Name for the tab
+	 */
 	private void addTab(String name)
 	{
 		// check if the TabPanel exists before creating tabs
@@ -367,6 +398,11 @@ public class BlitzEdit implements javafx.fxml.Initializable
 		}
 	}
 
+	/**
+	 * Adds a new tab to the accordion that contains a {@link LibraryCanvas} and selects the new one.
+	 * 
+	 * @param	name	Name for the library tab
+	 */
 	private void addLibrary(String name)
 	{
 		// check if the TabPanel exists before creating tabs
@@ -394,11 +430,17 @@ public class BlitzEdit implements javafx.fxml.Initializable
 		}
 	}
 
-	private void setAnchorForNode(Node n, double value)
+	/**
+	 * Sets the anchor top, bottom, left and right positons for the javafx node.
+	 * 
+	 * @param	node	Node anchor changes apply to
+	 * @param	value	Anchor positions
+	 */
+	private void setAnchorForNode(Node node, double value)
 	{
-		AnchorPane.setTopAnchor(n, value);
-		AnchorPane.setBottomAnchor(n, value);
-		AnchorPane.setLeftAnchor(n, value);
-		AnchorPane.setRightAnchor(n, value);
+		AnchorPane.setTopAnchor(node, value);
+		AnchorPane.setBottomAnchor(node, value);
+		AnchorPane.setLeftAnchor(node, value);
+		AnchorPane.setRightAnchor(node, value);
 	}
 }
