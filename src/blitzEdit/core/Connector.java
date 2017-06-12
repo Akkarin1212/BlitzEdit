@@ -15,6 +15,14 @@ import javafx.scene.canvas.GraphicsContext;
 import blitzEdit.core.Element;
 import blitzEdit.core.Component;
 
+/**
+ * Specifies a point which is connecting Components with each other
+ * by lines
+ * 
+ * @author David Schick
+ * @author Christian G�rtner
+ *
+ */
 public final class Connector extends Element
 {
 	@Override
@@ -58,18 +66,29 @@ public final class Connector extends Element
 		return shape.contains(x, y);
 	}
 	
+	/**
+	 * Returns all connectors which are connected to this connector
+	 * @return List of all connected connectors
+	 */
 	public ArrayList<Connector> getConnections()
 	{
 		return _connections;
 	}
 	
+	/**
+	 * Returns this connectors relative rotation to its owner
+	 * @return relative rotation
+	 */
 	public short getRelativeRotation()
 	{
 		return _relRotation;
 	}
 	
-	// Verschiebt den Connector auf den linear auf
-	// die Connectorachse projezierten Punkt (x, y)
+	/**
+	 * Moves the Connector in a straight line from its original location
+	 * @param x requested x-location
+	 * @param y requested y-location
+	 */
 	@Override
 	public Connector move(int x, int y)
 	{
@@ -93,18 +112,31 @@ public final class Connector extends Element
 		return this;
 	}
 	
+	/**
+	 * Moves the Connector in a straight line from its original location
+	 * @param x requested x-location
+	 * @param y requested y-location
+	 */
 	@Override
 	public Connector move(double x, double y) 
 	{
 		return move((int)x, (int)y);
 	}
 	
+	/**
+	 * returns the absolute rotation of this connector
+	 * @return absolute rotation
+	 */
 	public short getRotation()
 	{
 		short r = (short)(((int)_owner.getRotation() + _relRotation) % 360);
 		return (short)((r < 0) ?  360 + r : r);
 	}
 	
+	/**
+	 * returns the relative Position of this Connector
+	 * @return int array containing relative Position ([0]:x-pos [1]:y-pos)
+	 */
 	public int [] getRelPos()
 	{
 		return _conRelPos.clone();
@@ -117,6 +149,10 @@ public final class Connector extends Element
 		return null;
 	}
 	
+	/**
+	 * Returns the anker point of this connector, aka the original position just after deployment
+	 * @return ankerPoint of this Connector
+	 */
 	public Point getAnkerPoint()
 	{
 		AffineTransform at = AffineTransform.getRotateInstance(Math.toRadians(_owner.getRotation()), _owner.getX(), _owner.getY());
@@ -127,7 +163,11 @@ public final class Connector extends Element
 		return transformedPosition;
 	}
 	
-	//Nimmt conn in die Verbindungsliste auf
+	/**
+	 * Connects connector to another connector
+	 * @param conn connector to connect to
+	 * @return true on success, false on failure (i.e. conn == this)
+	 */
 	public boolean connect(Connector conn)
 	{
 		if (conn == this)
@@ -151,8 +191,10 @@ public final class Connector extends Element
 		return true;
 	}
 	
-	//Nimmt alle Connectoren aus conns in die Verbindungsliste auf
-	//(wenn nicht schon vorhanden)
+	/**
+	 * coonnects this connector to every connector in the specified list
+	 * @param conns connectors to connect to
+	 */
 	public void connect(Collection<Connector> conns)
 	{
 		if (this.connected())
@@ -174,7 +216,11 @@ public final class Connector extends Element
 		_connections.addAll(conns);
 	}
 	
-	//Löst die Verbindung zum übergebenen Connecor
+	/**
+	 * disconnects from specified connector
+	 * @param conn connector to disconnect
+	 * @return true on success, false on failure (i.e. connection didnt exist in the first place)
+	 */
 	public boolean disconnect(Connector conn)
 	{
 		ArrayList<Connector> newConnections = new ArrayList<Connector>(_connections);
@@ -199,6 +245,10 @@ public final class Connector extends Element
 		return false;
 	}
 	
+	/**
+	 * disconnects this connector from all connectors in the specified list
+	 * @param elems connectors to disconnect
+	 */
 	public void disconnect(Collection<Element> elems)
 	{
 		if (this.connected())
@@ -215,6 +265,10 @@ public final class Connector extends Element
 			_connected = false;
 	}
 	
+	/**
+	 * Disconnects all connectors which belong to the specified {@link Component}
+	 * @param comp
+	 */
 	public void disconnect(Component comp)
 	{
 		if (this.connected())
@@ -229,6 +283,10 @@ public final class Connector extends Element
 			_connected = false;
 	}
 	
+	/**
+	 * checks whether this connector has a connection to another connector
+	 * @return true if connections exist, else false
+	 */
 	public boolean connected()
 	{
 		if(_connected)
@@ -236,11 +294,21 @@ public final class Connector extends Element
 		else return false;
 	}
 	
-	public boolean isConnectedTo(Connector con)
+	/**
+	 * checks whether this connector is connected to the specified connector
+	 * @param conn Connector to be checked
+	 * @return true if connection exists, else false
+	 */
+	public boolean isConnectedTo(Connector conn)
 	{
-		return _connections.contains(con);
+		return _connections.contains(conn);
 	}
 	
+	/**
+	 * checks whether this connector is connected to the specified component
+	 * @param comp {@link Component} to be checked
+	 * @return true if connection exists, else false
+	 */
 	public boolean isConnectedTo(Component comp)
 	{
 		for (Connector conn : _connections)
@@ -251,16 +319,28 @@ public final class Connector extends Element
 		return false;
 	}
 	
+	/**
+	 * returns the owner of this connector
+	 * @return owner of connector
+	 */
 	public Component getOwner()
 	{
 		return _owner;
 	}
 	
+	/**
+	 * assigns an owner to this connector
+	 * @param owner new owner for this connector
+	 */
 	public void setOwner(Component owner)
 	{
 		_owner = owner;
 	}
 	
+	/**
+	 * Constructs new Connector
+	 * @param owner owner of the new connector
+	 */
 	public Connector(Component owner)
 	{
 		super();
@@ -273,6 +353,14 @@ public final class Connector extends Element
 		_length = 0;
 	}
 	
+	/**
+	 * Constructs new Connector
+	 * 
+	 * @param x x-coordinate
+	 * @param y y-coordinate
+	 * @param conRelPos location relative to its owner
+	 * @param relRotation rotation relative to its owner
+	 */
 	public Connector(int x, int y, int[] conRelPos, short relRotation)
 	{
 		super(x, y, 12, 12); //Standartwerte: breite 6, höhe 6
@@ -283,7 +371,15 @@ public final class Connector extends Element
 		_connections = new ArrayList<Connector>();
 		_length = 0;
 	}
-	
+	/**
+	 * Constructs new Connector
+	 * 
+	 * @param x x-coordinate
+	 * @param y y-coordinate
+	 * @param conRelPos location relative to its owner
+	 * @param relRotation rotation relative to its owner
+	 * @param owner owner of this connector
+	 */
 	public Connector(int x, int y, int[] conRelPos, short relRotation, Component owner)
 	{
 		super(x, y, 12, 12); //Standartwerte: breite 6, höhe 6

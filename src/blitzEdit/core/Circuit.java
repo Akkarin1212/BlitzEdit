@@ -4,12 +4,23 @@ import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.Collection;
 
-// Circuit Klasse:
-// Speichert Bauelemente und deren Verbindungen
-// und regelt den Zugriff auf diese
+import javax.swing.event.AncestorEvent;
+
+/**
+ * Represents an electric Circuit
+ * 
+ * @author David Schick
+ * 
+ */
 public class Circuit
 {
-	//Gibt alle Elemente des Schaltplans zurÃ¼ck, die sich an der Position (x, y) befinden.
+	/**
+	 * Returns all Elements at the designated Location
+	 * 
+	 * @param x x-Component of Location
+	 * @param y y-Component of Location
+	 * @return List of Elements at Location
+	 */
 	public ArrayList<Element> getElementsByPosition(int x, int y)
 	{
 		ArrayList<Element> resultList = new ArrayList<Element>();
@@ -26,11 +37,33 @@ public class Circuit
 		return resultList;
 	}
 	
+	/**
+	 * checks, if an {@link Element} is already existing in the circuit
+	 * @param elem {@link Element}
+	 * @return true if element is contained, else false
+	 */
+	public boolean containsElement(Element elem)
+	{
+		return _elements.contains(elem);
+	}
+	
+	/**
+	 * Returns all Elements at the designated Location
+	 * 
+	 * @param x x-Component of Location
+	 * @param y y-Component of Location
+	 * @return List of Elements at Location
+	 */
 	public ArrayList<Element> getElementsByPosition(double x, double y)
 	{
 		return getElementsByPosition((int)x, (int)y);
 	}
 	
+	
+	/**
+	 * Returns overall width of Circuit
+	 * @return overall width of Circuit
+	 */
 	public int getWidth()
 	{
 		int width = 0, elemWidth = 0;
@@ -43,6 +76,10 @@ public class Circuit
 		return width;
 	}
 	
+	/**
+	 * Returns overall height of Circuit
+	 * @return overall height of Circuit
+	 */
 	public int getHeight()
 	{
 		int height = 0, elemHeight = 0;
@@ -55,12 +92,19 @@ public class Circuit
 		return height;
 	}
 	
-	//Gibt alle Elemente des Schaltplans zurÃ¼ck, die sich im Rechteck befinden, dass durch
-	//die Punkte (x1, y1) und (x2, y2) aufgespannt wird.
-	public ArrayList<Element> getElementsByPosition(int x1, int y1, int x2, int y2)
+	/**
+	 * Returns all Elements in the designated Rectangle
+	 *  
+	 * @param x
+	 * @param y
+	 * @param width
+	 * @param height
+	 * @return List of all Elements in rectangle
+	 */
+	public ArrayList<Element> getElementsByPosition(int x, int y, int width, int height)
 	{
 		ArrayList<Element> resultList = new ArrayList<Element>();
-		Rectangle rect = new Rectangle(x1, y1, x2, y2);
+		Rectangle rect = new Rectangle(x, y, width, height);
 		for(Element elem : _elements)
 		{
 			if (elem.intersects(rect)) 
@@ -72,12 +116,26 @@ public class Circuit
 		return resultList;
 	}
 	
-	public ArrayList<Element> getElementsByPosition(double x1, double y1, double x2, double y2)
+	/**
+	 * Returns all Elements in the designated Rectangle
+	 *  
+	 * @param x
+	 * @param y
+	 * @param width
+	 * @param height
+	 * @return List of all Elements in rectangle
+	 */
+	public ArrayList<Element> getElementsByPosition(double x, double y, double width, double height)
 	{
-		return getElementsByPosition((int)x1, (int)y1, (int)x2, (int)y2);
+		return getElementsByPosition((int)x, (int)y, (int)width, (int)height);
 	}
 	
-	//Gibt alle Components zurÃ¼ck, deren Typnamen type entsprechen.
+	/**
+	 * Returns all {@link Element Elements} with the designated typename
+	 * 
+	 * @param type typename
+	 * @return List of all Elements with typename
+	 */
 	public ArrayList<Element> getElementsByPosition(String type)
 	{
 		ArrayList<Element> resultList = new ArrayList<Element>();
@@ -94,13 +152,19 @@ public class Circuit
 		return resultList;
 	}
 	
-	//Gibt Liste aller Elemente zurück (keine Kopie!)
+	/**
+	 * Returns all {@link Element Elements} of Circuit
+	 * @return List of all Elements
+	 */
 	public ArrayList<Element> getElements()
 	{
 		return _elements;
 	}
 	
-	//FÃ¼gt das Element elem an den Schaltplan an.
+	/**
+	 * Adds an {@link Element} to Circuit
+	 * @param elem {@link Element} to be added
+	 */
 	public void addElement(Element elem)
 	{
 		if (elem == null)
@@ -115,8 +179,10 @@ public class Circuit
 		_elements.add(elem);
 	}
 	
-	//Fügt alle Elemente der übergebenene Collection in den Schaltplan ein
-	//(sofern diese noch nicht im Schlatplan vorhanden sind)
+	/**
+	 * Adds multiple {@link Element Elements} to Circuit
+	 * @param elements new Elements for Circuit
+	 */
 	public void addElements(Collection<Element> elements)
 	{
 		if (elements != null)
@@ -137,7 +203,10 @@ public class Circuit
 		}
 	}
 	
-	//Entfernt das Element elem aus dem Schaltplan.
+	/**
+	 * Removes Element from Circuit
+	 * @param elem {@link Element} to be removed from Circuit
+	 */
 	public void removeElement(Element elem)
 	{
 		if (elem != null)
@@ -170,22 +239,36 @@ public class Circuit
 		}
 	}
 	
-	//Entfernt alle Elemente aus dem Schaltplan
+	/**
+	 * Removes all {@link Element Elements} in Circuit
+	 */
 	public void clearElements()
 	{
 		_elements.clear();
 	}
 	
+	/**
+	 * Returns the filesystem path of Circuit
+	 * @return path of Circuit
+	 */
 	public String getPath()
 	{
 		return new String(_path);
 	}
 	
+	/**
+	 * Returns the name of Circuit
+	 * @return name of circuit
+	 */
 	public String getName()
 	{
 		return new String(_name);
 	}
 	
+	/**
+	 * Returns all Lines in Circuit
+	 * @return {@link Line Lines} in Circuit
+	 */
 	public ArrayList<Line> getLines()
 	{
 		ArrayList<Line> lines = new ArrayList<Line>();
@@ -233,18 +316,31 @@ public class Circuit
 		return lines;
 	}
 	
+	/**
+	 * Defaultcontructor
+	 */
 	public Circuit() 
 	{
 		_elements = new ArrayList<Element>();
 		_name = new String("New Circuit");
 	}
 	
+	/**
+	 * Constructs new Circuit
+	 * @param name name of Circuit
+	 */
 	public Circuit(String name) 
 	{
 		_elements = new ArrayList<Element>();
 		_name = new String(name);
 	}
 	
+	/**
+	 * Constructs new Circuit
+	 * 
+	 * @param elems {@link Element Elements} to be added
+	 * @param name name of circuit
+	 */
 	public Circuit(Collection<Element> elems, String name) 
 	{
 		_elements = new ArrayList<Element>();
@@ -252,6 +348,11 @@ public class Circuit
 		_name = new String(name);
 	}
 	
+	/**
+	 * Updates blueprint list in Circuit
+	 * 
+	 * @param  blueprints {@link ComponentBlueprint blueprints} to be added
+	 */
 	public void updateBlueprints(Collection<ComponentBlueprint> blueprints)
 	{
 		_blueprints.clear();

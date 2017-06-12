@@ -146,8 +146,8 @@ public class CircuitCanvas extends ResizableCanvas
 				{
 					clickX = click.getX();
 					clickY = click.getY();
-					dragX = sp.getVvalue();
-					dragY = sp.getHvalue();
+					dragX = clickX;
+					dragY = clickY;
 					System.err.println("middle mouse click");
 				}
 				
@@ -167,6 +167,7 @@ public class CircuitCanvas extends ResizableCanvas
 			//moved wird mit true initialisiert, damit dragX und Y beim ersten aufruf
 			//gesetzt sind
 			boolean moved = true;
+			double prevScaleFactor = 1;
 			@Override
 			public void handle(MouseEvent click)
 			{
@@ -213,12 +214,20 @@ public class CircuitCanvas extends ResizableCanvas
 				}
 				else if(click.isMiddleButtonDown())
 				{
-					double vvalue = (clickX - click.getX())/ref.getWidth();
-					double hvalue = (clickY - click.getY())/ref.getHeight();
+					// checkt, ob sich die zoomstufe ge�ndert hat, um zu verhindern
+					// dass sich durch den ver�nderten coordinatenursprung eine falsche
+					// differenz zwischen vorherigem und neuem wert bildet.
+					if (prevScaleFactor == canvasScaleFactor)
+					{
+						double diffx = (click.getX() - dragX)/(ref.getWidth() * Math.pow(canvasScaleFactor, -1));
+						double diffy = (click.getY() - dragY)/(ref.getHeight() * Math.pow(canvasScaleFactor, -1));
 					
-					
-					sp.setHvalue(dragX + vvalue);
-					sp.setVvalue(dragY + hvalue);
+						sp.setHvalue(sp.getHvalue() - diffx);
+						sp.setVvalue(sp.getVvalue() - diffy);
+					}
+					prevScaleFactor = canvasScaleFactor;
+					dragX = click.getX();
+					dragY = click.getY();
 					
 					changeCursorStyle(GraphicDesignContainer.move_cursor);
 				}
@@ -346,7 +355,8 @@ public class CircuitCanvas extends ResizableCanvas
 					deselectAll();
 					Component newComp = (Component) BlitzEdit.dragAndDropElement;
 					moveElement(newComp, click.getX(), click.getY());
-					circuit.addElement(newComp);
+					if (!circuit.containsElement(newComp))
+						circuit.addElement(newComp);
 					selectElement(newComp);
 					refreshCanvas();
 
@@ -759,29 +769,13 @@ public class CircuitCanvas extends ResizableCanvas
 	
 	/**
 	 * Zooms into the canvas and reduces the scale of the canvas.
+   * Scale is limited to a max of 1.
 	 */
 	public void zoomIn()
 	{
 		if(canvasScaleFactor < 1)
 		{
-			canvasScaleFactor += GraphicDesignContainer.zoom_factor;
-			
-			double posX = sp.getVvalue();
-			double posY = sp.getHvalue();
-			
-			setScaleX(canvasScaleFactor);
-			setScaleY(canvasScaleFactor);
-			
-			sp.setHvalue(canvasScaleFactor * 0.5);
-			sp.setVvalue(canvasScaleFactor * 0.5);
-			
-			sp.setHmin((1-canvasScaleFactor)/2);
-			sp.setVmin((1-canvasScaleFactor)/2);
-			
-			sp.setVvalue(posX);
-			sp.setHvalue(posY);
-			
-			refreshCanvas();
+			zoom(GraphicDesignContainer.zoom_factor);
 		}
 		else
 		{
@@ -790,30 +784,15 @@ public class CircuitCanvas extends ResizableCanvas
 	}
 
 	/**
-	 * Zooms out of the canvas and increases the scale of the canvas.
+	 * Zooms out of the canvas and increases the scale of the canvas. 
+   * Scale is limited to a min of 0,5.
 	 */
 	public void zoomOut()
 	{
 		if(canvasScaleFactor > 0.5)
 		{
-			canvasScaleFactor -= GraphicDesignContainer.zoom_factor;
+			zoom(-GraphicDesignContainer.zoom_factor);
 			
-			double posX = sp.getVvalue();
-			double posY = sp.getHvalue();
-			
-			setScaleX(canvasScaleFactor);
-			setScaleY(canvasScaleFactor);
-			
-			sp.setHvalue(canvasScaleFactor * 0.5);
-			sp.setVvalue(canvasScaleFactor * 0.5);
-			
-			sp.setHmin((1-canvasScaleFactor)/2);
-			sp.setVmin((1-canvasScaleFactor)/2);
-			
-			sp.setVvalue(posX);
-			sp.setHvalue(posY);
-			
-			refreshCanvas();
 		}
 		else
 		{
@@ -821,6 +800,33 @@ public class CircuitCanvas extends ResizableCanvas
 		}
 	}
 	
+  	/**
+	 * Used for zooming in and out of the canvas. 
+   *
+   * @param   step  Scale factor that gets added (can be negative)
+	 */
+	private void zoom(double step)
+	{
+		canvasScaleFactor += step;
+		
+		double posX = sp.getVvalue();
+		double posY = sp.getHvalue();
+		
+		setScaleX(canvasScaleFactor);
+		setScaleY(canvasScaleFactor);
+		
+		sp.setHvalue(canvasScaleFactor * 0.5);
+		sp.setVvalue(canvasScaleFactor * 0.5);
+		
+		sp.setHmin((1-canvasScaleFactor)/2);
+		sp.setVmin((1-canvasScaleFactor)/2);
+		
+		sp.setVvalue(posX);
+		sp.setHvalue(posY);
+		
+		refreshCanvas();
+	}
+  
 	/**
 	 * Returns the current mouse position in this canvas or the last position before it left the node.
 	 * 
