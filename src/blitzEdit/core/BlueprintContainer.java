@@ -13,7 +13,7 @@ import java.util.ArrayList;
  * Organizes {@link ComponentBlueprint blueprints} in a container
  * 
  * @author David Schick
- * @author Christian Gärtner
+ * @author Christian Gï¿½rtner
  */
 public class BlueprintContainer 
 {
@@ -99,7 +99,7 @@ public class BlueprintContainer
 	}
 	
 	/**
-	 * @return List of all {@link ComponentBlueprints} in this BlueprintContainer
+	 * @return List of all {@link ComponentBlueprint} in this BlueprintContainer
 	 */
 	public ArrayList<ComponentBlueprint> getBlueprints()
 	{
@@ -108,32 +108,28 @@ public class BlueprintContainer
 	
 	/**
 	 * adds {@link ComponentBlueprint} to this Container
-	 * @param filepath path of xml-representation on the filesystem
+	 * @param 	filepath 			path of xml-representation on the filesystem
+	 * @return	ComponentBlueprint	Added ComponentBlueprint
 	 */
-	public void addBlueprint(File filepath)
+	public ComponentBlueprint addBlueprint(File filepath)
 	{
-		/*String type = filepath.getName().replace(".svg", "");
-		String svgFilePath = filepath.toString();
-		String svgFileString = SvgRenderer.getSvgFileString(filepath.toString());
-		// TODO
-		int[][] relPos = { { 0, 100 }, { 0, -100 } };
-		short[] relRot = { 0, 180 };
-		int sizeX = (int) SvgRenderer.getSvgWidth(svgFileString);
-		int sizeY = (int) SvgRenderer.getSvgHeight(svgFileString);
-		
-		ComponentBlueprint blueprint = new ComponentBlueprint(type, svgFilePath, relPos, 
-					relRot, sizeX, sizeY, new ArrayList<ComponentProperty>());
-		*/
-		
 		ComponentBlueprint blueprint = XMLParser.readBlueprint(filepath.toString());
 		
-		_blueprints.add(blueprint);
+		if(blueprint != null && !_blueprints.contains(blueprint))
+		{
+			_blueprints.add(blueprint);
+			return blueprint;
+		}
+		return null;
+		
 	}
 	
 	public static BlueprintContainer get()
 	{
-		if (_instance == null)
+		if(_instance == null)
+		{
 			_instance = new BlueprintContainer();
+		}
 		return _instance;
 	}
 	

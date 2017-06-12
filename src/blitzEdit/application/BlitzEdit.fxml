@@ -100,7 +100,7 @@
                         </MenuItem>
                     </items>
                   </Menu>
-                <Menu fx:id="QuickSave" mnemonicParsing="false" onAction="#handleQuickSaveAction" text="Save">
+                <Menu fx:id="QuickSave" mnemonicParsing="false" onAction="#handleSaveAction" text="Save">
                      <accelerator>
                         <KeyCodeCombination alt="UP" code="S" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                      </accelerator>

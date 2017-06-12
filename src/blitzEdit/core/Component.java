@@ -238,22 +238,8 @@ public class Component extends RotatableElement
 	@Override
 	public void setRotation(short rotation)
 	{
-		// Erstellt AffineTransform Objekt, um die connectoren um den schwerpunkt der component zu drehen
-		// die rotation ist negativ, damit nach rechts gedreht wird
 		short rot = (short)(rotation - _rotation);
-		
-		AffineTransform at = AffineTransform.getRotateInstance(-Math.toRadians(rot),
-																_position.getX(), _position.getY());						
-
-		//change connectors absolute position according to components rotation
-		for (Connector con: getConnectors())
-		{
-			Point2D p = new Point(con.getX(), con.getY());
-			Point2D p2 = new Point();
-			at.transform(p, p2);
-			con.setPosition((int)p2.getX(), (int)p2.getY());
-		}
-		super.setRotation(rot);
+		rotate(rot);
 	}
 	
 	@Override
@@ -266,12 +252,15 @@ public class Component extends RotatableElement
 																_position.getX(), _position.getY());						
 
 		//change connectors absolute position according to components rotation
-		for (Connector con: getConnectors())
+		if (getConnectors() != null)
 		{
-			Point2D p = new Point(con.getX(), con.getY());
-			Point2D p2 = new Point();
-			at.transform(p, p2);
-			con.setPosition((int)p2.getX(), (int)p2.getY());
+			for (Connector con : getConnectors())
+			{
+				Point2D p = new Point(con.getX(), con.getY());
+				Point2D p2 = new Point();
+				at.transform(p, p2);
+				con.setPosition((int) p2.getX(), (int) p2.getY());
+			}
 		}
 		super.rotate(rotation);
 	}

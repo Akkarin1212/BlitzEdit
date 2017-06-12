@@ -3,6 +3,7 @@ package blitzEdit.application;
 import java.io.File;
 import java.net.URL;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 import javax.swing.JOptionPane;
@@ -21,6 +22,7 @@ import javafx.scene.control.ScrollPane.ScrollBarPolicy;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TitledPane;
+import javafx.scene.input.MouseButton;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
@@ -36,6 +38,7 @@ public class BlitzEdit implements javafx.fxml.Initializable
 	public static Element[] elementsToCopy;
 	public static Point2D copyMousePosition;
 	public static Element dragAndDropElement;
+	private static ArrayList<LibraryCanvas> libraries = new ArrayList<LibraryCanvas>();
 	
 	@FXML
 	private MenuItem New;
@@ -99,6 +102,7 @@ public class BlitzEdit implements javafx.fxml.Initializable
 	{
 		addTab("New Circuit");
 		addLibrary("Template Library");
+		getCurrentLibraryCanvas().addLibraryEntries(new File("blueprints/"));
 	}
 	
 	/**
@@ -181,11 +185,11 @@ public class BlitzEdit implements javafx.fxml.Initializable
 		
 		if (filepath != null)
 		{
-			addTab(filepath.getName().replace(".xml", ""));
+			CircuitCanvas newCanvas = addTab(filepath.getName().replace(".xml", ""));
 			XMLParser parser = new XMLParser();
-			parser.loadCircuit(getCurrentCircuitCanvas().circuit, filepath.getPath());
-			getCurrentCircuitCanvas().refreshCanvas();
-			getCurrentCircuitCanvas().currentSaveDirection = filepath;
+			parser.loadCircuit(newCanvas.circuit, filepath.getPath());
+			newCanvas.refreshCanvas();
+			newCanvas.currentSaveDirection = filepath;
 		}
 	}
 
@@ -216,7 +220,7 @@ public class BlitzEdit implements javafx.fxml.Initializable
 		}
 		else
 		{
-			Debug_Text.setText("Failed to save Circuit under" + destination);
+			Debug_Text.setText("Failed to save Circuit under " + destination);
 		}
 	}
 
@@ -241,11 +245,11 @@ public class BlitzEdit implements javafx.fxml.Initializable
 			
 			JOptionPane.showConfirmDialog(null,
 					"Circuit saved under" + destination, "Save as",
-					JOptionPane.OK_OPTION);
+					JOptionPane.CLOSED_OPTION);
 		}
 		else
 		{
-			Debug_Text.setText("Failed to save Circuit under" + destination);
+			Debug_Text.setText("Failed to save Circuit under " + destination);
 		}
 	}
 
@@ -259,8 +263,23 @@ public class BlitzEdit implements javafx.fxml.Initializable
 
 		if (selectedDirectory != null)
 		{
-			addLibrary(selectedDirectory.getName());
-			getCurrentLibraryCanvas().drawLibraryEntries();
+			if(checkForDuplicateLibrary(selectedDirectory))
+			{
+				Debug_Text.setText("Duplicate library directory selected");
+				return;
+			}
+			
+			LibraryCanvas newCanvas = addLibrary(selectedDirectory.getName());
+			if(!newCanvas.addLibraryEntries(selectedDirectory)) //if no files got added
+			{
+				removeCurrentLibraryTitlesPane();
+				Debug_Text.setText("Directory contains no valid xml files");
+			}
+			else
+			{
+				newCanvas.drawLibraryEntries();
+			}
+			
 		}
 		else
 		{
@@ -272,6 +291,27 @@ public class BlitzEdit implements javafx.fxml.Initializable
 	private void handleImportComponentAction(Event event)
 	{
 		Debug_Text.setText("Import Component");
+		
+		FileChooser fileChooser = new FileChooser();
+		fileChooser.setTitle("Add xml Component");
+		fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("XML", "*.xml"));
+		File selectedFile = fileChooser.showOpenDialog(Main.mainStage);
+
+		if (selectedFile != null)
+		{
+			if(!getCurrentLibraryCanvas().addLibraryEntry(selectedFile)) //if no files got added
+			{
+				Debug_Text.setText("File already added or not a valid xml document");
+			}
+			else
+			{
+				getCurrentLibraryCanvas().drawLibraryEntries();
+			}
+		}
+		else
+		{
+			Debug_Text.setText("Invalid file location: None selected");
+		}
 	}
 
 	@FXML
@@ -341,11 +381,11 @@ public class BlitzEdit implements javafx.fxml.Initializable
 		getCurrentCircuitCanvas().deselectAll();
 	}
 
-	@FXML
-	private void handleQuickSaveAction(Event event)
-	{
-		Debug_Text.setText("Save");
-	}
+//	@FXML
+//	private void handleQuickSaveAction(Event event)
+//	{
+//		Debug_Text.setText("Quicksave");
+//	}
 
 	@FXML
 	private void handleViewZoomInAction(Event event)
@@ -372,9 +412,10 @@ public class BlitzEdit implements javafx.fxml.Initializable
 	/**
 	 * Adds a new tab to the tabpane that contains a {@link CircuitCanvas} and selects the new one.
 	 * 
-	 * @param	name	Name for the tab
+	 * @param	name			Name for the tab
+	 * @return	CircuitCanvas	Contains the created canvas
 	 */
-	private void addTab(String name)
+	private CircuitCanvas addTab(String name)
 	{
 		// check if the TabPanel exists before creating tabs
 		if (CircuitsTabPane != null)
@@ -395,15 +436,19 @@ public class BlitzEdit implements javafx.fxml.Initializable
 
 			CircuitsTabPane.getTabs().add(tab);
 			CircuitsTabPane.getSelectionModel().select(tab);
+			
+			return canvas;
 		}
+		return null;
 	}
 
 	/**
 	 * Adds a new tab to the accordion that contains a {@link LibraryCanvas} and selects the new one.
 	 * 
-	 * @param	name	Name for the library tab
+	 * @param	name			Name for the library tab
+	 * @return	LibraryCanvas	Contains the created canvas
 	 */
-	private void addLibrary(String name)
+	private LibraryCanvas addLibrary(String name)
 	{
 		// check if the TabPanel exists before creating tabs
 		if (LibrariesAccordion != null)
@@ -413,6 +458,12 @@ public class BlitzEdit implements javafx.fxml.Initializable
 			ScrollPane sp = new ScrollPane();
 			TitledPane library = new TitledPane(name, null);
 
+			library.setOnMouseClicked(event -> {
+	            if (MouseButton.SECONDARY.equals(event.getButton()) && event.isControlDown()) {
+	                LibrariesAccordion.getPanes().remove(library);
+	            }
+	        });
+			
 			setAnchorForNode(canvas, 0.0);
 			setAnchorForNode(sp, 0.0);
 
@@ -426,8 +477,12 @@ public class BlitzEdit implements javafx.fxml.Initializable
 			LibrariesAccordion.getPanes().add(library);
 			LibrariesAccordion.setExpandedPane(library);
 
+			libraries.add(canvas);
 			canvas.drawLibraryEntries();
+			
+			return canvas;
 		}
+		return null;
 	}
 
 	/**
@@ -442,5 +497,47 @@ public class BlitzEdit implements javafx.fxml.Initializable
 		AnchorPane.setBottomAnchor(node, value);
 		AnchorPane.setLeftAnchor(node, value);
 		AnchorPane.setRightAnchor(node, value);
+	}
+	
+	/**
+	 * Removes the current selected TitledPane from the accordion and the library from libraries array.
+	 * 
+	 * @return boolean	True if succesfully removed
+	 */
+	private boolean removeCurrentLibraryTitlesPane()
+	{
+		TitledPane tp = getCurrentLibraryTitledPane();
+		LibraryCanvas canvas = getCurrentLibraryCanvas();
+		if(LibrariesAccordion.getPanes().remove(tp))
+		{
+			libraries.remove(canvas);
+			return true;
+		}
+		return false;
+	}
+	
+	/**
+	 * Checks the LibraryCanvas directories of libraries for any duplication with the destination.
+	 * 
+	 * @param 	destination		Directory to check
+	 * @return	boolean			True if duplicate was found
+	 */
+	private boolean checkForDuplicateLibrary(File destination)
+	{
+		if(libraries.isEmpty())
+		{
+			return false;
+		}
+		else
+		{
+			for(LibraryCanvas canvas : libraries)
+			{
+				if(canvas.directory.toString().equalsIgnoreCase(destination.toString()))
+				{
+					return true;
+				}
+			}
+			return false;
+		}
 	}
 }

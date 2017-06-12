@@ -14,9 +14,9 @@ import java.util.TreeMap;
 //Stellt Elemente in einer Bibliothek dar und gibt sie zur�ck wenn sie angeklickt werden
 public class ComponentLibrary
 {
-	private static BlueprintContainer bc;
+	private ArrayList<ComponentBlueprint> blueprints;
 	// Ordnet die Blueprints ihren Positionen auf dem Canvas zu
-	private ArrayList<LibraryEntry> blueprints;
+	private ArrayList<LibraryEntry> entries;
 	int _marginX, _marginY;
 	double _scale;
 	
@@ -24,8 +24,8 @@ public class ComponentLibrary
 	//Konstruktor
 	public ComponentLibrary(int marginX, int marginY, double scale)
 	{
-		bc 		 		= BlueprintContainer.get();
-		blueprints 		= new ArrayList<LibraryEntry>();
+		blueprints 		= new ArrayList<ComponentBlueprint>();
+		entries 		= new ArrayList<LibraryEntry>();
 		_marginX 		= marginX;
 		_marginY 		= marginY;
 		_scale			= scale;
@@ -34,8 +34,8 @@ public class ComponentLibrary
 	//Standardkonstruktor
 	public ComponentLibrary()
 	{
-		bc 		 		= BlueprintContainer.get();
-		blueprints 		= new ArrayList<LibraryEntry>();
+		blueprints 		= new ArrayList<ComponentBlueprint>();
+		entries 		= new ArrayList<LibraryEntry>();
 		_marginX 		= 20;
 		_marginY 		= 20;
 		_scale			= 0.5;
@@ -46,34 +46,35 @@ public class ComponentLibrary
 		int posY = 60;
 		int posX = 40;
 		int maxY = 0;
-		blueprints.clear();
+		entries.clear();
+		gc.clearRect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
 		
-		for (ComponentBlueprint cb : bc.getBlueprints())
+		for (ComponentBlueprint cb : blueprints)
 		{
 			String svgString = SvgRenderer.getSvgFileString(cb.getSvgFilePath());
 			SvgRenderer.renderSvgString(svgString, gc, posX, posY, _scale, SelectionMode.UNSELECTED);
-			
+
 			double compSizeX = cb.getSizeX() * _scale;
 			double compSizeY = cb.getSizeY() * _scale;
-			
+
 			LibraryEntry entry = new LibraryEntry(posX, posY, compSizeX, compSizeY, cb);
-			
-			blueprints.add(entry);
-			
+
+			entries.add(entry);
+
 			posX += compSizeX + _marginX;
-			
-			//Setzt die H�he auf den Wert des h�chsten Elements in der Reihe
+
+			// Setzt die H�he auf den Wert des h�chsten Elements in der
+			// Reihe
 			if (maxY < compSizeY)
 			{
 				maxY = (int) compSizeY;
 			}
-					
-					
+
 			if (posX > 150)
 			{
-				posX  = 40;
+				posX = 40;
 				posY += maxY + _marginY;
-				maxY  = 0;
+				maxY = 0;
 			}
 		}
 	}
@@ -82,16 +83,9 @@ public class ComponentLibrary
 	public void draw(GraphicsContext gc)
 	{
 		gc.clearRect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
-		for (LibraryEntry entry : blueprints)
+		for (LibraryEntry entry : entries)
 		{
 			entry.draw(gc);
-			/*
-			int posX = entry.rect.x + (int)(entry.rect.width * 0.5);
-			int posY = entry.rect.y + (int)(entry.rect.height * 0.5);
-			
-			String svgString = SvgRenderer.getSvgFileString(entry.bp.getSvgFilePath());
-			SvgRenderer.renderSvgString(svgString, gc, posX, posY, _scale, SelectionMode.UNSELECTED);
-			*/
 		}
 	}
 	
@@ -105,20 +99,20 @@ public class ComponentLibrary
 		return _scale;
 	}
 	
-	public Element createComponent(ComponentBlueprint bp, double posX, double posY)
-	{
-		return new Component((int)posX, (int)posY, (short)0, bp.getType(), bp.getRelPos(), bp.getConRelRot(), bp.getSvgFilePath());
-	}
-	
 	public void addBlueprint(File filepath)
 	{
-		bc.addBlueprint(filepath);
+		ComponentBlueprint bp = BlueprintContainer.get().addBlueprint(filepath);
+		if(bp != null)
+		{
+			blueprints.add(bp);
+		}
+		
 	}
 	
 	//gibt das angeklickte Element in der Bibliothek zur�ck
 	public ComponentBlueprint getBlueprint(int x, int y)
 	{
-		for (LibraryEntry entry : blueprints)
+		for (LibraryEntry entry : entries)
 		{
 			if (entry.rect.contains(x, y))
 				return entry.bp;

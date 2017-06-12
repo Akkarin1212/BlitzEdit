@@ -1,7 +1,7 @@
 package blitzEdit.application;
 
 import java.io.File;
-import java.util.Vector;
+import java.util.ArrayList;
 
 import blitzEdit.core.ComponentBlueprint;
 import blitzEdit.core.ComponentLibrary;
@@ -9,6 +9,7 @@ import blitzEdit.core.Element;
 import javafx.event.EventHandler;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.MouseEvent;
+import tools.FileTools;
 import tools.SelectionMode;
 
 /**
@@ -18,7 +19,8 @@ import tools.SelectionMode;
  */
 public class LibraryCanvas extends ResizableCanvas
 {
-	Vector<File> entries = new Vector<File>();
+	public File directory;
+	ArrayList<File> entries = new ArrayList<File>();
 	ComponentLibrary componentLibrary;
 	GraphicsContext gc;
 	Element currentDraggedElement = null;
@@ -32,18 +34,6 @@ public class LibraryCanvas extends ResizableCanvas
 		gc = getGraphicsContext2D();
 		componentLibrary = new ComponentLibrary();
 		
-		entries.add(new File("blueprints/Widerstand.xml"));
-		entries.add(new File("blueprints/Kondensator.xml"));
-		entries.add(new File("blueprints/Spannungsquelle.xml"));
-		entries.add(new File("blueprints/Spule.xml"));
-		
-		for(File f : entries)
-		{
-			componentLibrary.addBlueprint(f);
-		}
-		
-		componentLibrary.initiate(gc);
-		
 		onMousePressedHandler();
 		onMouseDragDetectedHandler();
 		onMouseDraggedHandler();
@@ -56,6 +46,44 @@ public class LibraryCanvas extends ResizableCanvas
 	public void drawLibraryEntries()
 	{
 		componentLibrary.draw(gc);
+	}
+	
+	public boolean addLibraryEntry(File filepath)
+	{
+		if(!entries.contains(filepath) && filepath.toString().contains(".xml"))
+		{
+			entries.add(filepath);
+		
+			componentLibrary.addBlueprint(filepath);
+			componentLibrary.initiate(gc);
+			
+			return true;
+		}
+		return false;
+	}
+	
+	public boolean addLibraryEntries(File folderpath)
+	{
+		ArrayList<File> entriesCheck = (ArrayList<File>) entries.clone();
+		
+		ArrayList<File> files = FileTools.getFilesInDirectory(folderpath, true); //TODO: boolean for subdirectories
+		for (File file : files)
+		{
+			if (!entries.contains(file) && file.toString().contains(".xml"))
+			{
+				entries.add(file);
+
+				componentLibrary.addBlueprint(file);
+			}
+		}
+		componentLibrary.initiate(gc);
+		
+		if(!entries.equals(entriesCheck))
+		{
+			directory = folderpath;
+			return true;
+		}
+		return false;
 	}
 	
 	/**
@@ -74,7 +102,7 @@ public class LibraryCanvas extends ResizableCanvas
 					ComponentBlueprint bp = componentLibrary.getBlueprint(click.getX(), click.getY());
 					if(bp != null)
 					{
-						currentDraggedElement = componentLibrary.createComponent(bp, click.getX(), click.getY());
+						currentDraggedElement = bp.createComponent((int) click.getX(), (int) click.getY(), (short) 0);
 						currentDraggedElement.draw(gc, scale, SelectionMode.UNSELECTED);
 					}
 				}

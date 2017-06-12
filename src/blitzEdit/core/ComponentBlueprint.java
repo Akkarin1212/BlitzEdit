@@ -58,6 +58,16 @@ public class ComponentBlueprint
 		return _sizeY;
 	}
 	
+	public Element createComponent(int posX, int posY, short rot)
+	{
+		return new Component(posX, posY, rot, this.getType(), this.getRelPos(), this.getConRelRot(), this.getSvgFilePath());
+	}
+	
+	public Element createComponent(int posX, int posY, short rot, int[][]conRelPos, short[]conRelRot)
+	{
+		return new Component(posX, posY, rot, this.getType(), conRelPos, conRelRot, this.getSvgFilePath());
+	}
+	
 	/**
 	 * Constructs new ComponentBlueprint
 	 * @param type typename for {@link Component component}

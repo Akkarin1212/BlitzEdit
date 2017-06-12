@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- Bauteil Deklaration: TestComponent -->
+
+<component type="TestComponent">
+	<svg path="TestComponent.svg"/>
+	<connector x="0" y="100" rot="0"/>
+	<connector x="0" y="-100" rot="180"/>
+	<connector x="50" y="0" rot="270"/>
+	<connector x="-50" y="0" rot="90"/>
+	<property name="TestComponent" type="decimal" unit="ohm"/>
+</component>

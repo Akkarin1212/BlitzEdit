@@ -39,7 +39,7 @@ public class SvgRenderer
 		String fileString = null;
 		try
 		{
-			fileString = readFile(SvgFilePath, StandardCharsets.UTF_8);
+			fileString = FileTools.readFile(SvgFilePath, StandardCharsets.UTF_8);
 		}
 		catch (IOException e)
 		{
@@ -52,19 +52,6 @@ public class SvgRenderer
 			return scanFileString(fileString);
 		}
 		return null;
-	}
-	
-	/**
-	 * Used to create a string out of the content of a file.
-	 * 
-	 * @param	path		Location of the file on the operating system
-	 * @param	encoding	Charset the file is encoded with
-	 * @return	String		Contains the content of the file
-	 */
-	private static String readFile(String path, Charset encoding) throws IOException 
-	{
-		byte[] encoded = Files.readAllBytes(Paths.get(path));
-		return new String(encoded, encoding);
 	}
 	
 	/**
