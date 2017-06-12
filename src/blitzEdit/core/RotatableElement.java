@@ -8,7 +8,7 @@ import tools.RotatableRectangle;
  * abstract class for rotatable elements in a circuit
  * 
  * @author David Schick
- * @author Christian Gärtner
+ * @author Christian Gartner
  *
  */
 public abstract class RotatableElement extends Element
@@ -73,6 +73,10 @@ public abstract class RotatableElement extends Element
 	{
 		super(x, y, sizeX, sizeY);
 		_rotation = rot;
+		if(rot != 0)
+		{
+			setRotation(rot);
+		}
 	}
 	
 	/**
@@ -87,6 +91,10 @@ public abstract class RotatableElement extends Element
 	{
 		super(x, y);
 		_rotation = rot;
+		if(rot != 0)
+		{
+			setRotation(rot);
+		}
 	}
 	/**
 	 * Constructs new RotatableElement
