@@ -24,6 +24,7 @@ import javafx.scene.control.TitledPane;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
+import tools.GlobalSettings;
 
 public class BlitzEdit implements javafx.fxml.Initializable
 {
@@ -345,6 +346,7 @@ public class BlitzEdit implements javafx.fxml.Initializable
 		Debug_Text.setText("Grid On/Off");
 		
 		getCurrentCircuitCanvas().gridOnOff();
+		GlobalSettings.SNAP_TO_GRID = GlobalSettings.SNAP_TO_GRID ? false : true;
 		getCurrentCircuitCanvas().refreshCanvas();
 	}
 

@@ -154,14 +154,14 @@ public class CircuitCanvas extends ResizableCanvas
 					{
 						//wurde der drag handler gerade erst aufgerufen, wird
 						//der mauspunkt als ursprungspunkt für die translation uebernommen
+						
+						//initialDrag = false;
+						moved = translateElements(currentSelectedElements, click.getX() - dragX, click.getY() - dragY);
 						if (moved)
 						{
 							dragX = click.getX();
 							dragY = click.getY();
 						}
-						//initialDrag = false;
-						moved = translateElements(currentSelectedElements, click.getX() - dragX, click.getY() - dragY);
-						
 						changeCursorStyle(GraphicDesignContainer.move_cursor);
 						refreshCanvas();
 
