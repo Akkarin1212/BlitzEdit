@@ -58,6 +58,11 @@ public class ComponentBlueprint
 		return _sizeY;
 	}
 	
+	public Element createComponentWithoutConnectors(int posX, int posY, short rot)
+	{
+		return new Component(posX, posY, rot, this.getType(), this.getSvgFilePath());
+	}
+	
 	public Element createComponent(int posX, int posY, short rot)
 	{
 		return new Component(posX, posY, rot, this.getType(), this.getRelPos(), this.getConRelRot(), this.getSvgFilePath());

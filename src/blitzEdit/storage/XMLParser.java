@@ -39,7 +39,7 @@ public class XMLParser implements IParser{
 		String circuitString = new String();
 		
 		// save elements in String
-		elements = currentCircuit.getElements();
+		elements = new ArrayList<Element>(currentCircuit.getElements());
 		for(int i=0; i<elements.size();i++)
 		{
 			Element elem = elements.get(i);
@@ -458,7 +458,7 @@ public class XMLParser implements IParser{
 			ComponentBlueprint bp = BlueprintContainer.get().getBlueprint(type);
 			if (bp != null)
 			{
-				elements.set((int) id, bp.createComponent((int) x, (int) y, (short) rot));
+				elements.set((int) id, bp.createComponentWithoutConnectors((int) x, (int) y, (short) rot));
 				return true;
 			}
 			else
