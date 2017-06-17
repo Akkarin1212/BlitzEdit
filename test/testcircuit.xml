@@ -2,15 +2,7 @@
 <Circuit>
 	<circuithash hash="1128177892"/>
 	<component id="4" x="125" y="200" rot="45" type="TestComponent" hash="-1648954701">
-		<child comp="4" conn="-1;-1;-1;-1;0;1;2;3;" hash="1749124225"/>
-		<connector id="-1" x="125" y="300" rot="0" relX="0" relY="100" hash="2085865789">
-		</connector>
-		<connector id="-1" x="125" y="100" rot="180" relX="0" relY="-100" hash="-1973425343">
-		</connector>
-		<connector id="-1" x="174" y="200" rot="270" relX="50" relY="0" hash="1091190315">
-		</connector>
-		<connector id="-1" x="76" y="200" rot="90" relX="-50" relY="0" hash="562753031">
-		</connector>
+		<child comp="4" conn="0;1;2;3;" hash="1749124225"/>
 		<connector id="0" x="54" y="271" rot="0" relX="0" relY="100" hash="545102871">
 			<connection conn1="0" conn2="13" hash="-1434478045"/>
 		</connector>
@@ -25,15 +17,7 @@
 		</connector>
 	</component>
 	<component id="9" x="500" y="150" rot="315" type="TestComponent" hash="1230225061">
-		<child comp="9" conn="-1;-1;-1;-1;5;6;7;8;" hash="-1765328334"/>
-		<connector id="-1" x="500" y="250" rot="0" relX="0" relY="100" hash="1743100376">
-		</connector>
-		<connector id="-1" x="500" y="50" rot="180" relX="0" relY="-100" hash="1004705044">
-		</connector>
-		<connector id="-1" x="550" y="150" rot="270" relX="50" relY="0" hash="-933286769">
-		</connector>
-		<connector id="-1" x="450" y="150" rot="90" relX="-50" relY="0" hash="-1788064479">
-		</connector>
+		<child comp="9" conn="5;6;7;8;" hash="-1765328334"/>
 		<connector id="5" x="571" y="221" rot="0" relX="0" relY="100" hash="1878353769">
 			<connection conn1="5" conn2="12" hash="1877921725"/>
 		</connector>
@@ -47,15 +31,7 @@
 		</connector>
 	</component>
 	<component id="14" x="325" y="425" rot="0" type="TestComponent" hash="-1443207176">
-		<child comp="14" conn="-1;-1;-1;-1;10;11;12;13;" hash="-336123940"/>
-		<connector id="-1" x="325" y="525" rot="0" relX="0" relY="100" hash="427888580">
-		</connector>
-		<connector id="-1" x="325" y="325" rot="180" relX="0" relY="-100" hash="1646412634">
-		</connector>
-		<connector id="-1" x="375" y="425" rot="270" relX="50" relY="0" hash="1244820515">
-		</connector>
-		<connector id="-1" x="275" y="425" rot="90" relX="-50" relY="0" hash="390042805">
-		</connector>
+		<child comp="14" conn="10;11;12;13;" hash="-336123940"/>
 		<connector id="10" x="325" y="525" rot="0" relX="0" relY="100" hash="-2086325889">
 		</connector>
 		<connector id="11" x="325" y="325" rot="180" relX="0" relY="-100" hash="-2044321698">

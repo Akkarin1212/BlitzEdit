@@ -231,8 +231,8 @@ public class Component extends RotatableElement
 	 */
 	public void addConnenctor(Connector conn)
 	{
-		_ports.add(conn);
 		conn.setOwner(this);
+		_ports.add(conn);
 	}
 	
 	@Override
@@ -406,6 +406,22 @@ public class Component extends RotatableElement
 	{
 		super(x, y, rot);
 		initialize(x, y, rot, type, svg, connRelPos, connRelRot);
+		super.setSize(SvgRenderer.getSvgWidth(_svgFileString), SvgRenderer.getSvgHeight(_svgFileString));
+	}
+	
+	/**
+	 * Constructs new Component
+	 * 
+	 * @param x x-coordinate
+	 * @param y y-coordinate
+	 * @param rot rotation
+	 * @param type typename
+	 * @param svg path of svg-image
+	 */
+	public Component(int x, int y, short rot, String type, String svg)
+	{
+		super(x, y, rot);
+		initialize(x, y, rot, type, svg);
 		super.setSize(SvgRenderer.getSvgWidth(_svgFileString), SvgRenderer.getSvgHeight(_svgFileString));
 	}
 	
