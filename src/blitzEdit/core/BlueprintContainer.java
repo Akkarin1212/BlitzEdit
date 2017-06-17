@@ -107,6 +107,25 @@ public class BlueprintContainer
 	}
 	
 	/**
+	 * Tries to delete all ComponentBlueprints in the given array from its blueprints array.
+	 * If blueprints doesn't contain a COmponentBlueprint nothing happens.
+	 * @param 	blueprint 			Array of ComponentBlueprints to delete
+	 */
+	public void removeBlueprints(ComponentBlueprint[] blueprint)
+	{
+		if(blueprint != null)
+		{
+			for(ComponentBlueprint bp : blueprint)
+			{
+				if (bp != null && !_blueprints.contains(blueprint)) 
+				{
+					_blueprints.remove(bp);
+				}
+			}
+		}
+	}
+	
+	/**
 	 * adds {@link ComponentBlueprint} to this Container
 	 * @param 	filepath 			path of xml-representation on the filesystem
 	 * @return	ComponentBlueprint	Added ComponentBlueprint

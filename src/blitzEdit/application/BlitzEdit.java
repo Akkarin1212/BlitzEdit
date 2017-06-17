@@ -460,7 +460,7 @@ public class BlitzEdit implements javafx.fxml.Initializable
 
 			library.setOnMouseClicked(event -> {
 	            if (MouseButton.SECONDARY.equals(event.getButton()) && event.isControlDown()) {
-	                LibrariesAccordion.getPanes().remove(library);
+	                removeCurrentLibraryTitlesPane();
 	            }
 	        });
 			
@@ -510,6 +510,7 @@ public class BlitzEdit implements javafx.fxml.Initializable
 		LibraryCanvas canvas = getCurrentLibraryCanvas();
 		if(LibrariesAccordion.getPanes().remove(tp))
 		{
+			canvas.delete();
 			libraries.remove(canvas);
 			return true;
 		}
