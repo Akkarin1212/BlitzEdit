@@ -109,6 +109,11 @@ public class ComponentLibrary
 		
 	}
 	
+	public ComponentBlueprint[] getLibraryBlueprints()
+	{
+		return blueprints.toArray(new ComponentBlueprint[]{});
+	}
+	
 	//gibt das angeklickte Element in der Bibliothek zur�ck
 	public ComponentBlueprint getBlueprint(int x, int y)
 	{

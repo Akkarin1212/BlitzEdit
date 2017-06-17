@@ -125,7 +125,12 @@ public class CircuitCanvas extends ResizableCanvas
 						
 						refreshCanvas();
 					}
-					else if (!hasSelectedMultipleElements)
+					else if (click.isShiftDown())
+					{
+						currentSelectedConnector = null;
+						selectAdditionalElement(click.getX(), click.getY());
+					}
+					else if(!hasSelectedMultipleElements)
 					{
 						currentSelectedConnector = null;
 						selectElement(click.getX(), click.getY());
@@ -402,7 +407,11 @@ public class CircuitCanvas extends ResizableCanvas
 			@Override
 			public void handle(MouseEvent click)
 			{
-
+				if(click.isShiftDown())
+				{
+					return;
+				}
+				
 				// deselect multiple elements when pressing and releasing
 				// mouse at the same position
 				if (hasSelectedMultipleElements && (click.getX() == clickX && click.getY() == clickY))
@@ -964,6 +973,7 @@ public class CircuitCanvas extends ResizableCanvas
 	
 	/**
 	 * Checks if there's a component at x,y position and if yes set it's selection mode to selected.
+	 * Deselects all other elements first.
 	 * 
 	 * @param	x		X position in the canvas
 	 * @param	y		Y position in the canvas
@@ -987,6 +997,45 @@ public class CircuitCanvas extends ResizableCanvas
 			}
 			currentSelectedElements.add(elemToAdd.setSelectionMode(SelectionMode.SELECTED)); // take first element found
 		}
+	}
+	
+	/**
+	 * Checks if there's a component at x,y position and if yes set it's selection mode to selected.
+	 * Deselects elemenent if already added. Sets hasSelectedMultipleElements to true or false if afterwards
+	 * multiple or only one element is selected.
+	 * 
+	 * @param	x		X position in the canvas
+	 * @param	y		Y position in the canvas
+	 */
+	private void selectAdditionalElement(double x, double y)
+	{
+		ArrayList<Element> elements = circuit.getElementsByPosition(x, y);
+		if(elements == null)
+		{
+			return;
+		}
+		Element elemToAdd = elements.get(0);
+		
+		if(!currentSelectedElements.contains(elemToAdd)) // avoid selection duplicates
+		{
+			// prioritize connectors over components
+			for(Element e : elements)
+			{
+				if(e.getClass() == Connector.class)
+				{
+					elemToAdd = e;
+					currentSelectedConnector = (Connector) e;
+				}
+			}
+			currentSelectedElements.add(elemToAdd.setSelectionMode(SelectionMode.SELECTED)); // take first element found
+		}
+		else if(currentSelectedElements.contains(elemToAdd)) // deselect duplicate
+		{
+			currentSelectedElements.remove(elemToAdd.setSelectionMode(SelectionMode.UNSELECTED));
+		}
+		
+		// update indicator for multiple element selection
+		hasSelectedMultipleElements = currentSelectedElements.size()>1 ? true : false; 
 	}
 	
 	/**
