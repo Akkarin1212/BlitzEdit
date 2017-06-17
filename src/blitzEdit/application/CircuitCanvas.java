@@ -689,9 +689,13 @@ public class CircuitCanvas extends ResizableCanvas
 				
 				double offsetX = e.getX() - mousePos.getX();
 				double offsetY = e.getY() - mousePos.getY();
+				short rot = ((Component)e).getRotation();
 				
+				((Component)e).setRotation((short)0);
 				Element clone = orginal.clone();
 				
+				((Component)clone).rotate(rot);
+				((Component)e).rotate(rot);
 				circuit.addElement(clone.move(currentMousePosition.getX() + offsetX, currentMousePosition.getY() + offsetY));
 				selectElement(clone);
 				refreshCanvas();
