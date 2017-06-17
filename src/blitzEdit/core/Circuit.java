@@ -167,7 +167,7 @@ public class Circuit
 	 */
 	public void addElement(Element elem)
 	{
-		if (elem == null)
+		if (elem == null || _elements.contains(elem))
 			return;
 		if (elem instanceof Component)
 		{
@@ -189,6 +189,8 @@ public class Circuit
 		{
 			for (Element elem : elements)
 			{
+				if (_elements.contains(elem))
+					continue;
 				/*
 				if (elem instanceof Component)
 				{
@@ -198,6 +200,7 @@ public class Circuit
 					}
 				}
 				*/
+				
 				_elements.add(elem);
 			}
 		}

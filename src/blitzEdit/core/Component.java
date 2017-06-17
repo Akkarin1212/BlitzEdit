@@ -231,8 +231,8 @@ public class Component extends RotatableElement
 	 */
 	public void addConnenctor(Connector conn)
 	{
-		_ports.add(conn);
 		conn.setOwner(this);
+		_ports.add(conn);
 	}
 	
 	@Override
@@ -416,8 +416,6 @@ public class Component extends RotatableElement
 	 * @param y y-coordinate
 	 * @param rot rotation
 	 * @param type typename
-	 * @param connRelPos Array, containing the relative positions of this Components {@link Connector Connectors}
-	 * @param connRelRot Array, containing the relative rotations of this Components {@link Connector Connectors}
 	 * @param svg path of svg-image
 	 */
 	public Component(int x, int y, short rot, String type, String svg)
