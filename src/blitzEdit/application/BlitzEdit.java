@@ -4,6 +4,7 @@ import java.io.File;
 import java.net.URL;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Properties;
 import java.util.ResourceBundle;
 
 import javax.swing.JOptionPane;
@@ -39,6 +40,7 @@ public class BlitzEdit implements javafx.fxml.Initializable
 	public static Point2D copyMousePosition;
 	public static Element dragAndDropElement;
 	private static ArrayList<LibraryCanvas> libraries = new ArrayList<LibraryCanvas>();
+	private TutorialPanel pane;
 	
 	@FXML
 	private MenuItem New;
@@ -80,20 +82,15 @@ public class BlitzEdit implements javafx.fxml.Initializable
 	private MenuItem ZoomOut;
 	@FXML
 	private MenuItem About;
+	@FXML
+	private MenuItem ToggleTutorial;
 
 	@FXML
 	private TabPane CircuitsTabPane;
 	@FXML
 	private Accordion LibrariesAccordion;
-
 	@FXML
-	private TitledPane Library1;
-	@FXML
-	private TitledPane Library2;
-	@FXML
-	private TitledPane Library3;
-	@FXML
-	private TitledPane Properties;
+	private Accordion Tutorial;
 	@FXML
 	private Label Debug_Text;
 
@@ -102,6 +99,7 @@ public class BlitzEdit implements javafx.fxml.Initializable
 	{
 		addTab("New Circuit");
 		addLibrary("Template Library");
+		createTutorialPane();
 		getCurrentLibraryCanvas().addLibraryEntries(new File("blueprints/"));
 	}
 	
@@ -407,6 +405,19 @@ public class BlitzEdit implements javafx.fxml.Initializable
 	private void handleHelpAboutAction(Event event)
 	{
 		Debug_Text.setText("About");
+	}
+	
+	@FXML
+	private void handleToggleTutorialAction(Event event)
+	{
+		Debug_Text.setText("Toogle Tutorial");
+		pane.toggleVisibilty();
+	}
+	
+	private void createTutorialPane()
+	{
+		pane = new TutorialPanel(Tutorial);
+		Tutorial.getPanes().addAll(pane.create());
 	}
 
 	/**
