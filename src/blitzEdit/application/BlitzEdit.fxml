@@ -24,7 +24,7 @@
                            </accelerator>
                         </MenuItem>
                         <SeparatorMenuItem mnemonicParsing="false" />
-                        <MenuItem fx:id="Reload" mnemonicParsing="false" onAction="#handleReloadAction" text="Reload..." >
+                        <MenuItem fx:id="Reload" mnemonicParsing="false" onAction="#handleReloadAction" text="Reload...">
                         	<accelerator>
                               <KeyCodeCombination alt="UP" code="F5" control="UP" meta="UP" shift="UP" shortcut="UP" />
                            </accelerator>
@@ -113,6 +113,7 @@
                   </Menu>
                   <Menu mnemonicParsing="false" text="Help">
                      <items>
+                        <MenuItem fx:id="ToggleTutorial" mnemonicParsing="false" onAction="#handleToggleTutorialAction" text="Toggle Tutorial" />
                         <MenuItem fx:id="About" mnemonicParsing="false" onAction="#handleHelpAboutAction" text="About" />
                      </items>
                   </Menu>
@@ -130,17 +131,9 @@
                         <TabPane fx:id="CircuitsTabPane" minHeight="-Infinity" minWidth="-Infinity" prefHeight="0.0" prefWidth="0.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                      </children>
                   </AnchorPane>
-                  <AnchorPane minHeight="0.0" minWidth="200.0" prefHeight="680.0" prefWidth="170.0">
+                  <AnchorPane minHeight="0.0" minWidth="1.0" prefHeight="680.0" prefWidth="170.0">
                      <children>
-                        <TitledPane fx:id="Properties" animated="false" minHeight="0.0" minWidth="200.0" text="Properties" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                          <content>
-                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                                 <children>
-                                    <TextFlow minHeight="-Infinity" minWidth="-Infinity" prefHeight="0.0" prefWidth="170.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                                 </children>
-                              </AnchorPane>
-                          </content>
-                        </TitledPane>
+                        <Accordion fx:id="Tutorial" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                      </children>
                   </AnchorPane>
               </items>

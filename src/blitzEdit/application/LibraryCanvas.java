@@ -3,6 +3,7 @@ package blitzEdit.application;
 import java.io.File;
 import java.util.ArrayList;
 
+import blitzEdit.core.BlueprintContainer;
 import blitzEdit.core.ComponentBlueprint;
 import blitzEdit.core.ComponentLibrary;
 import blitzEdit.core.Element;
@@ -38,6 +39,11 @@ public class LibraryCanvas extends ResizableCanvas
 		onMouseDragDetectedHandler();
 		onMouseDraggedHandler();
 		onMouseReleasedHandler();
+	}
+	
+	public void delete()
+	{
+		BlueprintContainer.get().removeBlueprints(componentLibrary.getLibraryBlueprints());
 	}
 	
 	/**
@@ -173,7 +179,6 @@ public class LibraryCanvas extends ResizableCanvas
 			}
 		});
 	}
-	
 	
 	@Override
 	public void resize(double width, double height)
