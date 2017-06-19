@@ -42,28 +42,59 @@ public class TutorialPanel extends TitledPane
 		String descriptionName = "";
 		String description = "";
 		
-		descriptionName = "Lorem Ipsum Test";
-		description = "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, "
-				+ "sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua."
-				+ " At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren,"
-				+ " no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet,"
-				+ " consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat,"
-				+ " sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren,"
-				+ " no sea takimata sanctus est Lorem ipsum dolor sit amet.";
+		descriptionName = "BlitzEdit HelpGuide";
+		description = "This guide shall help you to use BlitzEdit with all its excellent features."
+				+ "\n\nExpand the other tabs below to learn more."
+				+ "\n\nTo get started drag an element from the library on the left to the editor pane."
+				+ "\nYou can always create a new circuit by going to 'File>New' or pressing 'Strg+N'."
+				+ "\n\nTo hide this window right click on it and select 'hide' or go to view and select 'Toggle Tutorial'.";
 		panes.add(buildTitledPane(descriptionName, description));
 		
-		descriptionName = "2"; //TODO
-		description = "Text2";
+		descriptionName = "Working with elements"; //TODO
+		description = "Select:"
+				+ "\n - Click on the element"
+				+ "\n - Hold your left mousebutton and move it over elements to select one or more elements"
+				+ "\n - When elements are already selected add an element to the selection by selecting it with 'Shift+left click'"
+				+ "\n - Press 'Strg+A' to select all elements"
+				+ "\n\nRotate:"
+				+ "\n - Right click on the element and select 'rotate'"
+				+ "\n - Select an element and scroll up or down to rotate left or right"
+				+ "\n\nCopy & Paste:"
+				+ "\n - Through right click menu on element"
+				+ "\n - Select element(s) and press 'Strg+C' and 'Strg+V'";
 		panes.add(buildTitledPane(descriptionName, description));
 		
-		descriptionName = "3"; //TODO
-		description = "Text3";
+		descriptionName = "Working with connections"; //TODO
+		description = "Color code:"
+				+ "\nBlue:\t\tSelected link"
+				+ "\nRed:\t\tConnectable links"
+				+ "\nGreen:\tConnected links"
+				+ "\n\nConnect two elements:"
+				+ "\nClick on the link of an element to select it and select the link of another element to connect them."
+				+ "\nClick on another link to create several connections at once."
+				+ "\nClick somewhere else to deselect the link."
+				+ "\n\nDelete a connection:"
+				+ "\nSelect the links of a connection one after the other."
+				+ "\n\nMove a link:"
+				+ "\nDrag and drop a selected link to move it along the axis of the element.";
 		panes.add(buildTitledPane(descriptionName, description));
 		
-		descriptionName = "4"; //TODO
-		description = "Text4";
+		descriptionName = "Adding components"; //TODO
+		description = "To existing library:"
+				+ "\nSelect a library you want to extend."
+				+ "\nGo to 'File>Import>Component' and select a xml file from the file system."
+				+ "\n\nTo a new library:"
+				+ "\nGo to 'File>Import>Library' and select a folder with xml file(s) from the file system.";
 		panes.add(buildTitledPane(descriptionName, description));
 		
+		descriptionName = "Miscellaneous"; //TODO
+		description = "Toggle grid:"
+				+ "\nBy default the elements will be aligned to the grid."
+				+ "\nTo turn this off go to 'View>Toggle Grid'"
+				+ "\n\nZoom In/Out:"
+				+ "\n - Click on the editor pane and scroll up or down to zoom in or out."
+				+ "\n - Go to 'View>Zoom In' or 'View>Zoom Out'.";
+		panes.add(buildTitledPane(descriptionName, description));
 		
 		parent.setOnMousePressed(new EventHandler<MouseEvent>()
 		{
