@@ -149,8 +149,8 @@ public class Component extends RotatableElement
 	/**
 	 * Checks, if one of the Components {@link Connector Connectors}
 	 * is connected to the designated Component
-	 * @param conn Component to be checked for connection
-	 * @return true if Component is connected, else false
+	 * @param 	comp 	Component to be checked for connection
+	 * @return 	boolean	True if Component is connected, else false
 	 */
 	public boolean isConnected(Component comp)
 	{
@@ -271,7 +271,7 @@ public class Component extends RotatableElement
 	
 	/**
 	 * Returns List Containing all {@link ComponentProperty Properties} of this Component
-	 * @return
+	 * @return	ArrayList&lt;ComponentProperty&gt;	Contains porperties
 	 */
 	public ArrayList<ComponentProperty> getProperties()
 	{

@@ -83,9 +83,9 @@ public class BlueprintContainer
 	}
 	
 	/**
-	 * Returns blueprint that matches typename type
-	 * @param type
-	 * @return matching {@link ComponentBlueprint} or null, if the blueprint is not 
+	 * Returns blueprint which typename matches type
+	 * @param 	type		Name of blueprint to check
+	 * @return 	matching	{@link ComponentBlueprint} or null, if the blueprint is not 
 	 * contained in this BlueprintContainer
 	 */
 	public ComponentBlueprint getBlueprint(String type)

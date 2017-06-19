@@ -63,7 +63,7 @@ public class Line
 	
 	/**
 	 * draws the line on a {@link GraphicsContext}
-	 * @param gc
+	 * @param gc	GraphicContext to draw on
 	 */
 	public void draw(GraphicsContext gc)
 	{	
@@ -88,7 +88,7 @@ public class Line
 	/**
 	 * draws the line on a {@link GraphicsContext}. 
 	 * Private method called in the public draw-method
-	 * @param gc
+	 * @param gc	GraphicContext to draw on
 	 */
 	private void drawLine(GraphicsContext gc)
 	{
@@ -107,11 +107,11 @@ public class Line
 	 * Private method called by drawLine
 	 * Returns a Point specifying the Corner Point for this line, considering
 	 * the position and rotation of the connected connectors.
-	 * @param p1
-	 * @param alpha1
-	 * @param p2
-	 * @param alpha2
-	 * @return Corner Point for line
+	 * @param 	p1			Contains first point
+	 * @param 	alpha1		Rotation of first point
+	 * @param 	p2			Contains second point
+	 * @param 	alpha2		Rotation of second point
+	 * @return 	Point		Corner Point for line
 	 */
 	private Point getCornerPoint(Point p1, short alpha1, Point p2, short alpha2)
 	{

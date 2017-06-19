@@ -80,7 +80,7 @@ public class SvgRenderer
 	}
 	
 	/**
-	 * Used for drawing a svg image of an {@link Element} on a graphical context.
+	 * Used for drawing a svg image of an {@link blitzEdit.core.Element} on a graphical context.
 	 * Considers SelectionMode and draws an image according to GraphicDesignContainer constants if an element is selected or unselected
 	 * 
 	 * @param	svgString	String containing the xml
@@ -125,7 +125,7 @@ public class SvgRenderer
 	}
 	
 	/**
-	 * Used for drawing a rotated svg image of an {@link Element} on a graphical context.
+	 * Used for drawing a rotated svg image of an {@link blitzEdit.core.Element} on a graphical context.
 	 * Considers SelectionMode and draws an image according to GraphicDesignContainer constants if an element is selected or unselected
 	 * 
 	 * @param	svgString	String containing the xml
@@ -184,7 +184,7 @@ public class SvgRenderer
 	}
 	
 	/**
-	 * Searches the svgString for <svg> tag and extracts the height property.
+	 * Searches the svgString for svg tag and extracts the height property.
 	 * 
 	 * @param	svgString	String containing the xml
 	 * @return	double		Height of the svg, -1 if height property wasn't found
@@ -215,7 +215,7 @@ public class SvgRenderer
 	}
 	
 	/**
-	 * Searches the svgString for <svg> tag and extracts the width property.
+	 * Searches the svgString for svg tag and extracts the width property.
 	 * 
 	 * @param	svgString	String containing the xml
 	 * @return	double		Width of the svg, -1 if width property wasn't found

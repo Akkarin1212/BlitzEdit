@@ -15,7 +15,7 @@ public class FileTools
 	 * @param 	path			File path
 	 * @param 	encoding		File encoding type
 	 * @return	String			Contains file content
-	 * @throws 	IOException
+	 * @throws 	IOException		When reading from file failes
 	 */
 	public static String readFile(String path, Charset encoding) throws IOException 
 	{
@@ -29,7 +29,7 @@ public class FileTools
 	 * 
 	 * @param 	folder					Folder path
 	 * @param 	checkSubdirectories		If true adds files from subdirectories to returned array
-	 * @return	ArrayList<File>			Contains the files in the given folder
+	 * @return	ArrayList&lt;File&gt;	Contains the files in the given folder
 	 */
 	public static ArrayList<File> getFilesInDirectory(final File folder, boolean checkSubdirectories)
 	{

@@ -284,7 +284,7 @@ public final class Connector extends Element
 	
 	/**
 	 * Disconnects all connectors which belong to the specified {@link Component}
-	 * @param comp
+	 * @param	comp	Component to disconnect
 	 */
 	public void disconnect(Component comp)
 	{

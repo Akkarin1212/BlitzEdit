@@ -849,7 +849,7 @@ public class XMLParser implements IParser{
 	
 	/**
 	 * Deletes all special character and uses String.hashCode() afterwards.
-	 * Inserts the hash into a xml property <circuithash hash=""\> and returns the string.
+	 * Inserts the hash into a xml property &lt;circuithash hash=""\&gt; and returns the string.
 	 * @param 	xml		Xml used for saving
 	 * @return	String	Contains the xml property with the created hash
 	 */
