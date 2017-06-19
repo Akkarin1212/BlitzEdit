@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Circuit>
+	<circuithash hash="1128177892"/>
+	<component id="4" x="125" y="200" rot="45" type="TestComponent" hash="-1648954701">
+		<child comp="4" conn="0;1;2;3;" hash="1749124225"/>
+		<connector id="0" x="54" y="271" rot="0" relX="0" relY="100" hash="545102871">
+			<connection conn1="0" conn2="13" hash="-1434478045"/>
+		</connector>
+		<connector id="1" x="196" y="129" rot="180" relX="0" relY="-100" hash="1501061713">
+			<connection conn1="1" conn2="6" hash="1332860694"/>
+		</connector>
+		<connector id="2" x="160" y="235" rot="90" relX="50" relY="0" hash="-599239178">
+			<connection conn1="2" conn2="8" hash="-474593767"/>
+			<connection conn1="2" conn2="11" hash="-1827505057"/>
+		</connector>
+		<connector id="3" x="90" y="165" rot="270" relX="-50" relY="0" hash="-1423123566">
+		</connector>
+	</component>
+	<component id="9" x="500" y="150" rot="315" type="TestComponent" hash="1230225061">
+		<child comp="9" conn="5;6;7;8;" hash="-1765328334"/>
+		<connector id="5" x="571" y="221" rot="0" relX="0" relY="100" hash="1878353769">
+			<connection conn1="5" conn2="12" hash="1877921725"/>
+		</connector>
+		<connector id="6" x="429" y="79" rot="180" relX="0" relY="-100" hash="402396807">
+			<connection conn1="6" conn2="1" hash="885522966"/>
+		</connector>
+		<connector id="7" x="535" y="115" rot="90" relX="50" relY="0" hash="-2105721176">
+		</connector>
+		<connector id="8" x="465" y="185" rot="270" relX="-50" relY="0" hash="1736931407">
+			<connection conn1="8" conn2="2" hash="1565581337"/>
+		</connector>
+	</component>
+	<component id="14" x="325" y="425" rot="0" type="TestComponent" hash="-1443207176">
+		<child comp="14" conn="10;11;12;13;" hash="-336123940"/>
+		<connector id="10" x="325" y="525" rot="0" relX="0" relY="100" hash="-2086325889">
+		</connector>
+		<connector id="11" x="325" y="325" rot="180" relX="0" relY="-100" hash="-2044321698">
+			<connection conn1="11" conn2="2" hash="-831857675"/>
+		</connector>
+		<connector id="12" x="374" y="425" rot="90" relX="50" relY="0" hash="-1595226965">
+			<connection conn1="12" conn2="5" hash="1655655161"/>
+		</connector>
+		<connector id="13" x="276" y="425" rot="270" relX="-50" relY="0" hash="620434590">
+			<connection conn1="13" conn2="0" hash="-151799307"/>
+		</connector>
+	</component>
+</Circuit>

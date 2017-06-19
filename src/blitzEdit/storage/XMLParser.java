@@ -1,5 +1,6 @@
 package blitzEdit.storage;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -19,8 +20,15 @@ import blitzEdit.core.ComponentBlueprint;
 import blitzEdit.core.ComponentProperty;
 import blitzEdit.core.Connector;
 import blitzEdit.core.Element;
+import tools.FileTools;
 import tools.SvgRenderer;
 
+
+/**
+ * Parser that uses xml format to save and load circuits and load blueprints.
+ * 
+ * @author Chrisian Gartner
+ */
 public class XMLParser implements IParser{
 	private Circuit currentCircuit = null;
 	private ArrayList<Element> elements = new ArrayList<Element>();
@@ -37,7 +45,7 @@ public class XMLParser implements IParser{
 		String circuitString = new String();
 		
 		// save elements in String
-		elements = currentCircuit.getElements();
+		elements = new ArrayList<Element>(currentCircuit.getElements());
 		for(int i=0; i<elements.size();i++)
 		{
 			Element elem = elements.get(i);
@@ -90,7 +98,6 @@ public class XMLParser implements IParser{
 
 	}
 	
-	
 	public void loadCircuit (Circuit circuit, String filepath) 
 	{
 		currentCircuit = circuit;
@@ -98,11 +105,11 @@ public class XMLParser implements IParser{
 		String fileString = null;
 		try
 		{
-			fileString = readFile(filepath, StandardCharsets.UTF_8);
+			fileString = FileTools.readFile(filepath, StandardCharsets.UTF_8);
 		}
 		catch (IOException e)
 		{
-			JOptionPane.showConfirmDialog(null,
+			JOptionPane.showMessageDialog(null,
 					"Error occured while trying to read the Circuit from " + filepath, "Loading Error",
 					JOptionPane.CANCEL_OPTION);
 		}
@@ -227,12 +234,23 @@ public class XMLParser implements IParser{
 		}
 	}
 	
+	/**
+	 * 
+	 * 
+	 * @param filepath
+	 * @return
+	 */
 	public static ComponentBlueprint readBlueprint(String filepath)
 	{
 		String fileString;
+		File parent;
+		
 		try
 		{
-			fileString = readFile(filepath, StandardCharsets.UTF_8);
+			File file = new File(filepath);
+			parent = file.getParentFile();
+			
+			fileString = FileTools.readFile(filepath, StandardCharsets.UTF_8);
 		}
 		catch (IOException e)
 		{
@@ -278,14 +296,14 @@ public class XMLParser implements IParser{
 			}
 		}
 		
-		if(component != null)
+		if(component != null && svg != null)
 		{
-			return readBlueprintValues(component, svg, connectors, properties);
+			return readBlueprintValues(component, svg, connectors, properties, parent);
 		}
 		return null;
 	}
 	
-	private static ComponentBlueprint readBlueprintValues(String component, String svg, ArrayList<String> connectors, ArrayList<String> properties)
+	private static ComponentBlueprint readBlueprintValues(String component, String svg, ArrayList<String> connectors, ArrayList<String> properties, File parentDirectory)
 	{
 		String type = null;
 		String svgFilePath = null;
@@ -321,6 +339,16 @@ public class XMLParser implements IParser{
 				String[] sElem = s.split("=");
 				svgFilePath = sElem[1];
 				
+				File file = new File(svgFilePath);
+				if(!file.exists())
+				{
+					file = new File(parentDirectory.toString() + "\\" + svgFilePath);
+					if(!file.exists())
+					{
+						return null;
+					}
+				}
+				svgFilePath = file.toString();
 				String svgFileSting = SvgRenderer.getSvgFileString(svgFilePath);
 				width = (int) SvgRenderer.getSvgWidth(svgFileSting);
 				height = (int) SvgRenderer.getSvgHeight(svgFileSting);
@@ -388,23 +416,13 @@ public class XMLParser implements IParser{
 		return new ComponentBlueprint(type, svgFilePath, relPos, relRot, width, height, propertyList);
 	}
 	
-	// creates String from file
-	private static String readFile(String path, Charset encoding) throws IOException 
-	{
-		byte[] encoded = Files.readAllBytes(Paths.get(path));
-		return new String(encoded, encoding);
-	}
-	
 	private boolean readComponent (String xml) 
 	{
 		int id=0;
 		double x=0;
 		double y=0;
-		double height=0;
-		double width=0;
 		double rot=0;
 		String type = null;
-		String svgPath = null;
 		String hash = null;
 		boolean hasHash = false;
 		
@@ -427,16 +445,6 @@ public class XMLParser implements IParser{
 				String[] sElem = s.split("=");
 				y = Double.parseDouble(sElem[1]);
 			}
-			else if(s.contains("width="))
-			{
-				String[] sElem = s.split("=");
-				width = Double.parseDouble(sElem[1]);
-			}
-			else if(s.contains("height="))
-			{
-				String[] sElem = s.split("=");
-				height = Double.parseDouble(sElem[1]);
-			}
 			else if(s.contains("rot="))
 			{
 				String[] sElem = s.split("=");
@@ -446,11 +454,6 @@ public class XMLParser implements IParser{
 			{
 				String[] sElem = s.split("=");
 				type = sElem[1];
-			}
-			else if(s.contains("svgPath="))
-			{
-				String[] sElem = s.split("=");
-				svgPath = sElem[1];
 			}
 			else if(s.contains("hash="))
 			{
@@ -463,8 +466,19 @@ public class XMLParser implements IParser{
 		
 		if (!hasHash || (hasHash && checkHash(hash, xml)))
 		{
-			elements.set((int)id, new Component(x, y, width, height, rot, type, svgPath));
-			return true;
+			ComponentBlueprint bp = BlueprintContainer.get().getBlueprint(type);
+			if (bp != null)
+			{
+				elements.set((int) id, bp.createComponentWithoutConnectors((int) x, (int) y, (short) rot));
+				return true;
+			}
+			else
+			{
+				JOptionPane.showMessageDialog(null,
+						"Missing blueprint component. Type: " + type, "Loading Error",
+						JOptionPane.ERROR_MESSAGE);
+				return false;
+			}
 		}
 		else
 		{
@@ -650,11 +664,8 @@ public class XMLParser implements IParser{
 		String result = "component id=\"" + id + 
 						"\" x=\"" + comp.getX() +
 						"\" y=\"" + comp.getY() +
-						"\" width=\"" + comp.getSizeX() +
-						"\" height=\"" + comp.getSizeY() +
 						"\" rot=\"" + comp.getRotation() +
-						"\" type=\"" + comp.getType() +
-						"\" svgPath=\"" + comp.getSvgFilePath();
+						"\" type=\"" + comp.getType();
 		
 		if(useHashes)
 		{

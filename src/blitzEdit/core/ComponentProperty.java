@@ -2,9 +2,12 @@ package blitzEdit.core;
 
 import java.io.IOException;
 
-// class Component Property
-// speichert eigenschaften der Bauteile
-// Beispiel fï¿½r Widerstand: name="resistance" value="24.0" unit=OHM type=DECIMAL 
+/**
+ * Saves a Property of a Component
+ * 
+ * @author David Schick
+ * @author Chrisian Gärtner
+ */
 public class ComponentProperty 
 {
 	private String _name;
@@ -12,6 +15,9 @@ public class ComponentProperty
 	private PropType _type;
 	private Unit _unit;
 
+	/**
+	 * enumeration, representing various SI-units
+	 */
 	public enum Unit
 	{
 		OHM,
@@ -26,6 +32,9 @@ public class ComponentProperty
 		INVALID;
 	}
 	
+	/**
+	 * specifies the accepted format of a {@link ComponentProperty}
+	 */
 	public enum PropType
 	{
 		DECIMAL,
@@ -34,6 +43,11 @@ public class ComponentProperty
 		INVALID;
 	}
 	
+	/**
+	 * Returns the {@link PropType} the String is representing
+	 * @param propType String representation of PropType
+	 * @return {@link PropType} represented by String
+	 */
 	public static PropType toPropType(String propType)
 	{
 		switch (propType)
@@ -52,6 +66,11 @@ public class ComponentProperty
 		}
 	}
 	
+	/**
+	 * Returns the {@link Unit} the String is representing
+	 * @param unit String representation of {@link Unit}
+	 * @return {@link Unit} represented by String
+	 */
 	public static Unit toUnit(String unit)
 	{
 		switch (unit)
@@ -88,26 +107,43 @@ public class ComponentProperty
 		}
 	}
 	
+	/**
+	 * @return value of this property
+	 */
 	public String getValue()
 	{
 		return new String(_value);
 	}
 	
+	/**
+	 * @return name of this property
+	 */
 	public String getName()
 	{
 		return new String(_name);
 	}
 	
+	/**
+	 * @return {@link Unit} of this property
+	 */
 	public Unit getUnit()
 	{
 		return _unit;
 	}
 	
+	/** 
+	 * @return {@link PropType} of this property
+	 */
 	public PropType getType()
 	{
 		return _type;
 	}
 	
+	/**
+	 * sets the value of this property
+	 * @param value new value
+	 * @throws IOException thrown, if format does not match the properties {@link PropType}
+	 */
 	public void setValue(String value) throws IOException
 	{
 		switch (_type)
@@ -141,6 +177,13 @@ public class ComponentProperty
 		}
 	}
 	
+	/**
+	 * Constructs a new ComponentProperty object
+	 * @param name name of new property
+	 * @param value value of new property
+	 * @param unit {@link Unit} of this property
+	 * @param type {@link PropType} of this property
+	 */
 	public ComponentProperty(String name, String value, Unit unit, PropType type)
 	{
 		_name = name;
@@ -154,6 +197,10 @@ public class ComponentProperty
 		{}
 	}
 	
+	/**
+	 * Copy-Constructor
+	 * @param prop property to be copied
+	 */
 	public ComponentProperty(ComponentProperty prop)
 	{
 		_name = prop.getName();

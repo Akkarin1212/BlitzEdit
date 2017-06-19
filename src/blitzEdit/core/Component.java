@@ -11,9 +11,18 @@ import javafx.scene.canvas.GraphicsContext;
 import tools.SelectionMode;
 import tools.SvgRenderer;
 
-
+/**
+ * Represents an electrical Component
+ * @author David Schick
+ *
+ */
 public class Component extends RotatableElement
 {
+	/**
+	 * moves the Component to the designated Location
+	 * @param x x-coordinate of new Location
+	 * @param y y-coordinate of new Location
+	 */
 	@Override
 	public Component setPosition(int x, int y)
 	{
@@ -25,13 +34,22 @@ public class Component extends RotatableElement
 		
 		return this;
 	}
-	
+	/**
+	 * moves the Component to the designated Location
+	 * @param x x-coordinate of new Location
+	 * @param y y-coordinate of new Location
+	 */
 	@Override
 	public Component setPosition(double x, double y)
 	{
 		return setPosition((int)x, (int)y);
 	}
 	
+	/**
+	 * moves the Component to the designated Location
+	 * @param x x-coordinate of new Location
+	 * @param y y-coordinate of new Location
+	 */
 	@Override
 	public Component move(int x, int y)
 	{
@@ -44,16 +62,29 @@ public class Component extends RotatableElement
 		return this;
 	}
 	
+	/**
+	 * moves the Component to the designated Location
+	 * @param x x-coordinate of new Location
+	 * @param y y-coordinate of new Location
+	 */
 	public Component move(double x, double y)
 	{
 		return move((int)x, (int)y);
 	}
 	
+	/**
+	 * returns Path of Components svg-image
+	 * @return path of svg image
+	 */
 	public String getSvgFilePath()
 	{
 		return new String(_svgFilePath);
 	}
 	
+	/**
+	 * Returns the file string of the svg-image
+	 * @return file string of svg image
+	 */
 	public String getSvgFileString()
 	{
 		return new String(_svgFileString);
@@ -61,16 +92,17 @@ public class Component extends RotatableElement
 	
 	
 	@Override
-	//Draws Component on GraphicalContext
 	public void draw(GraphicsContext gc, double scale, SelectionMode mode)
 	{
 		SvgRenderer.renderSvgString(getSvgFileString(), gc, getX(), getY(), scale, getRotation(), mode);
 	}
 	
-	
+	/**
+	 * Returns deep copy of this Component
+	 * @return deep copy of this Component
+	 */
 	public Element clone()
 	{
-
 		int[][] connRelPos = new int[_ports.size()][];
 		for(int i = 0; i < connRelPos.length; i++)
 		{
@@ -86,11 +118,21 @@ public class Component extends RotatableElement
 		return new Component(getX(), getY(), _sizeX, _sizeY, _rotation, _type, connRelPos, connRelRot, _svgFilePath);
 	}
 	
+	/**
+	 * Returns all {@link Connector Connectors} of this Component
+	 * @return List of Connectors
+	 */
 	public ArrayList<Connector> getConnectors()
 	{
 		return _ports;
 	}
 	
+	/**
+	 * Checks, if one of the Components {@link Connector Connectors}
+	 * is connected to the designated Connector
+	 * @param conn Connector to be checked for Connection
+	 * @return true if Component is Connected, else false
+	 */
 	public boolean isConnected(Connector conn)
 	{
 		for (Connector c : _ports)
@@ -104,6 +146,12 @@ public class Component extends RotatableElement
 		return false;
 	}
 	
+	/**
+	 * Checks, if one of the Components {@link Connector Connectors}
+	 * is connected to the designated Component
+	 * @param conn Component to be checked for connection
+	 * @return true if Component is connected, else false
+	 */
 	public boolean isConnected(Component comp)
 	{
 		for (Component c : getConnectedComponents())
@@ -114,7 +162,11 @@ public class Component extends RotatableElement
 		return false;
 	}
 	
-	//Returns the connector that is connected to conn
+	/**
+	 * Returns the {@link Connector} which is connected to conn
+	 * @param conn {@link Connector} to be checked for connection
+	 * @return {@link Connector} of connection
+	 */
 	public Connector getConnectorOfConnection(Connector conn)
 	{
 		for (Connector c : _ports)
@@ -128,7 +180,11 @@ public class Component extends RotatableElement
 		return null;
 	}
 	
-	//Returns the connector that is connected to comp
+	/**
+	 * Returns the {@link Connector} which is connected to Component comp
+	 * @param comp Component to be checked for Connection
+	 * @return {@link Connector} of connection
+	 */
 	public Connector getConnectorOfConnection(Component comp)
 	{
 		for (Connector c : _ports)
@@ -142,6 +198,10 @@ public class Component extends RotatableElement
 		return null;
 	}
 	
+	/**
+	 * Returns List of all connected Components
+	 * @return list of connected Components
+	 */
 	public ArrayList<Component> getConnectedComponents()
 	{
 		ArrayList<Component> resultList = new ArrayList<Component>();
@@ -160,39 +220,32 @@ public class Component extends RotatableElement
 		return resultList;
 	}
 	
+	/**
+	 * Returns a String containing the typename of this Component
+	 * @return typename of Component
+	 */
 	public String getType()
 	{
 		return new String(_type);
 	}
 	
+	/**
+	 * Adds a {@link Connector} to this Component
+	 * @param conn {@link Connector} to be added
+	 */
 	public void addConnenctor(Connector conn)
 	{
-		_ports.add(conn);
 		conn.setOwner(this);
+		_ports.add(conn);
 	}
 	
 	@Override
 	public void setRotation(short rotation)
 	{
-		// Erstellt AffineTransform Objekt, um die connectoren um den schwerpunkt der component zu drehen
-		// die rotation ist negativ, damit nach rechts gedreht wird
 		short rot = (short)(rotation - _rotation);
-		
-		AffineTransform at = AffineTransform.getRotateInstance(-Math.toRadians(rot),
-																_position.getX(), _position.getY());						
-
-		//change connectors absolute position according to components rotation
-		for (Connector con: getConnectors())
-		{
-			Point2D p = new Point(con.getX(), con.getY());
-			Point2D p2 = new Point();
-			at.transform(p, p2);
-			con.setPosition((int)p2.getX(), (int)p2.getY());
-		}
-		super.setRotation(rot);
+		rotate(rot);
 	}
 	
-	//Rotates Component to the specified angle
 	@Override
 	public void rotate(short rotation)
 	{
@@ -203,26 +256,42 @@ public class Component extends RotatableElement
 																_position.getX(), _position.getY());						
 
 		//change connectors absolute position according to components rotation
-		for (Connector con: getConnectors())
+		if (getConnectors() != null)
 		{
-			Point2D p = new Point(con.getX(), con.getY());
-			Point2D p2 = new Point();
-			at.transform(p, p2);
-			con.setPosition((int)p2.getX(), (int)p2.getY());
+			for (Connector con : getConnectors())
+			{
+				Point2D p = new Point(con.getX(), con.getY());
+				Point2D p2 = new Point();
+				at.transform(p, p2);
+				con.setPosition((int) p2.getX(), (int) p2.getY());
+			}
 		}
 		super.rotate(rotation);
 	}
 	
+	/**
+	 * Returns List Containing all {@link ComponentProperty Properties} of this Component
+	 * @return
+	 */
 	public ArrayList<ComponentProperty> getProperties()
 	{
 		return new ArrayList<ComponentProperty>(_properties);
 	}
 	
+	/**
+	 * Adds a {@link ComponentProperty} to this Component
+	 * @param prop {@link ComponentProperty} to be added
+	 */
 	public void addProperty(ComponentProperty prop)
 	{
 		_properties.add(prop);
 	}
 	
+	/**
+	 * Returns the {@link ComponentProperty} that matches name
+	 * @param name name of the searched {@link ComponentProperty}
+	 * @return {@link ComponentProperty} with the name of parameter name
+	 */
 	public ComponentProperty getProperty(String name)
 	{
 		for (ComponentProperty prop : _properties)
@@ -233,6 +302,12 @@ public class Component extends RotatableElement
 		return null;
 	}
 	
+	/**
+	 * Set the value of a {@link ComponentProperty}
+	 * 
+	 * @param name name of the property to be update
+	 * @param value new value for property
+	 */
 	public void setProperty(String name, String value)
 	{
 		for (ComponentProperty prop : _properties)
@@ -251,12 +326,28 @@ public class Component extends RotatableElement
 		}
 	}
 	
+	/**
+	 * Redefines all Properties of this Component
+	 * 
+	 * @param properties new Properties
+	 */
 	public void setProperties(Collection<ComponentProperty> properties)
 	{
 		_properties = new ArrayList<ComponentProperty>(properties);
 	}
 	
-	// Private method called by constructor
+	/**
+	 * Private method, called by constructor to initialize the fields of
+	 * the new Component Object
+	 * 
+	 * @param x x-coordinate
+	 * @param y y-coordinate
+	 * @param rot rotation
+	 * @param type typename
+	 * @param svg path of svg-image
+	 * @param connRelPos Array, containing the relative positions of this Components {@link Connector Connectors}
+	 * @param connRelRot Array, containing the relative rotations of this Components {@link Connector Connectors}
+	 */
 	private void initialize(int x, int y, short rot, String type, String svg, int[][] connRelPos, short[] connRelRot) 
 	{
 		_type = new String(type);
@@ -271,6 +362,16 @@ public class Component extends RotatableElement
 		setRotation(rot);
 	}
 
+	/**
+	 * Private method, called by constructor to initialize the fields of
+	 * the new Component Object
+	 * 
+	 * @param x x-coordinate
+	 * @param y y-coordinate
+	 * @param rot rotation
+	 * @param type typename
+	 * @param svg path of svg-image
+	 */
 	private void initialize(int x, int y, short rot, String type, String svg) 
 	{
 		_type = new String(type);
@@ -279,21 +380,68 @@ public class Component extends RotatableElement
 		_ports = new ArrayList<Connector>();
 		_properties = new ArrayList<ComponentProperty>();
 	}
-
+	
+	/**
+	 * Constructs new Component
+	 * 
+	 * @param x x-coordinate
+	 * @param y y-coordinate
+	 * @param rot rotation
+	 * @param cb {@link ComponentBlueprint} specifying the archetype of the new Component
+	 */
 	public Component(int x, int y, short rot, ComponentBlueprint cb)
 	{
 		super (x, y, rot);
 		initialize(x, y, rot, cb.getType(), cb.getSvgFilePath(), cb.getRelPos(), cb.getConRelRot());
 	}
 	
-	public Component(int x, int y, short rot, String type, int[][] connRelPos, short [] connRelRot ,String svg)
+	/**
+	 * Constructs new Component
+	 * 
+	 * @param x x-coordinate
+	 * @param y y-coordinate
+	 * @param rot rotation
+	 * @param type typename
+	 * @param connRelPos Array, containing the relative positions of this Components {@link Connector Connectors}
+	 * @param connRelRot Array, containing the relative rotations of this Components {@link Connector Connectors}
+	 * @param svg path of svg-image
+	 */
+	public Component(int x, int y, short rot, String type, int[][] connRelPos, short [] connRelRot, String svg)
 	{
 		super(x, y, rot);
 		initialize(x, y, rot, type, svg, connRelPos, connRelRot);
 		super.setSize(SvgRenderer.getSvgWidth(_svgFileString), SvgRenderer.getSvgHeight(_svgFileString));
 	}
 	
+	/**
+	 * Constructs new Component
+	 * 
+	 * @param x x-coordinate
+	 * @param y y-coordinate
+	 * @param rot rotation
+	 * @param type typename
+	 * @param svg path of svg-image
+	 */
+	public Component(int x, int y, short rot, String type, String svg)
+	{
+		super(x, y, rot);
+		initialize(x, y, rot, type, svg);
+		super.setSize(SvgRenderer.getSvgWidth(_svgFileString), SvgRenderer.getSvgHeight(_svgFileString));
+	}
 	
+	/**
+	 * Constructs new Component
+	 * 
+	 * @param x x-coordinate
+	 * @param y y-coordinate
+	 * @param sizeX size in x-direction
+	 * @param sizeY size in y-direction
+	 * @param rot rotation
+	 * @param type typename
+	 * @param connRelPos Array, containing the relative positions of this Components {@link Connector Connectors}
+	 * @param connRelRot Array, containing the relative rotations of this Components {@link Connector Connectors}
+	 * @param svg path of svg-image
+	 */
 	public Component(int x, int y, int sizeX, int sizeY, short rot, String type,
 						int[][] connRelPos, short [] connRelRot ,String svg)
 	{
@@ -301,6 +449,19 @@ public class Component extends RotatableElement
 		initialize(x, y, rot, type, svg, connRelPos, connRelRot);
 	}
 	
+	/**
+	 * Constructs new Component
+	 * 
+	 * @param x x-coordinate
+	 * @param y y-coordinate
+	 * @param sizeX size in x-direction
+	 * @param sizeY size in y-direction
+	 * @param rot rotation
+	 * @param type typename
+	 * @param connRelPos Array, containing the relative positions of this Components {@link Connector Connectors}
+	 * @param connRelRot Array, containing the relative rotations of this Components {@link Connector Connectors}
+	 * @param svg path of svg-image
+	 */
 	public Component(double x, double y, double sizeX, double sizeY, double rot, String type
 			, int[][] connRelPos, short[] connRelRot, String svg) 
 	{
@@ -308,6 +469,17 @@ public class Component extends RotatableElement
 		initialize((int)x, (int)y, (short)rot, type, svg, connRelPos, connRelRot);
 	}
 	
+	/**
+	 * Constructs new Component
+	 * 
+	 * @param x x-coordinate
+	 * @param y y-coordinate
+	 * @param sizeX size in x-direction
+	 * @param sizeY size in y-direction
+	 * @param rot rotation
+	 * @param type typename
+	 * @param svg path of svg-image
+	 */
 	public Component(double x, double y, double sizeX, double sizeY, double rot, String type,
 			String svg) 
 	{

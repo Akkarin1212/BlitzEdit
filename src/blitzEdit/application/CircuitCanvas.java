@@ -26,6 +26,13 @@ import tools.GraphicDesignContainer;
 import tools.SelectionMode;
 import javafx.geometry.Point2D;
 
+
+/**
+ * Canvas used for displaying the circuit with its components and connectors.
+ * 
+ * @author Chrisian GÃ¤rtner
+ * @author David Schick
+ */
 public class CircuitCanvas extends ResizableCanvas
 {
 	GraphicsContext gc;
@@ -55,11 +62,16 @@ public class CircuitCanvas extends ResizableCanvas
 	private double dragX; 
 	private double dragY;
 
+
+	/**
+	 * Sets the mouse event handler and adds a new {@link Circuit}.
+	 * 
+	 * @param	scrollPane	Reference to the scroll panel the canvas is located
+	 */
 	public CircuitCanvas(ScrollPane scrollPane)
 	{
 		gc = getGraphicsContext2D();
 		circuit = new Circuit();
-		
 		sp = scrollPane;
 		
 		onMousePresseHandler();
@@ -71,6 +83,12 @@ public class CircuitCanvas extends ResizableCanvas
 		initiateRightClickMenu();
 	}
 
+	/**
+	 * Adds the event handler for the mouse pressed event. 
+	 * Primary button click used selecting elements and connecting {@link Connector},
+	 * secondary button used for right click menu and 
+	 * middle mouse button used for moving the viewport in the scroll panel.
+	 */
 	private void onMousePresseHandler()
 	{
 		this.setOnMousePressed(new EventHandler<MouseEvent>()
@@ -107,7 +125,12 @@ public class CircuitCanvas extends ResizableCanvas
 						
 						refreshCanvas();
 					}
-					else if (!hasSelectedMultipleElements)
+					else if (click.isShiftDown())
+					{
+						currentSelectedConnector = null;
+						selectAdditionalElement(click.getX(), click.getY());
+					}
+					else if(!hasSelectedMultipleElements)
 					{
 						currentSelectedConnector = null;
 						selectElement(click.getX(), click.getY());
@@ -128,8 +151,8 @@ public class CircuitCanvas extends ResizableCanvas
 				{
 					clickX = click.getX();
 					clickY = click.getY();
-					dragX = sp.getVvalue();
-					dragY = sp.getHvalue();
+					dragX = clickX;
+					dragY = clickY;
 					System.err.println("middle mouse click");
 				}
 				
@@ -137,6 +160,11 @@ public class CircuitCanvas extends ResizableCanvas
 		});
 	}
 
+	/**
+	 * Adds the event handler for the mouse drag event. 
+	 * Primary button click used for moving one or multiple elements,
+	 * middle mouse button used for moving the viewport in the scroll panel.
+	 */
 	private void onMouseDraggedHandler()
 	{
 		this.setOnMouseDragged(new EventHandler<MouseEvent>()
@@ -144,6 +172,7 @@ public class CircuitCanvas extends ResizableCanvas
 			//moved wird mit true initialisiert, damit dragX und Y beim ersten aufruf
 			//gesetzt sind
 			boolean moved = true;
+			double prevScaleFactor = 1;
 			@Override
 			public void handle(MouseEvent click)
 			{
@@ -153,10 +182,10 @@ public class CircuitCanvas extends ResizableCanvas
 					if (hasSelectedMultipleElements)
 					{
 						//wurde der drag handler gerade erst aufgerufen, wird
-						//der mauspunkt als ursprungspunkt für die translation uebernommen
-						
 						//initialDrag = false;
 						moved = translateElements(currentSelectedElements, click.getX() - dragX, click.getY() - dragY);
+            
+						//der mauspunkt als ursprungspunkt fï¿½r die translation uebernommen
 						if (moved)
 						{
 							dragX = click.getX();
@@ -190,12 +219,20 @@ public class CircuitCanvas extends ResizableCanvas
 				}
 				else if(click.isMiddleButtonDown())
 				{
-					double vvalue = (clickX - click.getX())/ref.getWidth();
-					double hvalue = (clickY - click.getY())/ref.getHeight();
+					// checkt, ob sich die zoomstufe geï¿½ndert hat, um zu verhindern
+					// dass sich durch den verï¿½nderten coordinatenursprung eine falsche
+					// differenz zwischen vorherigem und neuem wert bildet.
+					if (prevScaleFactor == canvasScaleFactor)
+					{
+						double diffx = (click.getX() - dragX)/(ref.getWidth() * Math.pow(canvasScaleFactor, -1));
+						double diffy = (click.getY() - dragY)/(ref.getHeight() * Math.pow(canvasScaleFactor, -1));
 					
-					
-					sp.setHvalue(dragX + vvalue);
-					sp.setVvalue(dragY + hvalue);
+						sp.setHvalue(sp.getHvalue() - diffx);
+						sp.setVvalue(sp.getVvalue() - diffy);
+					}
+					prevScaleFactor = canvasScaleFactor;
+					dragX = click.getX();
+					dragY = click.getY();
 					
 					changeCursorStyle(GraphicDesignContainer.move_cursor);
 				}
@@ -203,28 +240,42 @@ public class CircuitCanvas extends ResizableCanvas
 		});
 	}
 	
+	/**
+	 * Used for moving an element by an offset. Checks that coordinates aren't below zero to prevent the element from disappearing.
+	 * 
+	 * @param e			Element to move.
+	 * @param dx		X-axis offset the element gets moved
+	 * @param dy		Y-axis offset the element gets moved
+	 * @return boolean	True if succesfully moved the element, false if the position would be out of boundaries 
+	 */
 	private boolean translateElement(Element e, double dx, double dy)
 	{
+		//prevent elements from moving out of canvas
+		if(e.getX() + dx <= 0 || e.getY() + dy <= 0)
+			return false;
+		
 		if (GlobalSettings.SNAP_TO_GRID)
 		{
 			int [] snapped = snapToGrid(dx, dy);
 			if (snapped[0] == 0 && snapped[1] == 0)
 				return false;
-			//prevent elements from moving out of canvas
-			if(e.getX() + dx <= 0 || e.getY() + dy <= 0)
-				return false;
 			e.move(e.getX() + snapped[0], e.getY() + snapped[1]);
 		}
 		else
 		{
-			//prevent elements from moving out of canvas
-			if(e.getX() + dx <= 0 || e.getY() + dy <= 0)
-				return false;
 			e.move(e.getX() + dx, e.getY() + dy);
 		}
 		return true;
 	}
 	
+	/**
+	 * Used for moving multiple elements by an offset. Uses the translateElement method.
+	 * 
+	 * @param elements	Collection of element to move.
+	 * @param x			X-axis offset the element gets moved
+	 * @param y			Y-axis offset the element gets moved
+	 * @return boolean	True if succesfully moved the element, false if the position would be out of boundaries 
+	 */
 	private boolean translateElements(Collection<Element> elements, double x, double y)
 	{
 		boolean moved = false;
@@ -248,6 +299,14 @@ public class CircuitCanvas extends ResizableCanvas
 		return moved;
 	}
 	
+	/**
+	 * Used for moving an element to a given position.
+	 * 
+	 * @param e	Element to move.
+	 * @param x			X position the element get moved to
+	 * @param y			Y position the element get moved to
+	 * @return boolean	True if succesfully moved the element, false if the position would be out of boundaries 
+	 */
 	private boolean moveElement(Element e, double x, double y)
 	{
 		//prevent elements from moving out of canvas
@@ -266,6 +325,13 @@ public class CircuitCanvas extends ResizableCanvas
 		return true;
 	}
 	
+	/**
+	 * Used for aligning a point to the grid.
+	 * 
+	 * @param x			X position needs to be aligned to the grid
+	 * @param y			Y position needs to be aligned to the grid
+	 * @return int[]	Contains the aligned grid position
+	 */
 	private int [] snapToGrid(double x, double y)
 	{
 		int [] ret = new int[2];
@@ -275,6 +341,12 @@ public class CircuitCanvas extends ResizableCanvas
 		return ret;
 	}
 	
+	/**
+	 * Adds the event handler for the drag and drop between library canvas and circuit canvas.
+	 * Adds a component when mouse enters circuit canvas, the reference for component is saved
+	 * as dragAndDropElement in BlitzEdit controller class. Moving the mouse in the canvas
+	 * moves the new component.
+	 */
 	private void DragAndDropElements()
 	{
 		// add element when entering the canvas
@@ -288,7 +360,8 @@ public class CircuitCanvas extends ResizableCanvas
 					deselectAll();
 					Component newComp = (Component) BlitzEdit.dragAndDropElement;
 					moveElement(newComp, click.getX(), click.getY());
-					circuit.addElement(newComp);
+					if (!circuit.containsElement(newComp))
+						circuit.addElement(newComp);
 					selectElement(newComp);
 					refreshCanvas();
 
@@ -323,6 +396,10 @@ public class CircuitCanvas extends ResizableCanvas
 		*/
 	}
 
+	/**
+	 * Adds the event handler for mouse release.
+	 * Used for deselecting one or multiple components and connectors.
+	 */
 	private void onMouseReleasedHandler()
 	{
 		this.setOnMouseReleased(new EventHandler<MouseEvent>()
@@ -330,7 +407,11 @@ public class CircuitCanvas extends ResizableCanvas
 			@Override
 			public void handle(MouseEvent click)
 			{
-
+				if(click.isShiftDown())
+				{
+					return;
+				}
+				
 				// deselect multiple elements when pressing and releasing
 				// mouse at the same position
 				if (hasSelectedMultipleElements && (click.getX() == clickX && click.getY() == clickY))
@@ -369,6 +450,10 @@ public class CircuitCanvas extends ResizableCanvas
 		});
 	}
 	
+	/**
+	 * Adds the event handler for mouse release.
+	 * Used for deselecting one or multiple components and connectors.
+	 */
 	private void onScrollEventHandler()
 	{
 		sp.addEventFilter(ScrollEvent.ANY, new EventHandler<ScrollEvent>(){
@@ -402,6 +487,10 @@ public class CircuitCanvas extends ResizableCanvas
 		});
 	}
 	
+	/**
+	 * Adds the event handler when mouse is moving in the canvas.
+	 * Used for saving the current mouse position in the canvas.
+	 */
 	private void onMouseMovedHandler()
 	{
 		this.setOnMouseMoved(new EventHandler<MouseEvent>()
@@ -413,7 +502,7 @@ public class CircuitCanvas extends ResizableCanvas
 			}
 		});
 	}
-	
+  
 	public void gridOnOff()
 	{
 		if(grid)
@@ -426,6 +515,11 @@ public class CircuitCanvas extends ResizableCanvas
 		}
 	}
 
+	/**
+	 * Draws a grid of lines on the graphical context of this canvas.
+	 * Use the constants in the {@link GraphicDesignContainer} to change the design of the grid.
+	 * Called everytime the refreshCanvas() is executed.
+	 */
 	public void drawGrid()
 	{
 		if(grid) 
@@ -459,6 +553,9 @@ public class CircuitCanvas extends ResizableCanvas
 		
 	}
 
+	/**
+	 * Used for redrawing the content of the canvas when changes to elements of the circuit occured.
+	 */
 	public void refreshCanvas()
 	{
 		drawGrid();
@@ -466,18 +563,26 @@ public class CircuitCanvas extends ResizableCanvas
 
 	}
 
+	/**
+	 * Draws all elements in the circuit of this canvas according to selection mode.
+	 * Called everytime the refreshCanvas() is executed.
+	 */
 	private synchronized void drawAllCircuitElements()
 	{
-		ArrayList<Element> array = circuit.getElements();
-		for (Element elem : array)
-		{
-			elem.draw(gc, 1.0, elem.getSelectionMode());
-		}
-		
 		ArrayList<Line> lines = circuit.getLines();
 		for(Line line : lines)
 		{
 			line.draw(gc);
+		}
+		for(Line line : circuit.getSelectedLines())
+		{
+			line.draw(gc);
+		}
+		
+		ArrayList<Element> array = circuit.getElements();
+		for (Element elem : array)
+		{
+			elem.draw(gc, 1.0, elem.getSelectionMode());
 		}
 		
 		// prevent overlapping from lines etc. and draw current selected connector last
@@ -489,7 +594,11 @@ public class CircuitCanvas extends ResizableCanvas
 		highlightConnectors();
 	}
 	
-	// needs a selected Connector
+	/**
+	 * Highlights the connectors in this circuit when the user wants to connect two.
+	 * Needs a selected connector to prevent highlighting conenctor 
+	 * with the same owner or already connected connectors.
+	 */
 	private void highlightConnectors()
 	{
 		ArrayList<Element> array = circuit.getElements();
@@ -509,7 +618,14 @@ public class CircuitCanvas extends ResizableCanvas
 		}
 	}
 	
-	// connects or disconnects connector at x,y
+	/**
+	 * Checks if a connector is located at x,y and if yes, connects it with the current selected connector.
+	 * Used when a connector is selected and the mouse button is pressed in the canvas.
+	 * 
+	 * @param	x			X position to check after a connector
+	 * @param	y			Y position to check after a connector
+	 * @return	boolean		true if connection worked, false of no connector found at this location or coudn't connect 
+	 */
 	private boolean connectConnector(double x, double y)
 	{
 		ArrayList<Element> elements = circuit.getElementsByPosition(x, y);
@@ -535,6 +651,14 @@ public class CircuitCanvas extends ResizableCanvas
 		return false;
 	}
 	
+	/**
+	 * Checks if a connector is located at x,y and if yes, disconnects it with the current selected connector.
+	 * Used when a connector is selected and the mouse button is pressed in the canvas.
+	 * 
+	 * @param	x			X position to check after a connector
+	 * @param	y			Y position to check after a connector
+	 * @return	boolean		true if disconnect worked, false of no connector found at this location or disconnect didn't work
+	 */
 	private boolean disconnectConnector(double x, double y)
 	{
 		ArrayList<Element> elements = circuit.getElementsByPosition(x, y);
@@ -571,12 +695,24 @@ public class CircuitCanvas extends ResizableCanvas
 		return false;
 	}
 	
+	/**
+	 * Copies the current selected elements of this canvas.
+	 * 
+	 * @return	Element[]	Array containing the selected elements
+	 */
 	public Element[] copySelected()
 	{
 		Element[] elem = currentSelectedElements.toArray(new Element[currentSelectedElements.size()]);
 		return elem;
 	}
 	
+	/**
+	 * Deselect all elements in this canvas and clones all elements in the elem array 
+	 * at the respective position around the mousePos.
+	 * 
+	 * @param	elem		Elements to paste
+	 * @param 	mousePos	Position in canvas to paste the elements
+	 */
 	public void pasteSelected(Element[] elem, Point2D mousePos)
 	{
 		deselectCurrentSelectedElements();
@@ -588,9 +724,13 @@ public class CircuitCanvas extends ResizableCanvas
 				
 				double offsetX = e.getX() - mousePos.getX();
 				double offsetY = e.getY() - mousePos.getY();
+				short rot = ((Component)e).getRotation();
 				
+				((Component)e).setRotation((short)0);
 				Element clone = orginal.clone();
 				
+				((Component)clone).rotate(rot);
+				((Component)e).rotate(rot);
 				circuit.addElement(clone.move(currentMousePosition.getX() + offsetX, currentMousePosition.getY() + offsetY));
 				selectElement(clone);
 				refreshCanvas();
@@ -599,6 +739,9 @@ public class CircuitCanvas extends ResizableCanvas
 		refreshCanvas();
 	}
 	
+	/**
+	 * Deletes the current selected elements.
+	 */
 	public void deleteSelected()
 	{
 		for(Element e : currentSelectedElements)
@@ -612,6 +755,9 @@ public class CircuitCanvas extends ResizableCanvas
 		
 	}
 	
+	/**
+	 * Selects all components in this circuit.
+	 */
 	public void selectAll()
 	{
 		deselectCurrentSelectedElements();
@@ -630,12 +776,20 @@ public class CircuitCanvas extends ResizableCanvas
 		refreshCanvas();
 	}
 	
+	/**
+	 * Deselects all components in this circuit.
+	 */
 	public void deselectAll()
 	{
 		deselectCurrentSelectedElements();
 		refreshCanvas();
 	}
 	
+	/**
+	 * Rotates the selected components in the canvas.
+	 * 
+	 * @param 	rotation	Angle of rotation
+	 */
 	public void rotateSelectedElements(double rotation)
 	{
 		if (!currentSelectedElements.isEmpty())
@@ -652,28 +806,15 @@ public class CircuitCanvas extends ResizableCanvas
 		}
 	}
 	
+	/**
+	 * Zooms into the canvas and reduces the scale of the canvas.
+   * Scale is limited to a max of 1.
+	 */
 	public void zoomIn()
 	{
 		if(canvasScaleFactor < 1)
 		{
-			canvasScaleFactor += GraphicDesignContainer.zoom_factor;
-			
-			double posX = sp.getVvalue();
-			double posY = sp.getHvalue();
-			
-			setScaleX(canvasScaleFactor);
-			setScaleY(canvasScaleFactor);
-			
-			sp.setHvalue(canvasScaleFactor * 0.5);
-			sp.setVvalue(canvasScaleFactor * 0.5);
-			
-			sp.setHmin((1-canvasScaleFactor)/2);
-			sp.setVmin((1-canvasScaleFactor)/2);
-			
-			sp.setVvalue(posX);
-			sp.setHvalue(posY);
-			
-			refreshCanvas();
+			zoom(GraphicDesignContainer.zoom_factor);
 		}
 		else
 		{
@@ -681,28 +822,16 @@ public class CircuitCanvas extends ResizableCanvas
 		}
 	}
 
+	/**
+	 * Zooms out of the canvas and increases the scale of the canvas. 
+   * Scale is limited to a min of 0,5.
+	 */
 	public void zoomOut()
 	{
 		if(canvasScaleFactor > 0.5)
 		{
-			canvasScaleFactor -= GraphicDesignContainer.zoom_factor;
+			zoom(-GraphicDesignContainer.zoom_factor);
 			
-			double posX = sp.getVvalue();
-			double posY = sp.getHvalue();
-			
-			setScaleX(canvasScaleFactor);
-			setScaleY(canvasScaleFactor);
-			
-			sp.setHvalue(canvasScaleFactor * 0.5);
-			sp.setVvalue(canvasScaleFactor * 0.5);
-			
-			sp.setHmin((1-canvasScaleFactor)/2);
-			sp.setVmin((1-canvasScaleFactor)/2);
-			
-			sp.setVvalue(posX);
-			sp.setHvalue(posY);
-			
-			refreshCanvas();
 		}
 		else
 		{
@@ -710,16 +839,56 @@ public class CircuitCanvas extends ResizableCanvas
 		}
 	}
 	
+  	/**
+	 * Used for zooming in and out of the canvas. 
+   *
+   * @param   step  Scale factor that gets added (can be negative)
+	 */
+	private void zoom(double step)
+	{
+		canvasScaleFactor += step;
+		
+		double posX = sp.getVvalue();
+		double posY = sp.getHvalue();
+		
+		setScaleX(canvasScaleFactor);
+		setScaleY(canvasScaleFactor);
+		
+		sp.setHvalue(canvasScaleFactor * 0.5);
+		sp.setVvalue(canvasScaleFactor * 0.5);
+		
+		sp.setHmin((1-canvasScaleFactor)/2);
+		sp.setVmin((1-canvasScaleFactor)/2);
+		
+		sp.setVvalue(posX);
+		sp.setHvalue(posY);
+		
+		refreshCanvas();
+	}
+  
+	/**
+	 * Returns the current mouse position in this canvas or the last position before it left the node.
+	 * 
+	 * @return	Point2D		Current mouse position
+	 */
 	public Point2D getMousePosition()
 	{
 		return new Point2D(currentMousePosition.getX(), currentMousePosition.getY());
 	}
 	
+	/**
+	 * Used to change the cursor style in the application.
+	 * 
+	 * @param 	value		New cursor style
+	 */
 	private void changeCursorStyle(Cursor value)
 	{
 		Main.mainStage.getScene().setCursor(value);
 	}
 	
+	/**
+	 * Used for creating the right click menu with all its menu entries.
+	 */
 	private void initiateRightClickMenu()
 	{
 		rightClickMenu = new ContextMenu();
@@ -780,6 +949,12 @@ public class CircuitCanvas extends ResizableCanvas
 		rightClickMenu.getItems().addAll(copy, paste, delete, rotate);
 	}
 	
+	/**
+	 * Draws an rectangle with clickX and clickY as origin.
+	 * 
+	 * @param 	currX		X position in canvas, width of rect
+	 * @param	currY		Y position in canvas, height of rect
+	 */
 	private void drawSelectRect(double currX, double currY)
 	{
 		refreshCanvas();
@@ -805,6 +980,9 @@ public class CircuitCanvas extends ResizableCanvas
 		gc.restore();
 	}
 	
+	/**
+	 * Sets selection mode of selected elements to unselected.
+	 */
 	private void deselectCurrentSelectedElements()
 	{
 		if (!currentSelectedElements.isEmpty())
@@ -819,6 +997,13 @@ public class CircuitCanvas extends ResizableCanvas
 		}
 	}
 	
+	/**
+	 * Checks if there's a component at x,y position and if yes set it's selection mode to selected.
+	 * Deselects all other elements first.
+	 * 
+	 * @param	x		X position in the canvas
+	 * @param	y		Y position in the canvas
+	 */
 	private void selectElement(double x, double y)
 	{
 		deselectCurrentSelectedElements();
@@ -840,6 +1025,50 @@ public class CircuitCanvas extends ResizableCanvas
 		}
 	}
 	
+	/**
+	 * Checks if there's a component at x,y position and if yes set it's selection mode to selected.
+	 * Deselects elemenent if already added. Sets hasSelectedMultipleElements to true or false if afterwards
+	 * multiple or only one element is selected.
+	 * 
+	 * @param	x		X position in the canvas
+	 * @param	y		Y position in the canvas
+	 */
+	private void selectAdditionalElement(double x, double y)
+	{
+		ArrayList<Element> elements = circuit.getElementsByPosition(x, y);
+		if(elements == null)
+		{
+			return;
+		}
+		Element elemToAdd = elements.get(0);
+		
+		if(!currentSelectedElements.contains(elemToAdd)) // avoid selection duplicates
+		{
+			// prioritize connectors over components
+			for(Element e : elements)
+			{
+				if(e.getClass() == Connector.class)
+				{
+					elemToAdd = e;
+					currentSelectedConnector = (Connector) e;
+				}
+			}
+			currentSelectedElements.add(elemToAdd.setSelectionMode(SelectionMode.SELECTED)); // take first element found
+		}
+		else if(currentSelectedElements.contains(elemToAdd)) // deselect duplicate
+		{
+			currentSelectedElements.remove(elemToAdd.setSelectionMode(SelectionMode.UNSELECTED));
+		}
+		
+		// update indicator for multiple element selection
+		hasSelectedMultipleElements = currentSelectedElements.size()>1 ? true : false; 
+	}
+	
+	/**
+	 * Sets the selection mode of the element to selected.
+	 * 
+	 * @param	element		Element to select
+	 */
 	private void selectElement(Element element)
 	{
 		if(element != null)
@@ -848,6 +1077,14 @@ public class CircuitCanvas extends ResizableCanvas
 		}
 	}
 	
+	/**
+	 * Sets the selection mode of all the elements in the rectangle to selected.
+	 * 
+	 * @param	x		X position in the canvas
+	 * @param	y		Y position in the canvas
+	 * @param	sizeX	Width of the rectangle	
+	 * @param	sizeY	Height of the rectangle
+	 */
 	private void selectElements(double x, double y, double sizeX, double sizeY)
 	{
 		ArrayList<Element> elements = new ArrayList<Element>();
@@ -881,6 +1118,11 @@ public class CircuitCanvas extends ResizableCanvas
 		}
 	}
 	
+	/**
+	 * Sets the selection mode of all the elements in the elements array to selected.
+	 * 
+	 * @param	elements	Elements that get selected
+	 */
 	private void selectElements(Element[] elements)
 	{
 		if(elements != null)

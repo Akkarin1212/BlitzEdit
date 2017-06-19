@@ -24,6 +24,11 @@
                            </accelerator>
                         </MenuItem>
                         <SeparatorMenuItem mnemonicParsing="false" />
+                        <MenuItem fx:id="Reload" mnemonicParsing="false" onAction="#handleReloadAction" text="Reload...">
+                        	<accelerator>
+                              <KeyCodeCombination alt="UP" code="F5" control="UP" meta="UP" shift="UP" shortcut="UP" />
+                           </accelerator>
+                        </MenuItem>
                         <MenuItem fx:id="Open" mnemonicParsing="false" onAction="#handleOpenAction" text="Open...">
                            <accelerator>
                               <KeyCodeCombination alt="UP" code="O" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
@@ -36,7 +41,7 @@
                         </MenuItem>
                         <MenuItem fx:id="SaveAs" mnemonicParsing="false" onAction="#handleSaveAsAction" text="Save As...">
                            <accelerator>
-                              <KeyCodeCombination alt="UP" code="A" control="DOWN" meta="UP" shift="DOWN" shortcut="UP" />
+                              <KeyCodeCombination alt="UP" code="S" control="DOWN" meta="UP" shift="DOWN" shortcut="UP" />
                            </accelerator>
                         </MenuItem>
                         <SeparatorMenuItem mnemonicParsing="false" />
@@ -51,17 +56,6 @@
                 </Menu>
                   <Menu mnemonicParsing="false" text="Edit">
                     <items>
-                      <MenuItem fx:id="Undo" mnemonicParsing="false" onAction="#handleUndoAction" text="Undo">
-                           <accelerator>
-                              <KeyCodeCombination alt="UP" code="Z" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
-                           </accelerator>
-                        </MenuItem>
-                        <MenuItem fx:id="Redo" mnemonicParsing="false" onAction="#handleRedoAction" text="Redo">
-                           <accelerator>
-                              <KeyCodeCombination alt="UP" code="Y" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
-                           </accelerator>
-                        </MenuItem>
-                        <SeparatorMenuItem mnemonicParsing="false" />
                         <MenuItem fx:id="Copy" mnemonicParsing="false" onAction="#handleCopyAction" text="Copy">
                            <accelerator>
                               <KeyCodeCombination alt="UP" code="C" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
@@ -70,11 +64,6 @@
                         <MenuItem fx:id="Paste" mnemonicParsing="false" onAction="#handlePasteAction" text="Paste">
                            <accelerator>
                               <KeyCodeCombination alt="UP" code="V" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
-                           </accelerator>
-                        </MenuItem>
-                        <MenuItem fx:id="Duplicate" mnemonicParsing="false" onAction="#handleDuplicateAction" text="Duplicate">
-                           <accelerator>
-                              <KeyCodeCombination alt="UP" code="D" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                            </accelerator>
                         </MenuItem>
                         <MenuItem fx:id="Delete" mnemonicParsing="false" onAction="#handleDeleteAction" text="Delete">
@@ -95,7 +84,7 @@
                         </MenuItem>
                     </items>
                   </Menu>
-                <Menu fx:id="QuickSave" mnemonicParsing="false" onAction="#handleQuickSaveAction" text="Save">
+                <Menu fx:id="QuickSave" mnemonicParsing="false" onAction="#handleSaveAction" text="Save">
                      <accelerator>
                         <KeyCodeCombination alt="UP" code="S" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
                      </accelerator>
@@ -105,6 +94,7 @@
                         <MenuItem fx:id="GridOnOff" mnemonicParsing="false" onAction="#handleViewGridOnOffAction" text="Grid On/Off" />
                         <MenuItem fx:id="ZoomIn" mnemonicParsing="false" onAction="#handleViewZoomInAction" text="Zoom In" />
                         <MenuItem fx:id="ZoomOut" mnemonicParsing="false" onAction="#handleViewZoomOutAction" text="Zoom Out" />
+                        <MenuItem fx:id="ToggleTutorial" mnemonicParsing="false" onAction="#handleToggleTutorialAction" text="Toggle Tutorial" />
                      </items>
                   </Menu>
                   <Menu mnemonicParsing="false" text="Help">
@@ -126,24 +116,16 @@
                         <TabPane fx:id="CircuitsTabPane" minHeight="-Infinity" minWidth="-Infinity" prefHeight="0.0" prefWidth="0.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                      </children>
                   </AnchorPane>
-                  <AnchorPane minHeight="0.0" minWidth="200.0" prefHeight="680.0" prefWidth="170.0">
+                  <AnchorPane minHeight="0.0" maxWidth="250.0" minWidth="250.0" prefHeight="680.0" prefWidth="170.0">
                      <children>
-                        <TitledPane fx:id="Properties" animated="false" minHeight="0.0" minWidth="200.0" text="Properties" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                          <content>
-                            <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                                 <children>
-                                    <TextFlow minHeight="-Infinity" minWidth="-Infinity" prefHeight="0.0" prefWidth="170.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                                 </children>
-                              </AnchorPane>
-                          </content>
-                        </TitledPane>
+                        <Accordion fx:id="Tutorial" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                      </children>
                   </AnchorPane>
               </items>
             </SplitPane>
             <AnchorPane maxHeight="25.0" minHeight="-Infinity" minWidth="0.0" prefHeight="25.0" prefWidth="0.0">
                <children>
-                  <Label fx:id="Debug_Text" text="Debug Text" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                  <Label fx:id="Debug_Text" text="BlitzEdit (C) Team BlitzEdit" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <padding>
                         <Insets left="10.0" />
                      </padding>

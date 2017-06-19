@@ -4,23 +4,49 @@ import java.awt.Point;
 import javafx.scene.canvas.GraphicsContext;
 
 import tools.GraphicDesignContainer;
+import tools.SelectionMode;
 import blitzEdit.core.Connector;
 
+/**
+ * Class for electrical lines in a Circuit
+ * 
+ * @author David Schick
+ */
 public class Line 
 {
 	private Connector _c1;
 	private Connector _c2;
 	
+	private SelectionMode _selMode = SelectionMode.UNSELECTED;
+	
+	/**
+	 * returns Connector 1 of this line
+	 * @return {@link Connector} 1
+	 */
 	public Connector getC1()
 	{
 		return _c1;
 	}
 	
+	/**
+	 * returns Connector 2 of this line
+	 * @return {@link Connector} 2
+	 */
 	public Connector getC2()
 	{
 		return _c2;
 	}
 	
+	public SelectionMode getSelectionMode()
+	{
+		return _selMode;
+	}
+	
+	/**
+	 * Compares this line to another line
+	 * @param l Line to compare
+	 * @return true, if the two lines originate in the same points, else false
+	 */
 	public boolean equals(Line l)
 	{
 		Point p1 = _c1.getPosition();
@@ -35,21 +61,35 @@ public class Line
 			return false;
 	}
 	
-	public Line(Connector c1, Connector c2)
-	{
-		_c1 = c1;
-		_c2 = c2;
-	}
-	
+	/**
+	 * draws the line on a {@link GraphicsContext}
+	 * @param gc
+	 */
 	public void draw(GraphicsContext gc)
 	{	
 		gc.save();
-		gc.setStroke(GraphicDesignContainer.line_color);
 		gc.setLineWidth(GraphicDesignContainer.line_width);
+		if(/*_c1.getOwner().getSelectionMode() == SelectionMode.SELECTED ||
+				_c2.getOwner().getSelectionMode() == SelectionMode.SELECTED*/
+				_selMode == SelectionMode.SELECTED)
+		{
+			gc.setStroke(GraphicDesignContainer.selected_line_color);
+			_selMode = SelectionMode.SELECTED;
+		}
+		else
+		{
+			gc.setStroke(GraphicDesignContainer.line_color);
+			_selMode = SelectionMode.UNSELECTED;
+		}
 		drawLine(gc);
 		gc.restore();
 	}
 	
+	/**
+	 * draws the line on a {@link GraphicsContext}. 
+	 * Private method called in the public draw-method
+	 * @param gc
+	 */
 	private void drawLine(GraphicsContext gc)
 	{
 		Point p1 = _c1.getPosition();
@@ -63,6 +103,16 @@ public class Line
 		gc.strokeLine(p2.x, p2.y, p3.x, p3.y);
 	}
 	
+	/**
+	 * Private method called by drawLine
+	 * Returns a Point specifying the Corner Point for this line, considering
+	 * the position and rotation of the connected connectors.
+	 * @param p1
+	 * @param alpha1
+	 * @param p2
+	 * @param alpha2
+	 * @return Corner Point for line
+	 */
 	private Point getCornerPoint(Point p1, short alpha1, Point p2, short alpha2)
 	{
 		Point p3 = new Point();
@@ -91,5 +141,21 @@ public class Line
 			p3.y = (p3.x == p1.x) ? p2.y : p1.y;
 		}
 		return p3;
+	}
+	
+	/**
+	 * constructs a new Line
+	 * @param c1 {@link Connector} 1
+	 * @param c2 {@link Connector} 2
+	 */
+	public Line(Connector c1, Connector c2)
+	{
+		_c1 = c1;
+		_c2 = c2;
+		if (c1.getOwner().getSelectionMode() == SelectionMode.SELECTED
+				|| c2.getOwner().getSelectionMode() == SelectionMode.SELECTED
+				|| c1.getSelectionMode() == SelectionMode.SELECTED
+				|| c2.getSelectionMode() == SelectionMode.SELECTED)
+		_selMode = SelectionMode.SELECTED;
 	}
 }

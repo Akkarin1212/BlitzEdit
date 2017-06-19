@@ -2,5 +2,5 @@ package tools;
 
 public enum SelectionMode
 {
-	UNSELECTED, SELECTED, HIGHLIGHTED
+	UNSELECTED, SELECTED, HIGHLIGHTED, CONNECTED
 }

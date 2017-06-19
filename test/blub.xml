@@ -1,0 +1,559 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Circuit>
+	<circuithash hash="-1096760368"/>
+	<component id="4" x="600" y="325" rot="90" type="TestComponent" hash="-1831378973">
+		<child comp="4" conn="0;1;2;3;" hash="127419329"/>
+		<connector id="0" x="275" y="325" rot="0" relX="0" relY="100" hash="-2127195158">
+			<connection conn1="0" conn2="5" hash="-1154652140"/>
+		</connector>
+		<connector id="1" x="751" y="325" rot="180" relX="0" relY="-100" hash="35884526">
+			<connection conn1="1" conn2="5" hash="1332860693"/>
+			<connection conn1="1" conn2="16" hash="-1630991547"/>
+		</connector>
+		<connector id="2" x="600" y="475" rot="270" relX="50" relY="0" hash="2091470611">
+			<connection conn1="2" conn2="8" hash="-474593767"/>
+			<connection conn1="2" conn2="11" hash="-1827505057"/>
+			<connection conn1="2" conn2="22" hash="-1827505025"/>
+		</connector>
+		<connector id="3" x="600" y="200" rot="90" relX="-50" relY="0" hash="-1189520317">
+			<connection conn1="3" conn2="7" hash="2012919065"/>
+			<connection conn1="3" conn2="25" hash="-2024018527"/>
+		</connector>
+	</component>
+	<component id="9" x="275" y="675" rot="225" type="TestComponent" hash="2118757188">
+		<child comp="9" conn="5;6;7;8;" hash="-657344270"/>
+		<connector id="5" x="474" y="476" rot="0" relX="0" relY="100" hash="1046261581">
+			<connection conn1="5" conn2="0" hash="-1601989868"/>
+			<connection conn1="5" conn2="1" hash="-1601989867"/>
+		</connector>
+		<connector id="6" x="204" y="746" rot="180" relX="0" relY="-100" hash="305884707">
+			<connection conn1="6" conn2="10" hash="1681408218"/>
+			<connection conn1="6" conn2="77" hash="1681408411"/>
+		</connector>
+		<connector id="7" x="199" y="599" rot="270" relX="50" relY="0" hash="-713726704">
+			<connection conn1="7" conn2="3" hash="-921931495"/>
+		</connector>
+		<connector id="8" x="363" y="763" rot="90" relX="-50" relY="0" hash="-73104094">
+			<connection conn1="8" conn2="2" hash="1565581337"/>
+			<connection conn1="8" conn2="50" hash="1288381332"/>
+			<connection conn1="8" conn2="38" hash="1288381278"/>
+		</connector>
+	</component>
+	<component id="12" x="750" y="650" rot="0" type="Kondensator" hash="-1455387425">
+		<child comp="12" conn="10;11;" hash="1418336891"/>
+		<connector id="10" x="750" y="825" rot="0" relX="0" relY="100" hash="-1756379682">
+			<connection conn1="10" conn2="6" hash="975596792"/>
+			<connection conn1="10" conn2="13" hash="178729376"/>
+			<connection conn1="10" conn2="29" hash="178729413"/>
+			<connection conn1="10" conn2="41" hash="178729467"/>
+			<connection conn1="10" conn2="53" hash="178729500"/>
+		</connector>
+		<connector id="11" x="750" y="550" rot="180" relX="0" relY="-100" hash="-812529944">
+			<connection conn1="11" conn2="2" hash="-831857675"/>
+			<connection conn1="11" conn2="14" hash="-17784128"/>
+		</connector>
+	</component>
+	<component id="15" x="875" y="650" rot="0" type="Widerstand" hash="1429773925">
+		<child comp="15" conn="13;14;" hash="540898526"/>
+		<connector id="13" x="875" y="750" rot="0" relX="0" relY="100" hash="-1383596932">
+			<connection conn1="13" conn2="10" hash="-410811142"/>
+			<connection conn1="13" conn2="47" hash="-410811042"/>
+			<connection conn1="13" conn2="92" hash="-410810892"/>
+		</connector>
+		<connector id="14" x="875" y="550" rot="180" relX="0" relY="-100" hash="-716564415">
+			<connection conn1="14" conn2="11" hash="-607324646"/>
+			<connection conn1="14" conn2="28" hash="-607324608"/>
+		</connector>
+	</component>
+	<component id="18" x="950" y="325" rot="90" type="Kondensator" hash="-1314401747">
+		<child comp="18" conn="16;17;" hash="-336539839"/>
+		<connector id="16" x="850" y="325" rot="0" relX="0" relY="100" hash="-2141484128">
+			<connection conn1="16" conn2="1" hash="-1279195399"/>
+		</connector>
+		<connector id="17" x="1050" y="325" rot="180" relX="0" relY="-100" hash="1536097780">
+			<connection conn1="17" conn2="19" hash="-1196865153"/>
+		</connector>
+	</component>
+	<component id="21" x="1350" y="400" rot="135" type="Spannungsquelle" hash="-914624503">
+		<child comp="21" conn="19;20;" hash="1214493892"/>
+		<connector id="19" x="1276" y="326" rot="0" relX="0" relY="100" hash="-641229267">
+			<connection conn1="19" conn2="17" hash="-1589892165"/>
+		</connector>
+		<connector id="20" x="1424" y="474" rot="180" relX="0" relY="-100" hash="-588509178">
+			<connection conn1="20" conn2="23" hash="-1618221952"/>
+			<connection conn1="20" conn2="122" hash="1374726098"/>
+			<connection conn1="20" conn2="31" hash="-1618221923"/>
+		</connector>
+	</component>
+	<component id="24" x="950" y="475" rot="90" type="Kondensator" hash="116052260">
+		<child comp="24" conn="22;23;" hash="356449468"/>
+		<connector id="22" x="850" y="475" rot="0" relX="0" relY="100" hash="-915415977">
+			<connection conn1="22" conn2="2" hash="1459141653"/>
+		</connector>
+		<connector id="23" x="1050" y="475" rot="180" relX="0" relY="-100" hash="-1643156237">
+			<connection conn1="23" conn2="20" hash="2087204826"/>
+		</connector>
+	</component>
+	<component id="27" x="950" y="200" rot="90" type="Kondensator" hash="761094983">
+		<child comp="27" conn="25;26;" hash="-520988897"/>
+		<connector id="25" x="850" y="200" rot="0" relX="0" relY="100" hash="-1634297030">
+			<connection conn1="25" conn2="3" hash="331745561"/>
+		</connector>
+		<connector id="26" x="1050" y="200" rot="180" relX="0" relY="-100" hash="2096770838">
+			<connection conn1="26" conn2="32" hash="1497664344"/>
+		</connector>
+	</component>
+	<component id="30" x="1375" y="550" rot="90" type="Widerstand" hash="-1014517278">
+		<child comp="30" conn="28;29;" hash="1030044183"/>
+		<connector id="28" x="1200" y="550" rot="0" relX="0" relY="100" hash="-1143743479">
+			<connection conn1="28" conn2="14" hash="1104637274"/>
+			<connection conn1="28" conn2="91" hash="1104637519"/>
+			<connection conn1="28" conn2="96" hash="1104637524"/>
+		</connector>
+		<connector id="29" x="1475" y="550" rot="180" relX="0" relY="-100" hash="1646610068">
+			<connection conn1="29" conn2="10" hash="908123765"/>
+			<connection conn1="29" conn2="31" hash="908123828"/>
+			<connection conn1="29" conn2="86" hash="908123988"/>
+			<connection conn1="29" conn2="88" hash="908123990"/>
+			<connection conn1="29" conn2="105" hash="-1912934304"/>
+		</connector>
+	</component>
+	<component id="33" x="1400" y="275" rot="315" type="Spannungsquelle" hash="1056108900">
+		<child comp="33" conn="31;32;" hash="172000410"/>
+		<connector id="31" x="1474" y="349" rot="0" relX="0" relY="100" hash="216478520">
+			<connection conn1="31" conn2="20" hash="683280477"/>
+			<connection conn1="31" conn2="29" hash="683280486"/>
+		</connector>
+		<connector id="32" x="1326" y="201" rot="180" relX="0" relY="-100" hash="552021412">
+			<connection conn1="32" conn2="26" hash="486766978"/>
+			<connection conn1="32" conn2="123" hash="-2090093900"/>
+		</connector>
+	</component>
+	<component id="36" x="625" y="1375" rot="0" type="Widerstand" hash="974578578">
+		<child comp="36" conn="34;35;" hash="-705437955"/>
+		<connector id="34" x="625" y="1525" rot="0" relX="0" relY="100" hash="-935317901">
+			<connection conn1="34" conn2="59" hash="93740064"/>
+			<connection conn1="34" conn2="70" hash="93740117"/>
+		</connector>
+		<connector id="35" x="625" y="1275" rot="180" relX="0" relY="-100" hash="-876923406">
+			<connection conn1="35" conn2="37" hash="-102773505"/>
+			<connection conn1="35" conn2="49" hash="-102773472"/>
+			<connection conn1="35" conn2="71" hash="-102773387"/>
+		</connector>
+	</component>
+	<component id="39" x="575" y="1050" rot="0" type="Spule" hash="-1862974887">
+		<child comp="39" conn="37;38;" hash="-1582876320"/>
+		<connector id="37" x="575" y="1150" rot="0" relX="0" relY="100" hash="1973746506">
+			<connection conn1="37" conn2="35" hash="-495800517"/>
+		</connector>
+		<connector id="38" x="575" y="950" rot="180" relX="0" relY="-100" hash="-126137762">
+			<connection conn1="38" conn2="8" hash="-992164032"/>
+			<connection conn1="38" conn2="77" hash="-692313896"/>
+			<connection conn1="38" conn2="74" hash="-692313899"/>
+			<connection conn1="38" conn2="71" hash="-692313902"/>
+		</connector>
+	</component>
+	<component id="42" x="800" y="1050" rot="0" type="Spule" hash="-1864862762">
+		<child comp="42" conn="40;41;" hash="-12448648"/>
+		<connector id="40" x="800" y="1150" rot="0" relX="0" relY="100" hash="1583755245">
+			<connection conn1="40" conn2="68" hash="-917157245"/>
+			<connection conn1="40" conn2="61" hash="-917157252"/>
+		</connector>
+		<connector id="41" x="800" y="950" rot="180" relX="0" relY="-100" hash="-1245584831">
+			<connection conn1="41" conn2="10" hash="-1113670913"/>
+			<connection conn1="41" conn2="47" hash="-1113670813"/>
+		</connector>
+	</component>
+	<component id="45" x="950" y="1050" rot="0" type="Spule" hash="304250101">
+		<child comp="45" conn="43;44;" hash="-889887013"/>
+		<connector id="43" x="950" y="1150" rot="0" relX="0" relY="100" hash="-1411382738">
+			<connection conn1="43" conn2="64" hash="-1506697764"/>
+			<connection conn1="43" conn2="82" hash="-1506697704"/>
+			<connection conn1="43" conn2="79" hash="-1506697728"/>
+		</connector>
+		<connector id="44" x="950" y="950" rot="180" relX="0" relY="-100" hash="-1945098174">
+			<connection conn1="44" conn2="47" hash="-1703211328"/>
+			<connection conn1="44" conn2="95" hash="-1703211175"/>
+		</connector>
+	</component>
+	<component id="48" x="875" y="1050" rot="0" type="Spule" hash="-1339036614">
+		<child comp="48" conn="46;47;" hash="-1767325378"/>
+		<connector id="46" x="875" y="1150" rot="0" relX="0" relY="100" hash="-1382132215">
+			<connection conn1="46" conn2="61" hash="-2096238282"/>
+			<connection conn1="46" conn2="64" hash="-2096238279"/>
+		</connector>
+		<connector id="47" x="875" y="950" rot="180" relX="0" relY="-100" hash="394850653">
+			<connection conn1="47" conn2="13" hash="2002215356"/>
+			<connection conn1="47" conn2="41" hash="2002215447"/>
+			<connection conn1="47" conn2="44" hash="2002215450"/>
+		</connector>
+	</component>
+	<component id="51" x="650" y="1050" rot="0" type="Spule" hash="-1698928243">
+		<child comp="51" conn="49;50;" hash="-216291647"/>
+		<connector id="49" x="650" y="1150" rot="0" relX="0" relY="100" hash="-859138869">
+			<connection conn1="49" conn2="35" hash="1609188410"/>
+			<connection conn1="49" conn2="68" hash="1609188506"/>
+		</connector>
+		<connector id="50" x="650" y="950" rot="180" relX="0" relY="-100" hash="409428138">
+			<connection conn1="50" conn2="8" hash="189542774"/>
+		</connector>
+	</component>
+	<component id="54" x="725" y="1050" rot="0" type="Spule" hash="-1574085959">
+		<child comp="54" conn="52;53;" hash="-1074336071"/>
+		<connector id="52" x="725" y="1150" rot="0" relX="0" relY="100" hash="-7528726">
+			<connection conn1="52" conn2="68" hash="1187831682"/>
+		</connector>
+		<connector id="53" x="725" y="950" rot="180" relX="0" relY="-100" hash="-1461123586">
+			<connection conn1="53" conn2="10" hash="991318014"/>
+		</connector>
+	</component>
+	<component id="57" x="725" y="1625" rot="0" type="Spannungsquelle" hash="-893447926">
+		<child comp="57" conn="55;56;" hash="-1951774436"/>
+		<connector id="55" x="725" y="1725" rot="0" relX="0" relY="100" hash="-195041355">
+			<connection conn1="55" conn2="58" hash="598291136"/>
+			<connection conn1="55" conn2="62" hash="598291161"/>
+		</connector>
+		<connector id="56" x="725" y="1525" rot="180" relX="0" relY="-100" hash="1571721482">
+			<connection conn1="56" conn2="67" hash="401777661"/>
+		</connector>
+	</component>
+	<component id="60" x="625" y="1625" rot="0" type="Spannungsquelle" hash="-434420319">
+		<child comp="60" conn="58;59;" hash="-400741356"/>
+		<connector id="58" x="625" y="1725" rot="0" relX="0" relY="100" hash="-923971341">
+			<connection conn1="58" conn2="55" hash="8750618"/>
+			<connection conn1="58" conn2="99" hash="8750746"/>
+			<connection conn1="58" conn2="141" hash="271265332"/>
+		</connector>
+		<connector id="59" x="625" y="1475" rot="180" relX="0" relY="-100" hash="2140996466">
+			<connection conn1="59" conn2="34" hash="-187762950"/>
+			<connection conn1="59" conn2="142" hash="-1525686026"/>
+		</connector>
+	</component>
+	<component id="63" x="825" y="1625" rot="180" type="Spannungsquelle" hash="287947149">
+		<child comp="63" conn="61;62;" hash="-1258785129"/>
+		<connector id="61" x="825" y="1525" rot="0" relX="0" relY="100" hash="-1227194473">
+			<connection conn1="61" conn2="40" hash="-412606242"/>
+			<connection conn1="61" conn2="46" hash="-412606236"/>
+		</connector>
+		<connector id="62" x="825" y="1725" rot="180" relX="0" relY="-100" hash="-649890972">
+			<connection conn1="62" conn2="55" hash="-609119711"/>
+			<connection conn1="62" conn2="65" hash="-609119680"/>
+		</connector>
+	</component>
+	<component id="66" x="925" y="1625" rot="180" type="Spannungsquelle" hash="-1980826351">
+		<child comp="66" conn="64;65;" hash="-2136223494"/>
+		<connector id="64" x="925" y="1525" rot="0" relX="0" relY="100" hash="-1681364845">
+			<connection conn1="64" conn2="43" hash="-1002146754"/>
+			<connection conn1="64" conn2="46" hash="-1002146751"/>
+			<connection conn1="64" conn2="102" hash="-1001781228"/>
+			<connection conn1="64" conn2="139" hash="-1001781128"/>
+			<connection conn1="64" conn2="136" hash="-1001781131"/>
+		</connector>
+		<connector id="65" x="925" y="1725" rot="180" relX="0" relY="-100" hash="-1692460824">
+			<connection conn1="65" conn2="62" hash="-1198660198"/>
+			<connection conn1="65" conn2="99" hash="-1198660098"/>
+			<connection conn1="65" conn2="101" hash="1496234708"/>
+		</connector>
+	</component>
+	<component id="69" x="725" y="1375" rot="0" type="Widerstand" hash="1509705489">
+		<child comp="69" conn="67;68;" hash="1281305437"/>
+		<connector id="67" x="725" y="1475" rot="0" relX="0" relY="100" hash="1341984588">
+			<connection conn1="67" conn2="56" hash="-1591687235"/>
+		</connector>
+		<connector id="68" x="725" y="1275" rot="180" relX="0" relY="-100" hash="-1829720557">
+			<connection conn1="68" conn2="40" hash="-1788200777"/>
+			<connection conn1="68" conn2="49" hash="-1788200768"/>
+			<connection conn1="68" conn2="52" hash="-1788200744"/>
+		</connector>
+	</component>
+	<component id="72" x="350" y="1275" rot="45" type="Kondensator" hash="98099484">
+		<child comp="72" conn="70;71;" hash="-1443234187"/>
+		<connector id="70" x="279" y="1346" rot="0" relX="0" relY="100" hash="-902541251">
+			<connection conn1="70" conn2="34" hash="-2013044123"/>
+			<connection conn1="70" conn2="73" hash="-2013044000"/>
+			<connection conn1="70" conn2="142" hash="2020139755"/>
+			<connection conn1="70" conn2="148" hash="2020139761"/>
+		</connector>
+		<connector id="71" x="421" y="1204" rot="180" relX="0" relY="-100" hash="-1408375682">
+			<connection conn1="71" conn2="35" hash="2085409669"/>
+			<connection conn1="71" conn2="38" hash="2085409672"/>
+			<connection conn1="71" conn2="145" hash="223188399"/>
+		</connector>
+	</component>
+	<component id="75" x="300" y="1175" rot="45" type="Kondensator" hash="2068380211">
+		<child comp="75" conn="73;74;" hash="1974294744"/>
+		<connector id="73" x="229" y="1246" rot="0" relX="0" relY="100" hash="976601876">
+			<connection conn1="73" conn2="70" hash="1692382778"/>
+			<connection conn1="73" conn2="76" hash="1692382784"/>
+		</connector>
+		<connector id="74" x="371" y="1104" rot="180" relX="0" relY="-100" hash="-519710788">
+			<connection conn1="74" conn2="38" hash="1495869157"/>
+		</connector>
+	</component>
+	<component id="78" x="250" y="1075" rot="45" type="Kondensator" hash="-1643731147">
+		<child comp="78" conn="76;77;" hash="1096856379"/>
+		<connector id="76" x="179" y="1146" rot="0" relX="0" relY="100" hash="-216086378">
+			<connection conn1="76" conn2="73" hash="1102842266"/>
+		</connector>
+		<connector id="77" x="321" y="1004" rot="180" relX="0" relY="-100" hash="429449605">
+			<connection conn1="77" conn2="6" hash="29236409"/>
+			<connection conn1="77" conn2="38" hash="906328642"/>
+		</connector>
+	</component>
+	<component id="81" x="1225" y="1100" rot="90" type="Widerstand" hash="1173998788">
+		<child comp="81" conn="79;80;" hash="-1647077186"/>
+		<connector id="79" x="1125" y="1100" rot="0" relX="0" relY="100" hash="-2012631623">
+			<connection conn1="79" conn2="43" hash="513301658"/>
+		</connector>
+		<connector id="80" x="1325" y="1100" rot="180" relX="0" relY="-100" hash="2051942063">
+			<connection conn1="80" conn2="85" hash="484971970"/>
+			<connection conn1="80" conn2="94" hash="484972000"/>
+		</connector>
+	</component>
+	<component id="84" x="1225" y="1150" rot="90" type="Widerstand" hash="-18668634">
+		<child comp="84" conn="82;83;" hash="1789845686"/>
+		<connector id="82" x="1125" y="1150" rot="0" relX="0" relY="100" hash="1271745580">
+			<connection conn1="82" conn2="43" hash="91944834"/>
+			<connection conn1="82" conn2="137" hash="-1444680270"/>
+		</connector>
+		<connector id="83" x="1325" y="1150" rot="180" relX="0" relY="-100" hash="-1640149743">
+			<connection conn1="83" conn2="89" hash="-104568541"/>
+			<connection conn1="83" conn2="100" hash="1053335567"/>
+			<connection conn1="83" conn2="132" hash="1053335662"/>
+		</connector>
+	</component>
+	<component id="87" x="1475" y="1025" rot="45" type="Spule" hash="-679006107">
+		<child comp="87" conn="85;86;" hash="912407321"/>
+		<connector id="85" x="1401" y="1099" rot="0" relX="0" relY="100" hash="-94004974">
+			<connection conn1="85" conn2="80" hash="-497595560"/>
+		</connector>
+		<connector id="86" x="1546" y="954" rot="180" relX="0" relY="-100" hash="675823614">
+			<connection conn1="86" conn2="29" hash="-694109242"/>
+		</connector>
+	</component>
+	<component id="90" x="1525" y="1075" rot="225" type="Spule" hash="-1001552876">
+		<child comp="90" conn="88;89;" hash="-1831526895"/>
+		<connector id="88" x="1596" y="1004" rot="0" relX="0" relY="100" hash="773174204">
+			<connection conn1="88" conn2="29" hash="-1087136252"/>
+			<connection conn1="88" conn2="126" hash="658513432"/>
+		</connector>
+		<connector id="89" x="1451" y="1149" rot="180" relX="0" relY="-100" hash="-1491277381">
+			<connection conn1="89" conn2="83" hash="-1283649577"/>
+			<connection conn1="89" conn2="125" hash="-1138437928"/>
+			<connection conn1="89" conn2="133" hash="-1138437899"/>
+		</connector>
+	</component>
+	<component id="93" x="1100" y="675" rot="225" type="Spannungsquelle" hash="460758431">
+		<child comp="93" conn="91;92;" hash="1605396628"/>
+		<connector id="91" x="1199" y="576" rot="0" relX="0" relY="100" hash="836048922">
+			<connection conn1="91" conn2="28" hash="-1508493077"/>
+		</connector>
+		<connector id="92" x="1029" y="746" rot="180" relX="0" relY="-100" hash="-1352381032">
+			<connection conn1="92" conn2="13" hash="-1705006618"/>
+		</connector>
+	</component>
+	<component id="98" x="1200" y="950" rot="270" type="TestComponent" hash="850460491">
+		<child comp="98" conn="94;95;96;97;" hash="1473974424"/>
+		<connector id="94" x="1300" y="950" rot="0" relX="0" relY="100" hash="-1709719719">
+			<connection conn1="94" conn2="80" hash="-2098033414"/>
+		</connector>
+		<connector id="95" x="1100" y="950" rot="180" relX="0" relY="-100" hash="-1845465754">
+			<connection conn1="95" conn2="44" hash="2000420257"/>
+		</connector>
+		<connector id="96" x="1200" y="900" rot="270" relX="50" relY="0" hash="2146240294">
+			<connection conn1="96" conn2="28" hash="1803906694"/>
+		</connector>
+		<connector id="97" x="1200" y="999" rot="90" relX="-50" relY="0" hash="1788016120">
+		</connector>
+	</component>
+	<component id="103" x="1175" y="1725" rot="90" type="TestComponent" hash="-1647645846">
+		<child comp="103" conn="99;100;101;102;" hash="-217302853"/>
+		<connector id="99" x="1075" y="1725" rot="0" relX="0" relY="100" hash="-1356367258">
+			<connection conn1="99" conn2="58" hash="1214366272"/>
+			<connection conn1="99" conn2="65" hash="1214366300"/>
+		</connector>
+		<connector id="100" x="1275" y="1725" rot="180" relX="0" relY="-100" hash="941809797">
+			<connection conn1="100" conn2="83" hash="445503451"/>
+			<connection conn1="100" conn2="134" hash="925698418"/>
+		</connector>
+		<connector id="101" x="1175" y="1774" rot="270" relX="50" relY="0" hash="1434711662">
+			<connection conn1="101" conn2="65" hash="248989886"/>
+		</connector>
+		<connector id="102" x="1175" y="1675" rot="90" relX="-50" relY="0" hash="104607550">
+			<connection conn1="102" conn2="64" hash="52476380"/>
+			<connection conn1="102" conn2="138" hash="1626763000"/>
+		</connector>
+	</component>
+	<component id="106" x="1750" y="550" rot="270" type="Spule" hash="-1394407793">
+		<child comp="106" conn="104;105;" hash="-2107594679"/>
+		<connector id="104" x="1850" y="550" rot="0" relX="0" relY="100" hash="567364953">
+			<connection conn1="104" conn2="119" hash="-1967139779"/>
+		</connector>
+		<connector id="105" x="1650" y="550" rot="180" relX="0" relY="-100" hash="70524774">
+			<connection conn1="105" conn2="29" hash="-537064254"/>
+			<connection conn1="105" conn2="108" hash="530876126"/>
+			<connection conn1="105" conn2="111" hash="530876150"/>
+			<connection conn1="105" conn2="114" hash="530876153"/>
+			<connection conn1="105" conn2="117" hash="530876156"/>
+			<connection conn1="105" conn2="120" hash="530876180"/>
+		</connector>
+	</component>
+	<component id="109" x="1750" y="625" rot="270" type="Spule" hash="223233161">
+		<child comp="109" conn="107;108;" hash="-1794019002"/>
+		<connector id="107" x="1850" y="625" rot="0" relX="0" relY="100" hash="-2119002849">
+			<connection conn1="107" conn2="119" hash="1231940736"/>
+		</connector>
+		<connector id="108" x="1650" y="625" rot="180" relX="0" relY="-100" hash="-1387038240">
+			<connection conn1="108" conn2="105" hash="-565010658"/>
+		</connector>
+	</component>
+	<component id="112" x="1750" y="700" rot="270" type="Spule" hash="-1062042525">
+		<child comp="112" conn="110;111;" hash="714586414"/>
+		<connector id="110" x="1850" y="700" rot="0" relX="0" relY="100" hash="-2133520635">
+			<connection conn1="110" conn2="119" hash="1054781080"/>
+		</connector>
+		<connector id="111" x="1650" y="700" rot="180" relX="0" relY="-100" hash="-94704070">
+			<connection conn1="111" conn2="105" hash="-742170314"/>
+		</connector>
+	</component>
+	<component id="115" x="1750" y="775" rot="270" type="Spule" hash="412196552">
+		<child comp="115" conn="113;114;" hash="1028162091"/>
+		<connector id="113" x="1850" y="775" rot="0" relX="0" relY="100" hash="882220672">
+			<connection conn1="113" conn2="119" hash="-41105701"/>
+		</connector>
+		<connector id="114" x="1650" y="775" rot="180" relX="0" relY="-100" hash="-271324961">
+			<connection conn1="114" conn2="105" hash="-1838057095"/>
+		</connector>
+	</component>
+	<component id="118" x="1750" y="850" rot="270" type="Spule" hash="2034463373">
+		<child comp="118" conn="116;117;" hash="1341737768"/>
+		<connector id="116" x="1850" y="850" rot="0" relX="0" relY="100" hash="-1433896805">
+			<connection conn1="116" conn2="119" hash="-1136992482"/>
+		</connector>
+		<connector id="117" x="1650" y="850" rot="180" relX="0" relY="-100" hash="-1077472028">
+			<connection conn1="117" conn2="105" hash="1361023420"/>
+		</connector>
+	</component>
+	<component id="121" x="1750" y="925" rot="270" type="Spule" hash="744561820">
+		<child comp="121" conn="119;120;" hash="-1045836283"/>
+		<connector id="119" x="1850" y="925" rot="0" relX="0" relY="100" hash="174702689">
+			<connection conn1="119" conn2="104" hash="2062087997"/>
+			<connection conn1="119" conn2="107" hash="2062088000"/>
+			<connection conn1="119" conn2="110" hash="2062088024"/>
+			<connection conn1="119" conn2="113" hash="2062088027"/>
+			<connection conn1="119" conn2="116" hash="2062088030"/>
+			<connection conn1="119" conn2="123" hash="2062088058"/>
+			<connection conn1="119" conn2="129" hash="2062088064"/>
+		</connector>
+		<connector id="120" x="1650" y="925" rot="180" relX="0" relY="-100" hash="-436553805">
+			<connection conn1="120" conn2="105" hash="1183863764"/>
+			<connection conn1="120" conn2="126" hash="1183863827"/>
+		</connector>
+	</component>
+	<component id="124" x="1575" y="375" rot="0" type="Widerstand" hash="-1957826876">
+		<child comp="124" conn="122;123;" hash="-131048435"/>
+		<connector id="122" x="1575" y="475" rot="0" relX="0" relY="100" hash="-660879457">
+			<connection conn1="122" conn2="20" hash="753540830"/>
+			<connection conn1="122" conn2="150" hash="1884928492"/>
+		</connector>
+		<connector id="123" x="1575" y="275" rot="180" relX="0" relY="-100" hash="828158176">
+			<connection conn1="123" conn2="32" hash="557027358"/>
+			<connection conn1="123" conn2="119" hash="87977018"/>
+			<connection conn1="123" conn2="151" hash="87977134"/>
+		</connector>
+	</component>
+	<component id="127" x="1650" y="1150" rot="0" type="Kondensator" hash="-1967699608">
+		<child comp="127" conn="125;126;" hash="182527242"/>
+		<connector id="125" x="1650" y="1250" rot="0" relX="0" relY="100" hash="2023325036">
+			<connection conn1="125" conn2="89" hash="164000510"/>
+			<connection conn1="125" conn2="128" hash="789041626"/>
+			<connection conn1="125" conn2="131" hash="789041650"/>
+		</connector>
+		<connector id="126" x="1650" y="1050" rot="180" relX="0" relY="-100" hash="352388497">
+			<connection conn1="126" conn2="88" hash="-32512996"/>
+			<connection conn1="126" conn2="120" hash="-1007909741"/>
+			<connection conn1="126" conn2="129" hash="-1007909732"/>
+		</connector>
+	</component>
+	<component id="130" x="1775" y="1150" rot="0" type="Kondensator" hash="-1590026924">
+		<child comp="130" conn="128;129;" hash="2089919836"/>
+		<connector id="128" x="1775" y="1250" rot="0" relX="0" relY="100" hash="1760698987">
+			<connection conn1="128" conn2="125" hash="-306845158"/>
+			<connection conn1="128" conn2="131" hash="-306845131"/>
+		</connector>
+		<connector id="129" x="1775" y="1050" rot="180" relX="0" relY="-100" hash="1890176050">
+			<connection conn1="129" conn2="119" hash="-2103796544"/>
+			<connection conn1="129" conn2="126" hash="-2103796516"/>
+		</connector>
+	</component>
+	<component id="135" x="1550" y="1475" rot="225" type="TestComponent" hash="202013220">
+		<child comp="135" conn="131;132;133;134;" hash="212798628"/>
+		<connector id="131" x="1621" y="1404" rot="0" relX="0" relY="100" hash="-1839311986">
+			<connection conn1="131" conn2="125" hash="-484004814"/>
+			<connection conn1="131" conn2="128" hash="-484004811"/>
+		</connector>
+		<connector id="132" x="1387" y="1638" rot="180" relX="0" relY="-100" hash="2045985255">
+			<connection conn1="132" conn2="83" hash="-1043410340"/>
+		</connector>
+		<connector id="133" x="1515" y="1440" rot="270" relX="50" relY="0" hash="-1220122019">
+			<connection conn1="133" conn2="89" hash="-1239923839"/>
+		</connector>
+		<connector id="134" x="1585" y="1510" rot="90" relX="-50" relY="0" hash="-1670344030">
+			<connection conn1="134" conn2="100" hash="-1579891662"/>
+		</connector>
+	</component>
+	<component id="140" x="1125" y="1350" rot="0" type="TestComponent" hash="-467205353">
+		<child comp="140" conn="136;137;138;139;" hash="-855310678"/>
+		<connector id="136" x="1125" y="1525" rot="0" relX="0" relY="100" hash="348907572">
+			<connection conn1="136" conn2="64" hash="-1829464421"/>
+		</connector>
+		<connector id="137" x="1125" y="1250" rot="180" relX="0" relY="-100" hash="-1778593518">
+			<connection conn1="137" conn2="82" hash="-2025977866"/>
+		</connector>
+		<connector id="138" x="1175" y="1350" rot="270" relX="50" relY="0" hash="1509753488">
+			<connection conn1="138" conn2="102" hash="-177762504"/>
+		</connector>
+		<connector id="139" x="925" y="1350" rot="90" relX="-50" relY="0" hash="-1412523772">
+			<connection conn1="139" conn2="64" hash="1875962360"/>
+		</connector>
+	</component>
+	<component id="143" x="475" y="1625" rot="0" type="Spule" hash="-1872680490">
+		<child comp="143" conn="141;142;" hash="-913288496"/>
+		<connector id="141" x="475" y="1725" rot="0" relX="0" relY="100" hash="-1121170803">
+			<connection conn1="141" conn2="58" hash="1651119014"/>
+			<connection conn1="141" conn2="147" hash="-354922031"/>
+		</connector>
+		<connector id="142" x="475" y="1525" rot="180" relX="0" relY="-100" hash="2119245618">
+			<connection conn1="142" conn2="59" hash="1454605510"/>
+			<connection conn1="142" conn2="70" hash="1454605563"/>
+			<connection conn1="142" conn2="144" hash="2143093903"/>
+		</connector>
+	</component>
+	<component id="146" x="475" y="1350" rot="0" type="Widerstand" hash="-1055399388">
+		<child comp="146" conn="144;145;" hash="-599712819"/>
+		<connector id="144" x="475" y="1450" rot="0" relX="0" relY="100" hash="241548031">
+			<connection conn1="144" conn2="142" hash="-1450808817"/>
+		</connector>
+		<connector id="145" x="475" y="1250" rot="180" relX="0" relY="-100" hash="-1449819776">
+			<connection conn1="145" conn2="71" hash="865065049"/>
+		</connector>
+	</component>
+	<component id="149" x="300" y="1650" rot="315" type="Spannungsquelle" hash="-48096550">
+		<child comp="149" conn="147;148;" hash="-286137142"/>
+		<connector id="147" x="371" y="1721" rot="0" relX="0" relY="100" hash="-1023522456">
+			<connection conn1="147" conn2="141" hash="1748271697"/>
+		</connector>
+		<connector id="148" x="229" y="1579" rot="180" relX="0" relY="-100" hash="1382033120">
+			<connection conn1="148" conn2="70" hash="275524533"/>
+		</connector>
+	</component>
+	<component id="152" x="1650" y="375" rot="0" type="Widerstand" hash="583463687">
+		<child comp="152" conn="150;151;" hash="-2072499022"/>
+		<connector id="150" x="1650" y="475" rot="0" relX="0" relY="100" hash="1880411106">
+			<connection conn1="150" conn2="122" hash="1571111980"/>
+		</connector>
+		<connector id="151" x="1650" y="275" rot="180" relX="0" relY="-100" hash="1026793917">
+			<connection conn1="151" conn2="123" hash="-225839378"/>
+		</connector>
+	</component>
+</Circuit>

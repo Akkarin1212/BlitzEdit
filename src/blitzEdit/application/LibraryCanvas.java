@@ -1,43 +1,41 @@
 package blitzEdit.application;
 
 import java.io.File;
-import java.util.Vector;
+import java.util.ArrayList;
 
+import blitzEdit.core.BlueprintContainer;
 import blitzEdit.core.ComponentBlueprint;
 import blitzEdit.core.ComponentLibrary;
 import blitzEdit.core.Element;
 import javafx.event.EventHandler;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.MouseEvent;
+import tools.FileTools;
 import tools.SelectionMode;
 
+/**
+ * Canvas used for displaying the library and its entries.
+ * 
+ * @author Chrisian Gärtner
+ */
 public class LibraryCanvas extends ResizableCanvas
 {
-	Vector<File> entries = new Vector<File>();
+	public File directory;
+	ArrayList<File> entries = new ArrayList<File>();
 	ComponentLibrary componentLibrary;
 	GraphicsContext gc;
 	Element currentDraggedElement = null;
 	
 	private double scale = 0.5;
 	
-	
+	/**
+	 * Constructor
+	 */
 	public LibraryCanvas()
 	{
 		// TODO Auto-generated constructor stub
 		gc = getGraphicsContext2D();
 		componentLibrary = new ComponentLibrary();
-		
-		entries.add(new File("blueprints/Widerstand.xml"));
-		entries.add(new File("blueprints/Kondensator.xml"));
-		entries.add(new File("blueprints/Spannungsquelle.xml"));
-		entries.add(new File("blueprints/Spule.xml"));
-		
-		for(File f : entries)
-		{
-			componentLibrary.addBlueprint(f);
-		}
-		
-		componentLibrary.initiate(gc);
 		
 		onMousePressedHandler();
 		onMouseDragDetectedHandler();
@@ -45,11 +43,73 @@ public class LibraryCanvas extends ResizableCanvas
 		onMouseReleasedHandler();
 	}
 	
+	/**
+	 * Deletes the BlueprintComponent entries of its entries.
+	 */
+	public void delete()
+	{
+		BlueprintContainer.get().removeBlueprints(componentLibrary.getLibraryBlueprints());
+	}
+	
+	/**
+	 * Uses the {@link ComponentLibrary} to draw all entries of this library.
+	 */
 	public void drawLibraryEntries()
 	{
 		componentLibrary.draw(gc);
 	}
 	
+	/**
+	 * If the file ends with xml extension and isn't already contained in the library,
+	 * adds the file to entries and calls the addBlueprint(File) of its componentLibrary.
+	 * 
+	 * @param 	filepath	File containing the xml for the entry
+	 * @return	boolean		True if succesfully created new entry			
+	 */
+	public boolean addLibraryEntry(File filepath)
+	{
+		if(!entries.contains(filepath) && filepath.toString().contains(".xml"))
+		{
+			entries.add(filepath);
+		
+			componentLibrary.addBlueprint(filepath);
+			componentLibrary.initiate(gc);
+			
+			return true;
+		}
+		return false;
+	}
+	
+	/**
+	 * Gets all files in the directory and uses addLibaryEntry for each file.
+	 * 
+	 * @param	folderpath	File containing the folder directory
+	 * @return	boolean		True if succesfully added the files from the folder
+	 */
+	public boolean addLibraryEntries(File folderpath)
+	{
+		ArrayList<File> entriesCheck = (ArrayList<File>) entries.clone();
+		
+		ArrayList<File> files = FileTools.getFilesInDirectory(folderpath, true); //TODO: boolean for subdirectories
+		for (File file : files)
+		{
+			if(addLibraryEntry(file))
+			{
+			}
+		}
+		
+		if(!entries.equals(entriesCheck))
+		{
+			directory = folderpath;
+			return true;
+		}
+		return false;
+	}
+	
+	/**
+	 * Adds the event handler for mouse press.
+	 * When clicked on the library canvas, saves the blueprint clicked on and and creates component.
+	 */
 	private void onMousePressedHandler()
 	{
 		this.setOnMousePressed(new EventHandler<MouseEvent>()
@@ -62,7 +122,7 @@ public class LibraryCanvas extends ResizableCanvas
 					ComponentBlueprint bp = componentLibrary.getBlueprint(click.getX(), click.getY());
 					if(bp != null)
 					{
-						currentDraggedElement = componentLibrary.createComponent(bp, click.getX(), click.getY());
+						currentDraggedElement = bp.createComponent((int) click.getX(), (int) click.getY(), (short) 0);
 						currentDraggedElement.draw(gc, scale, SelectionMode.UNSELECTED);
 					}
 				}
@@ -70,6 +130,10 @@ public class LibraryCanvas extends ResizableCanvas
 		});
 	}
 	
+	/**
+	 * Adds the event handler for drag detection.
+	 * Calls startFullDrag().
+	 */
 	private void onMouseDragDetectedHandler()
 	{
 		this.setOnDragDetected(new EventHandler<MouseEvent>()
@@ -87,6 +151,11 @@ public class LibraryCanvas extends ResizableCanvas
 		});
 	}
 	
+	/**
+	 * Adds the event handler for mouse drag.
+	 * Moves the currentDraggedElement according to mouse position. 
+	 * Sets dragAndDropElement in BlitzEdit to currentDraggedElement.
+	 */
 	private void onMouseDraggedHandler()
 	{
 		this.setOnMouseDragged(new EventHandler<MouseEvent>()
@@ -107,6 +176,10 @@ public class LibraryCanvas extends ResizableCanvas
 		});
 	}
 	
+	/**
+	 * Adds the event handler for mouse release.
+	 * Resets references to the current dragged element.
+	 */
 	private void onMouseReleasedHandler()
 	{
 		this.setOnMouseReleased(new EventHandler<MouseEvent>()
@@ -120,7 +193,6 @@ public class LibraryCanvas extends ResizableCanvas
 			}
 		});
 	}
-	
 	
 	@Override
 	public void resize(double width, double height)
