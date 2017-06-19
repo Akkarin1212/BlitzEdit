@@ -71,7 +71,6 @@ public class CircuitCanvas extends ResizableCanvas
 	{
 		gc = getGraphicsContext2D();
 		circuit = new Circuit();
-		
 		sp = scrollPane;
 		
 		onMousePresseHandler();
@@ -547,16 +546,20 @@ public class CircuitCanvas extends ResizableCanvas
 	 */
 	private synchronized void drawAllCircuitElements()
 	{
-		ArrayList<Element> array = circuit.getElements();
-		for (Element elem : array)
-		{
-			elem.draw(gc, 1.0, elem.getSelectionMode());
-		}
-		
 		ArrayList<Line> lines = circuit.getLines();
 		for(Line line : lines)
 		{
 			line.draw(gc);
+		}
+		for(Line line : circuit.getSelectedLines())
+		{
+			line.draw(gc);
+		}
+		
+		ArrayList<Element> array = circuit.getElements();
+		for (Element elem : array)
+		{
+			elem.draw(gc, 1.0, elem.getSelectionMode());
 		}
 		
 		// prevent overlapping from lines etc. and draw current selected connector last

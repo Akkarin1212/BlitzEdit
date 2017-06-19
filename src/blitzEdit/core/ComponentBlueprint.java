@@ -58,16 +58,42 @@ public class ComponentBlueprint
 		return _sizeY;
 	}
 	
+	/**
+	 * Constructor
+	 * 
+	 * @param 	posX	Contains x position
+	 * @param 	posY	Contains y position
+	 * @param 	rot		Contains direction
+	 * @return	Element	Created component
+	 */
 	public Element createComponentWithoutConnectors(int posX, int posY, short rot)
 	{
 		return new Component(posX, posY, rot, this.getType(), this.getSvgFilePath());
 	}
 	
+	/**
+	 * Constructor
+	 * 
+	 * @param 	posX	Contains x position
+	 * @param 	posY	Contains y position
+	 * @param 	rot		Contains direction
+	 * @return	Element	Created component
+	 */
 	public Element createComponent(int posX, int posY, short rot)
 	{
 		return new Component(posX, posY, rot, this.getType(), this.getRelPos(), this.getConRelRot(), this.getSvgFilePath());
 	}
 	
+	/**
+	 * Constructor
+	 * 
+	 * @param 	posX		Contains x position
+	 * @param 	posY		Contains y position
+	 * @param 	rot			Contains direction
+	 * @param 	conRelPos	Contains relative location of connectors
+	 * @param	conRelRot	Contains relative rotation of connectors
+	 * @return	Element		Created component
+	 */
 	public Element createComponent(int posX, int posY, short rot, int[][]conRelPos, short[]conRelRot)
 	{
 		return new Component(posX, posY, rot, this.getType(), conRelPos, conRelRot, this.getSvgFilePath());

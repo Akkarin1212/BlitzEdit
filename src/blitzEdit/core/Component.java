@@ -81,6 +81,10 @@ public class Component extends RotatableElement
 		return new String(_svgFilePath);
 	}
 	
+	/**
+	 * Returns the file string of the svg-image
+	 * @return file string of svg image
+	 */
 	public String getSvgFileString()
 	{
 		return new String(_svgFileString);

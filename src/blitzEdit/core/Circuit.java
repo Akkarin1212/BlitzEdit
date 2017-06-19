@@ -6,6 +6,8 @@ import java.util.Collection;
 
 import javax.swing.event.AncestorEvent;
 
+import tools.SelectionMode;
+
 /**
  * Represents an electric Circuit
  * 
@@ -317,6 +319,22 @@ public class Circuit
 		}
 		lines.removeAll(linesToRemove);
 		return lines;
+	}
+	
+	/**
+	 * Uses getLines() and returns all lines with SelectionMode.Selected.
+	 * 
+	 * @return ArrayList<Line>	Contains selected lines
+	 */
+	public ArrayList<Line> getSelectedLines()
+	{
+		ArrayList<Line> ret = new ArrayList<Line>();
+		for (Line l : getLines())
+		{
+			if (l.getSelectionMode() == SelectionMode.SELECTED)
+				ret.add(l);
+		}
+		return ret;
 	}
 	
 	/**

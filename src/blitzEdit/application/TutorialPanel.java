@@ -105,8 +105,8 @@ public class TutorialPanel extends TitledPane
 				pane.setVisible(true);
 			}
 			AnchorPane anchor = (AnchorPane)parent.getParent();
-			anchor.setMinWidth(200);
-			anchor.setMaxWidth(USE_COMPUTED_SIZE);
+			anchor.setMinWidth(250.0);
+			anchor.setMaxWidth(250.0);
 			visible = true;
 		}
 	}

@@ -23,6 +23,12 @@ import blitzEdit.core.Element;
 import tools.FileTools;
 import tools.SvgRenderer;
 
+
+/**
+ * Parser that uses xml format to save and load circuits and load blueprints.
+ * 
+ * @author Chrisian Gartner
+ */
 public class XMLParser implements IParser{
 	private Circuit currentCircuit = null;
 	private ArrayList<Element> elements = new ArrayList<Element>();
@@ -91,7 +97,6 @@ public class XMLParser implements IParser{
 		}
 
 	}
-	
 	
 	public void loadCircuit (Circuit circuit, String filepath) 
 	{
@@ -229,6 +234,12 @@ public class XMLParser implements IParser{
 		}
 	}
 	
+	/**
+	 * 
+	 * 
+	 * @param filepath
+	 * @return
+	 */
 	public static ComponentBlueprint readBlueprint(String filepath)
 	{
 		String fileString;

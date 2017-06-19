@@ -28,7 +28,9 @@ public class LibraryCanvas extends ResizableCanvas
 	
 	private double scale = 0.5;
 	
-	
+	/**
+	 * Constructor
+	 */
 	public LibraryCanvas()
 	{
 		// TODO Auto-generated constructor stub
@@ -41,6 +43,9 @@ public class LibraryCanvas extends ResizableCanvas
 		onMouseReleasedHandler();
 	}
 	
+	/**
+	 * Deletes the BlueprintComponent entries of its entries.
+	 */
 	public void delete()
 	{
 		BlueprintContainer.get().removeBlueprints(componentLibrary.getLibraryBlueprints());
@@ -54,6 +59,13 @@ public class LibraryCanvas extends ResizableCanvas
 		componentLibrary.draw(gc);
 	}
 	
+	/**
+	 * If the file ends with xml extension and isn't already contained in the library,
+	 * adds the file to entries and calls the addBlueprint(File) of its componentLibrary.
+	 * 
+	 * @param 	filepath	File containing the xml for the entry
+	 * @return	boolean		True if succesfully created new entry			
+	 */
 	public boolean addLibraryEntry(File filepath)
 	{
 		if(!entries.contains(filepath) && filepath.toString().contains(".xml"))
@@ -68,6 +80,12 @@ public class LibraryCanvas extends ResizableCanvas
 		return false;
 	}
 	
+	/**
+	 * Gets all files in the directory and uses addLibaryEntry for each file.
+	 * 
+	 * @param	folderpath	File containing the folder directory
+	 * @return	boolean		True if succesfully added the files from the folder
+	 */
 	public boolean addLibraryEntries(File folderpath)
 	{
 		ArrayList<File> entriesCheck = (ArrayList<File>) entries.clone();
@@ -75,14 +93,10 @@ public class LibraryCanvas extends ResizableCanvas
 		ArrayList<File> files = FileTools.getFilesInDirectory(folderpath, true); //TODO: boolean for subdirectories
 		for (File file : files)
 		{
-			if (!entries.contains(file) && file.toString().contains(".xml"))
+			if(addLibraryEntry(file))
 			{
-				entries.add(file);
-
-				componentLibrary.addBlueprint(file);
 			}
 		}
-		componentLibrary.initiate(gc);
 		
 		if(!entries.equals(entriesCheck))
 		{
