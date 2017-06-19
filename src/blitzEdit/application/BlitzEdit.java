@@ -160,7 +160,7 @@ public class BlitzEdit implements javafx.fxml.Initializable
 		File filepath = getCurrentCircuitCanvas().currentSaveDirection;
 		
 		int confirm = JOptionPane.showConfirmDialog(null,
-				"Do you want to discrd changes and reload the circuit file?", "Reload",
+				"Do you want to discard changes and reload the circuit file?", "Reload",
 				JOptionPane.OK_OPTION);
 		if (filepath != null && confirm == JOptionPane.OK_OPTION)
 		{
@@ -381,16 +381,10 @@ public class BlitzEdit implements javafx.fxml.Initializable
 	}
 
 	@FXML
-	private CircuitCanvas handleHelpAboutAction(Event event)
+	private void handleHelpAboutAction(Event event)
 	{
-		// check if the TabPanel exists before creating tabs
-		if (CircuitsTabPane != null)
-		{
 			Tab tab = new Tab("About");
-			ScrollPane sp = new ScrollPane();					
-			CircuitCanvas canvas = new CircuitCanvas(sp);
-			sp.setContent(canvas);
-					
+								
 			VBox vbox = new VBox();
 			vbox.setAlignment(Pos.TOP_CENTER);
 			
@@ -419,10 +413,6 @@ public class BlitzEdit implements javafx.fxml.Initializable
 
 			CircuitsTabPane.getTabs().add(tab);
 			CircuitsTabPane.getSelectionModel().select(tab);
-					
-			return canvas;
-		}
-		return null;
 	}
 	
 	@FXML
