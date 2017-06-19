@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- Bauteil Deklaration: Widerstand -->
+
+<component type="Widerstand">
+	<svg path="img/Widerstand.svg"/>
+	<connector x="0" y="100" rot="0"/>
+	<connector x="0" y="-100" rot="180"/>
+	<property name="Widerstand" type="decimal" unit="ohm"/>
+</component>

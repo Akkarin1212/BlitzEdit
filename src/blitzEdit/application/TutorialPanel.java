@@ -22,6 +22,10 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.scene.text.TextFlow;
 
+/**
+ * Used for displaying a quick user guide to get to know the interface.
+ * @author Christian Gärtner
+ */
 public class TutorialPanel extends TitledPane
 {
 	private ArrayList<TitledPane> panes;

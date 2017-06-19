@@ -100,8 +100,8 @@ public abstract class Element
 	
 	/**
 	 * sets the {@link SelectionMode} for this Element
-	 * @param mode
-	 * @return reference to this
+	 * @param 	mode	New SelectionMode
+	 * @return 	reference to this
 	 */
 	public Element setSelectionMode(SelectionMode mode)
 	{

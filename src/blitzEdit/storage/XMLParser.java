@@ -235,10 +235,13 @@ public class XMLParser implements IParser{
 	}
 	
 	/**
+	 * Reads an xml file and extracts the strings used for a ComponentBlueprint.
+	 * Calls readBlueprintValues() to interpret the extracted strings
+	 * Displays message if error occured.
 	 * 
 	 * 
-	 * @param filepath
-	 * @return
+	 * @param 	filepath			Contains filepath on disk
+	 * @return	ComponentBlueprint	Created blueprint
 	 */
 	public static ComponentBlueprint readBlueprint(String filepath)
 	{
@@ -303,6 +306,16 @@ public class XMLParser implements IParser{
 		return null;
 	}
 	
+	/**
+	 * Reads the strings given as parameter for xml properties and creates a ComponentBlueprint with them.
+	 * 
+	 * @param component				Contains the xml for the component
+	 * @param svg					Contains the xml for the svg image
+	 * @param connectors			Contains the xml for the connectors
+	 * @param properties			Contains the xml for the propertiers
+	 * @param parentDirectory		Contains the parent directory
+	 * @return ComponentBlueprint	Creted blueprint
+	 */
 	private static ComponentBlueprint readBlueprintValues(String component, String svg, ArrayList<String> connectors, ArrayList<String> properties, File parentDirectory)
 	{
 		String type = null;
@@ -316,6 +329,12 @@ public class XMLParser implements IParser{
 		String propertyValue = "";
 		ComponentProperty.Unit propertyUnit = null;
 		ComponentProperty.PropType propertyType = null;
+		
+		if(component == null || svg == null || connectors == null
+				|| component.isEmpty() || svg.isEmpty() || connectors.isEmpty())
+		{
+			return null;
+		}
 		
 		// component values
 		String[] elem = component.split(" ");
@@ -416,6 +435,12 @@ public class XMLParser implements IParser{
 		return new ComponentBlueprint(type, svgFilePath, relPos, relRot, width, height, propertyList);
 	}
 	
+	/**
+	 * Creates a component element out of the given xml string. Doesn't create connectors.
+	 * 
+	 * @param 	xml		Contains xml properties for the component
+	 * @return	boolean	True if succesfully created component and added to elements array
+	 */
 	private boolean readComponent (String xml) 
 	{
 		int id=0;
@@ -488,6 +513,12 @@ public class XMLParser implements IParser{
 		
 	}
 	
+	/**
+	 * Creates a connector out of given xml string.
+	 * 
+	 * @param 	xml		Contains properties for connector
+	 * @return	boolean	True if succesfully created connector and added to elements array
+	 */
 	private boolean readConnector (String xml)
 	{
 		int id=0;
@@ -554,6 +585,12 @@ public class XMLParser implements IParser{
 		return false;
 	}
 	
+	/**
+	 * Creates a conenction out of the given xml string.
+	 * 
+	 * @param 	xml		Contains IDs for the both connectors to connect	
+	 * @return	boolean	True if conenction between two connectors created
+	 */
 	private boolean createConnection(String xml)
 	{
 		double conn1=0;
@@ -606,6 +643,12 @@ public class XMLParser implements IParser{
 		return false;
 	}
 	
+	/**
+	 * Sets the owner of a connector to the component given in the xml string.
+	 * 
+	 * @param 	xml		Contains xml properties for owner and connector id
+	 * @return	boolean	True if succesfully set the owner of the connector
+	 */
 	private boolean addComponentChilds(String xml)
 	{
 		double comp=0;
@@ -659,6 +702,13 @@ public class XMLParser implements IParser{
 		return false;
 	}
 	
+	/**
+	 * Creates a string with the properties of a component. Adds a hash if hashes are activated.
+	 * 
+	 * @param 	comp	Component to save
+	 * @param 	id		Position in the elements array
+	 * @return	String	Contains the properties as string
+	 */
 	private String saveComponent(Component comp, int id)
 	{
 		String result = "component id=\"" + id + 
@@ -675,6 +725,13 @@ public class XMLParser implements IParser{
 		return result;
 	}
 	
+	/**
+	 * Creates a string with the properties of a connector. Adds a hash if hashes are activated.
+	 * 
+	 * @param 	conn	Connector to save
+	 * @param 	id		Position in the elements array
+	 * @return	String	Contains the properties as string
+	 */
 	private String saveConnector(Connector conn, int id)
 	{
 		int[] relPos = conn.getRelPos();
@@ -693,6 +750,14 @@ public class XMLParser implements IParser{
 		return result;
 	}
 	
+	/**
+	 * Creates a string with IDs (index in elements array) of the two connectors. 
+	 * Adds a hash if hashes are activated.
+	 * 
+	 * @param 	conn	1st connector
+	 * @param 	conn2	2nd connector
+	 * @return	String	Contains the connection as string
+	 */
 	private String saveConnection(Connector conn, Connector conn2)
 	{
 		String result = "connection conn1=\"" + elements.indexOf(conn) +
@@ -706,6 +771,13 @@ public class XMLParser implements IParser{
 		return result;
 	}
 	
+	/**
+	 * Creates a string with the IDs of the component and its children. 
+	 * Adds a hash if hashes are activated.
+	 * 
+	 * @param 	comp	Component used for save
+	 * @return	String	Contains the component and its childs
+	 */
 	private String saveComponentChilds(Component comp)
 	{
 		String result;
@@ -727,6 +799,14 @@ public class XMLParser implements IParser{
 		return result;
 	}
 	
+	/**
+	 * If ignoreHash is false creates a hash with the given xml string without special characters and the hash.
+	 * Checks the created hash against the given hash string afterwards.
+	 * 
+	 * @param 	hash	Hash code of the xml string
+	 * @param 	xml		Xml string to check
+	 * @return	boolean	True if hash matches the created xml hash
+	 */
 	private boolean checkHash(String hash, String xml)
 	{
 		if (!ignoreHashes)
@@ -756,12 +836,23 @@ public class XMLParser implements IParser{
 		}
 	}
 	
+	/**
+	 * Uses String.hashCode() to generate a hash code for the xml string.
+	 * @param 	xml		String to generate hash for
+	 * @return	String	Contains hash code
+	 */
 	private String createHash(String xml)
 	{
 		xml = xml.replace("\"", "");
 		return new String(Integer.toString(xml.hashCode()));
 	}
 	
+	/**
+	 * Deletes all special character and uses String.hashCode() afterwards.
+	 * Inserts the hash into a xml property &lt;circuithash hash=""\&gt; and returns the string.
+	 * @param 	xml		Xml used for saving
+	 * @return	String	Contains the xml property with the created hash
+	 */
 	private String createCircuitHash(String xml)
 	{
 		xml = xml.replace("<", "");
@@ -772,6 +863,13 @@ public class XMLParser implements IParser{
 		return new String("<circuithash hash=\"" + xml.hashCode() + "\"/>\n");
 	}
 	
+	/**
+	 * Removes all special characters, xmlTag and circuit xml tags and uses String.hashCode() afterwards.
+	 * Then checks the given hash against the created.
+	 * @param 	hash	Hash to check
+	 * @param 	xml		Xml containing the circuit
+	 * @return	boolean	True if hash matches
+	 */
 	private boolean checkCircuitHash(String hash, String xml)
 	{
 		xml = xml.replace(xmlTag, "");

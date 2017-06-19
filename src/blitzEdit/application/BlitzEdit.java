@@ -211,11 +211,11 @@ public class BlitzEdit implements javafx.fxml.Initializable
 			String filename = destination.getName().replace(".xml", "");
 			getCurrentTab().setText(filename);
 			
-			Debug_Text.setText("Circuit saved under" + destination);
+			Debug_Text.setText("Circuit saved at " + destination);
 		}
 		else
 		{
-			Debug_Text.setText("Failed to save Circuit under " + destination);
+			Debug_Text.setText("Failed to save Circuit at " + destination);
 		}
 	}
 
@@ -237,12 +237,12 @@ public class BlitzEdit implements javafx.fxml.Initializable
 			getCurrentTab().setText(filename);
 			
 			JOptionPane.showConfirmDialog(null,
-					"Circuit saved under" + destination, "Save as",
+					"Circuit saved at " + destination, "Save as",
 					JOptionPane.CLOSED_OPTION);
 		}
 		else
 		{
-			Debug_Text.setText("Failed to save Circuit under " + destination);
+			Debug_Text.setText("Failed to save Circuit at " + destination);
 		}
 	}
 

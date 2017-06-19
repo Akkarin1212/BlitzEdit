@@ -97,11 +97,11 @@ public class Circuit
 	/**
 	 * Returns all Elements in the designated Rectangle
 	 *  
-	 * @param x
-	 * @param y
-	 * @param width
-	 * @param height
-	 * @return List of all Elements in rectangle
+	 * @param x							Contains x position
+	 * @param y							Contains y position
+	 * @param width						Contains width of rect
+	 * @param height					Containts height of rect
+	 * @return ArrayList&lt;Element&gt;	List of all Elements in rectangle
 	 */
 	public ArrayList<Element> getElementsByPosition(int x, int y, int width, int height)
 	{
@@ -119,13 +119,13 @@ public class Circuit
 	}
 	
 	/**
-	 * Returns all Elements in the designated Rectangle
+	 * Uses {@link #getElementsByPosition(int x, int y, int width, int height)}.
 	 *  
-	 * @param x
-	 * @param y
-	 * @param width
-	 * @param height
-	 * @return List of all Elements in rectangle
+	 * @param x							Contains x position
+	 * @param y							Contains y position
+	 * @param width						Contains width of rect
+	 * @param height					Containts height of rect
+	 * @return ArrayList&lt;Element&gt;	List of all Elements in rectangle
 	 */
 	public ArrayList<Element> getElementsByPosition(double x, double y, double width, double height)
 	{
@@ -324,7 +324,7 @@ public class Circuit
 	/**
 	 * Uses getLines() and returns all lines with SelectionMode.Selected.
 	 * 
-	 * @return ArrayList<Line>	Contains selected lines
+	 * @return ArrayList&lt;Line&gt;	Contains selected lines
 	 */
 	public ArrayList<Line> getSelectedLines()
 	{

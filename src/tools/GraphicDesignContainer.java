@@ -3,6 +3,11 @@ package tools;
 import javafx.scene.Cursor;
 import javafx.scene.paint.Color;
 
+/**
+ * Container for all graphical design variables used in the programm as colors, line widths and cursors.
+ * 
+ * @author Christian Gärtner
+ */
 public class GraphicDesignContainer
 {
 	
