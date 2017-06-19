@@ -14,6 +14,8 @@ import blitzEdit.storage.XMLParser;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.geometry.Point2D;
+import javafx.geometry.Pos;
+import javafx.geometry.VPos;
 import javafx.scene.Node;
 import javafx.scene.control.Accordion;
 import javafx.scene.control.Label;
@@ -25,6 +27,10 @@ import javafx.scene.control.TabPane;
 import javafx.scene.control.TitledPane;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import tools.GlobalSettings;
@@ -367,7 +373,7 @@ public class BlitzEdit implements javafx.fxml.Initializable
 	@FXML
 	private void handleViewGridOnOffAction(Event event)
 	{
-		Debug_Text.setText("Grid On/Off");
+		Debug_Text.setText("Toggled Grid");
 		
 		getCurrentCircuitCanvas().gridOnOff();
 		GlobalSettings.SNAP_TO_GRID = GlobalSettings.SNAP_TO_GRID ? false : true;
@@ -375,8 +381,48 @@ public class BlitzEdit implements javafx.fxml.Initializable
 	}
 
 	@FXML
-	private void handleHelpAboutAction(Event event)
+	private CircuitCanvas handleHelpAboutAction(Event event)
 	{
+		// check if the TabPanel exists before creating tabs
+		if (CircuitsTabPane != null)
+		{
+			Tab tab = new Tab("About");
+			ScrollPane sp = new ScrollPane();					
+			CircuitCanvas canvas = new CircuitCanvas(sp);
+			sp.setContent(canvas);
+					
+			VBox vbox = new VBox();
+			vbox.setAlignment(Pos.TOP_CENTER);
+			
+			Text title = new Text("BlitzEdit");
+			title.setFont(new Font(50));
+			vbox.getChildren().add(title);
+					
+			ImageView logo = new ImageView(new Image("file:///C:/Users/marce/Documents/BlitzEdit/img/Logo.png"));
+			vbox.getChildren().add(logo);			
+			
+			Text kunde = new Text("Studienprojekt der Hochschule Esslingen \nim Auftrag der IT-Designers GmbH");
+			kunde.setFont(new Font(25));
+			kunde.setTextAlignment(TextAlignment.CENTER);
+			vbox.getChildren().add(kunde);
+			
+			Text team = new Text("\n\nTeam BlitzEdit:"
+									+ "\nChristian Gärtner"
+									+ "\nNico Pfaff"
+									+ "\nDavid Schick"
+									+ "\nMarcel Weller");
+			team.setFont(new Font(20));
+			team.setTextAlignment(TextAlignment.CENTER);
+			vbox.getChildren().add(team);
+			
+			tab.setContent(vbox);			
+
+			CircuitsTabPane.getTabs().add(tab);
+			CircuitsTabPane.getSelectionModel().select(tab);
+					
+			return canvas;
+		}
+		return null;
 	}
 	
 	@FXML
