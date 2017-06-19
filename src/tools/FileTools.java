@@ -7,6 +7,10 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 
+/**
+ * Contains static methods used for actions regarding files.
+ * @author Christian Gärtner
+ */
 public class FileTools
 {
 	/**
