@@ -6,3 +6,4 @@ To change the code use a Java IDE and import the Maven project.
 To simply start the programm use the containg BlitzEdit.jar in the target folder.
 
 [Code of Conduct](CODE_OF_CONDUCT.md)
+[License](LICENSE)
