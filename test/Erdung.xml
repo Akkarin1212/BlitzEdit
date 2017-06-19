@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- Bauteil Deklaration: TestComponent -->
+
+<component type="Erdung">
+	<svg path="Erdung.svg"/>
+	<connector x="0" y="-45" rot="180"/>
+</component>
