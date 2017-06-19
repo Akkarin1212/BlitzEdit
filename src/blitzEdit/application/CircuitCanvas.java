@@ -50,7 +50,6 @@ public class CircuitCanvas extends ResizableCanvas
 	private boolean isSelectingMultipleElements;
 	private boolean hasSelectedMultipleElements;
 	private boolean canSelectMultipleElements;
-	private boolean grid = true;
 	
 	private double canvasScaleFactor = 1;
 	
@@ -505,13 +504,13 @@ public class CircuitCanvas extends ResizableCanvas
   
 	public void gridOnOff()
 	{
-		if(grid)
+		if(GlobalSettings.DISPLAY_GRID)
 		{
-			grid = false;
+			GlobalSettings.DISPLAY_GRID = false;
 		}
 		else
 		{
-			grid = true;
+			GlobalSettings.DISPLAY_GRID = true;
 		}
 	}
 
@@ -522,7 +521,7 @@ public class CircuitCanvas extends ResizableCanvas
 	 */
 	public void drawGrid()
 	{
-		if(grid) 
+		if(GlobalSettings.DISPLAY_GRID) 
 		{
 			gc.save();
 			gc.clearRect(0, 0, getWidth(), getHeight());
