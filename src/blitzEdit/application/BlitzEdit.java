@@ -392,7 +392,7 @@ public class BlitzEdit implements javafx.fxml.Initializable
 			title.setFont(new Font(50));
 			vbox.getChildren().add(title);
 					
-			ImageView logo = new ImageView(new Image("file:///C:/Users/marce/Documents/BlitzEdit/img/Logo.png"));
+			ImageView logo = new ImageView(new Image("file:img/Logo.png"));
 			vbox.getChildren().add(logo);			
 			
 			Text kunde = new Text("Studienprojekt der Hochschule Esslingen \nim Auftrag der IT-Designers GmbH");
