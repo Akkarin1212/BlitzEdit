@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Circuit>
-	<circuithash hash="-53453430"/>
+	<circuithash hash="-1096760368"/>
 	<component id="4" x="600" y="325" rot="90" type="TestComponent" hash="-1831378973">
 		<child comp="4" conn="0;1;2;3;" hash="127419329"/>
 		<connector id="0" x="275" y="325" rot="0" relX="0" relY="100" hash="-2127195158">
@@ -22,7 +22,7 @@
 	</component>
 	<component id="9" x="275" y="675" rot="225" type="TestComponent" hash="2118757188">
 		<child comp="9" conn="5;6;7;8;" hash="-657344270"/>
-		<connector id="5" x="438" y="512" rot="0" relX="0" relY="100" hash="1414144408">
+		<connector id="5" x="474" y="476" rot="0" relX="0" relY="100" hash="1046261581">
 			<connection conn1="5" conn2="0" hash="-1601989868"/>
 			<connection conn1="5" conn2="1" hash="-1601989867"/>
 		</connector>
@@ -492,7 +492,7 @@
 			<connection conn1="131" conn2="125" hash="-484004814"/>
 			<connection conn1="131" conn2="128" hash="-484004811"/>
 		</connector>
-		<connector id="132" x="1388" y="1637" rot="180" relX="0" relY="-100" hash="-168711479">
+		<connector id="132" x="1387" y="1638" rot="180" relX="0" relY="-100" hash="2045985255">
 			<connection conn1="132" conn2="83" hash="-1043410340"/>
 		</connector>
 		<connector id="133" x="1515" y="1440" rot="270" relX="50" relY="0" hash="-1220122019">

@@ -59,15 +59,9 @@ public class BlitzEdit implements javafx.fxml.Initializable
 	@FXML
 	private MenuItem Close;
 	@FXML
-	private MenuItem Undo;
-	@FXML
-	private MenuItem Redo;
-	@FXML
 	private MenuItem Copy;
 	@FXML
 	private MenuItem Paste;
-	@FXML
-	private MenuItem Duplicate;
 	@FXML
 	private MenuItem Delete;
 	@FXML
@@ -148,22 +142,26 @@ public class BlitzEdit implements javafx.fxml.Initializable
 	@FXML
 	private void handleNewAction(Event event)
 	{
-		Debug_Text.setText("New");
-
 		addTab("New Circuit");
 	}
 	
 	@FXML
 	private void handleReloadAction(Event event)
 	{
-		Debug_Text.setText("Reload");
-
 		File filepath = getCurrentCircuitCanvas().currentSaveDirection;
-		if (filepath != null)
+		
+		int confirm = JOptionPane.showConfirmDialog(null,
+				"Do you want to discrd changes and reload the circuit file?", "Reload",
+				JOptionPane.OK_OPTION);
+		if (filepath != null && confirm == JOptionPane.OK_OPTION)
 		{
 			XMLParser parser = new XMLParser();
 			parser.loadCircuit(getCurrentCircuitCanvas().circuit, filepath.getPath());
 			getCurrentCircuitCanvas().refreshCanvas();
+		}
+		else if (confirm != JOptionPane.OK_OPTION)
+		{
+			
 		}
 		else
 		{
@@ -174,8 +172,6 @@ public class BlitzEdit implements javafx.fxml.Initializable
 	@FXML
 	private void handleOpenAction(Event event)
 	{
-		Debug_Text.setText("Open");
-
 		FileChooser fileChooser = new FileChooser();
 		fileChooser.setTitle("Open circuit diagram");
 		fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("XML", "*.xml"));
@@ -194,8 +190,6 @@ public class BlitzEdit implements javafx.fxml.Initializable
 	@FXML
 	private void handleSaveAction(Event event)
 	{
-		Debug_Text.setText("Save");
-		
 		File destination = getCurrentCircuitCanvas().currentSaveDirection;
 		if(destination ==  null)
 		{
@@ -225,8 +219,6 @@ public class BlitzEdit implements javafx.fxml.Initializable
 	@FXML
 	private void handleSaveAsAction(Event event)
 	{
-		Debug_Text.setText("Save As...");
-		
 		FileChooser fileChooser = new FileChooser();
 		fileChooser.setTitle("Save circuit diagram");
 		fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("XML", "*.xml"));
@@ -254,8 +246,6 @@ public class BlitzEdit implements javafx.fxml.Initializable
 	@FXML
 	private void handleImportLibraryAction(Event event)
 	{
-		Debug_Text.setText("Import Library");
-
 		DirectoryChooser directoryChooser = new DirectoryChooser();
 		File selectedDirectory = directoryChooser.showDialog(Main.mainStage);
 
@@ -288,14 +278,12 @@ public class BlitzEdit implements javafx.fxml.Initializable
 	@FXML
 	private void handleImportComponentAction(Event event)
 	{
-		Debug_Text.setText("Import Component");
-		
 		FileChooser fileChooser = new FileChooser();
 		fileChooser.setTitle("Add xml Component");
 		fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("XML", "*.xml"));
 		File selectedFile = fileChooser.showOpenDialog(Main.mainStage);
 
-		if (selectedFile != null)
+		if (selectedFile != null && getCurrentLibraryTitledPane() != null)
 		{
 			if(!getCurrentLibraryCanvas().addLibraryEntry(selectedFile)) //if no files got added
 			{
@@ -306,6 +294,10 @@ public class BlitzEdit implements javafx.fxml.Initializable
 				getCurrentLibraryCanvas().drawLibraryEntries();
 			}
 		}
+		else if(getCurrentLibraryTitledPane() == null)
+		{
+			Debug_Text.setText("To import a component select a library.");
+		}
 		else
 		{
 			Debug_Text.setText("Invalid file location: None selected");
@@ -315,26 +307,11 @@ public class BlitzEdit implements javafx.fxml.Initializable
 	@FXML
 	private void handleCloseAction(Event event)
 	{
-		Debug_Text.setText("Close");
-	}
-
-	@FXML
-	private void handleUndoAction(Event event)
-	{
-		Debug_Text.setText("Undo");
-	}
-
-	@FXML
-	private void handleRedoAction(Event event)
-	{
-		Debug_Text.setText("Redo");
 	}
 
 	@FXML
 	private void handleCopyAction(Event event)
 	{
-		Debug_Text.setText("Copy");
-		
 		elementsToCopy = getCurrentCircuitCanvas().copySelected();
 		copyMousePosition = getCurrentCircuitCanvas().getMousePosition();
 	}
@@ -342,7 +319,6 @@ public class BlitzEdit implements javafx.fxml.Initializable
 	@FXML
 	private void handlePasteAction(Event event)
 	{
-		Debug_Text.setText("Paste");
 		if(elementsToCopy != null && copyMousePosition != null)
 		{
 			getCurrentCircuitCanvas().pasteSelected(elementsToCopy, copyMousePosition);
@@ -350,32 +326,20 @@ public class BlitzEdit implements javafx.fxml.Initializable
 	}
 
 	@FXML
-	private void handleDuplicateAction(Event event)
-	{
-		Debug_Text.setText("Duplicate");
-	}
-
-	@FXML
 	private void handleDeleteAction(Event event)
 	{
-		Debug_Text.setText("Delete");
-		
 		getCurrentCircuitCanvas().deleteSelected();
 	}
 
 	@FXML
 	private void handleSelectAllAction(Event event)
 	{
-		Debug_Text.setText("Select All");
-		
 		getCurrentCircuitCanvas().selectAll();
 	}
 
 	@FXML
 	private void handleSelectNoneAction(Event event)
 	{
-		Debug_Text.setText("Select None");
-		
 		getCurrentCircuitCanvas().deselectAll();
 	}
 
@@ -388,36 +352,32 @@ public class BlitzEdit implements javafx.fxml.Initializable
 	@FXML
 	private void handleViewZoomInAction(Event event)
 	{
-		Debug_Text.setText("Zoom In");
-		
 		getCurrentCircuitCanvas().zoomIn();
 	}
 
 	@FXML
 	private void handleViewZoomOutAction(Event event)
 	{
-		Debug_Text.setText("Zoom Out");
-		
 		getCurrentCircuitCanvas().zoomOut();
 	}
 
 	@FXML
 	private void handleHelpAboutAction(Event event)
 	{
-		Debug_Text.setText("About");
 	}
 	
 	@FXML
 	private void handleToggleTutorialAction(Event event)
 	{
-		Debug_Text.setText("Toogle Tutorial");
 		pane.toggleVisibilty();
 	}
 	
 	private void createTutorialPane()
 	{
 		pane = new TutorialPanel(Tutorial);
-		Tutorial.getPanes().addAll(pane.create());
+		TitledPane[] panes = pane.create();
+		Tutorial.getPanes().addAll(panes);
+		Tutorial.setExpandedPane(panes[0]);
 	}
 
 	/**

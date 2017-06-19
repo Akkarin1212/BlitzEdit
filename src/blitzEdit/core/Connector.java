@@ -36,24 +36,41 @@ public final class Connector extends Element
 		gc.save();
 		//zeichnet die Linie des Connectors von seinem Ursprungspunkt zu seiner
 		// momentanen Position
-		gc.setStroke(GraphicDesignContainer.connector_line_color);
+		if(getOwner().getSelectionMode() == SelectionMode.SELECTED ||
+				getOwner().getSelectionMode() == SelectionMode.SELECTED)
+		{
+			gc.setStroke(GraphicDesignContainer.selected_line_color);
+		}
+		else
+		{
+			gc.setStroke(GraphicDesignContainer.connector_line_color);
+		}
 		gc.setLineWidth(GraphicDesignContainer.connector_line_width);
 		gc.strokeLine(x2, y2, x1, y1);
 		
 		switch(mode)
 		{
 			case SELECTED:
+				for (Connector conn : getConnections()) 
+				{
+					conn.draw(gc, scale, SelectionMode.CONNECTED);
+				}
 				gc.setFill(GraphicDesignContainer.selected_connector_color);
 				break;
 			case HIGHLIGHTED:
 				gc.setFill(GraphicDesignContainer.connector_highlight_color);
 				break;
+			case CONNECTED:
+				gc.setFill(GraphicDesignContainer.connected_connector_color);
+			
 			default:
 				break;
 		}
 		
 		//zeichnet den Verbindungspunkt des Connectors
 		gc.fillOval(getX()-getSizeX()/2, getY()-getSizeY()/2, getSizeX(), getSizeY());
+		
+		
 		gc.restore();
 	}
 	

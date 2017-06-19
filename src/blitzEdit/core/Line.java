@@ -4,6 +4,7 @@ import java.awt.Point;
 import javafx.scene.canvas.GraphicsContext;
 
 import tools.GraphicDesignContainer;
+import tools.SelectionMode;
 import blitzEdit.core.Connector;
 
 /**
@@ -15,6 +16,8 @@ public class Line
 {
 	private Connector _c1;
 	private Connector _c2;
+	
+	private SelectionMode _selMode = SelectionMode.UNSELECTED;
 	
 	/**
 	 * returns Connector 1 of this line
@@ -32,6 +35,11 @@ public class Line
 	public Connector getC2()
 	{
 		return _c2;
+	}
+	
+	public SelectionMode getSelectionMode()
+	{
+		return _selMode;
 	}
 	
 	/**
@@ -60,8 +68,19 @@ public class Line
 	public void draw(GraphicsContext gc)
 	{	
 		gc.save();
-		gc.setStroke(GraphicDesignContainer.line_color);
 		gc.setLineWidth(GraphicDesignContainer.line_width);
+		if(/*_c1.getOwner().getSelectionMode() == SelectionMode.SELECTED ||
+				_c2.getOwner().getSelectionMode() == SelectionMode.SELECTED*/
+				_selMode == SelectionMode.SELECTED)
+		{
+			gc.setStroke(GraphicDesignContainer.selected_line_color);
+			_selMode = SelectionMode.SELECTED;
+		}
+		else
+		{
+			gc.setStroke(GraphicDesignContainer.line_color);
+			_selMode = SelectionMode.UNSELECTED;
+		}
 		drawLine(gc);
 		gc.restore();
 	}
@@ -133,5 +152,10 @@ public class Line
 	{
 		_c1 = c1;
 		_c2 = c2;
+		if (c1.getOwner().getSelectionMode() == SelectionMode.SELECTED
+				|| c2.getOwner().getSelectionMode() == SelectionMode.SELECTED
+				|| c1.getSelectionMode() == SelectionMode.SELECTED
+				|| c2.getSelectionMode() == SelectionMode.SELECTED)
+		_selMode = SelectionMode.SELECTED;
 	}
 }
