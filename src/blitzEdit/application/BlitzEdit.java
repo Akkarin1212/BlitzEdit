@@ -27,6 +27,7 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
+import tools.GlobalSettings;
 
 /**
  * Controller class for BlitzEdit JavaFX application.
@@ -74,6 +75,8 @@ public class BlitzEdit implements javafx.fxml.Initializable
 	private MenuItem ZoomIn;
 	@FXML
 	private MenuItem ZoomOut;
+	@FXML
+	private MenuItem GridOnOff;
 	@FXML
 	private MenuItem About;
 	@FXML
@@ -359,6 +362,16 @@ public class BlitzEdit implements javafx.fxml.Initializable
 	private void handleViewZoomOutAction(Event event)
 	{
 		getCurrentCircuitCanvas().zoomOut();
+	}
+	
+	@FXML
+	private void handleViewGridOnOffAction(Event event)
+	{
+		Debug_Text.setText("Grid On/Off");
+		
+		getCurrentCircuitCanvas().gridOnOff();
+		GlobalSettings.SNAP_TO_GRID = GlobalSettings.SNAP_TO_GRID ? false : true;
+		getCurrentCircuitCanvas().refreshCanvas();
 	}
 
 	@FXML

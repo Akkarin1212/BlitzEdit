@@ -50,6 +50,7 @@ public class CircuitCanvas extends ResizableCanvas
 	private boolean isSelectingMultipleElements;
 	private boolean hasSelectedMultipleElements;
 	private boolean canSelectMultipleElements;
+	private boolean grid = true;
 	
 	private double canvasScaleFactor = 1;
 	
@@ -181,15 +182,15 @@ public class CircuitCanvas extends ResizableCanvas
 					if (hasSelectedMultipleElements)
 					{
 						//wurde der drag handler gerade erst aufgerufen, wird
+						//initialDrag = false;
+						moved = translateElements(currentSelectedElements, click.getX() - dragX, click.getY() - dragY);
+            
 						//der mauspunkt als ursprungspunkt f�r die translation uebernommen
 						if (moved)
 						{
 							dragX = click.getX();
 							dragY = click.getY();
 						}
-						//initialDrag = false;
-						moved = translateElements(currentSelectedElements, click.getX() - dragX, click.getY() - dragY);
-						
 						changeCursorStyle(GraphicDesignContainer.move_cursor);
 						refreshCanvas();
 
@@ -501,7 +502,19 @@ public class CircuitCanvas extends ResizableCanvas
 			}
 		});
 	}
-	
+  
+	public void gridOnOff()
+	{
+		if(grid)
+		{
+			grid = false;
+		}
+		else
+		{
+			grid = true;
+		}
+	}
+
 	/**
 	 * Draws a grid of lines on the graphical context of this canvas.
 	 * Use the constants in the {@link GraphicDesignContainer} to change the design of the grid.
@@ -509,25 +522,35 @@ public class CircuitCanvas extends ResizableCanvas
 	 */
 	public void drawGrid()
 	{
-		gc.save();
-		gc.clearRect(0, 0, getWidth(), getHeight());
+		if(grid) 
+		{
+			gc.save();
+			gc.clearRect(0, 0, getWidth(), getHeight());
+			
+			gc.setStroke(GraphicDesignContainer.grid_color);
+			gc.setLineWidth(GraphicDesignContainer.grid_line_width);
+			double lineSpace = GraphicDesignContainer.grid_spacing;
+
+			// vertical lines
+			for (int i = 0; i < getWidth(); i += lineSpace)
+			{
+				gc.strokeLine(i, 0, i, getHeight());
+			}
+
+			// horizontal lines
+			for (int i = (int) lineSpace; i < getHeight(); i += lineSpace)
+			{
+				gc.strokeLine(0, i, getWidth(), i);
+			}
+			gc.restore();
+		}
+		else 
+		{
+			gc.save();
+			gc.clearRect(0, 0, getWidth(), getHeight());
+			gc.restore();
+		}
 		
-		gc.setStroke(GraphicDesignContainer.grid_color);
-		gc.setLineWidth(GraphicDesignContainer.grid_line_width);
-		double lineSpace = GraphicDesignContainer.grid_spacing;
-
-		// vertical lines
-		for (int i = 0; i < getWidth(); i += lineSpace)
-		{
-			gc.strokeLine(i, 0, i, getHeight());
-		}
-
-		// horizontal lines
-		for (int i = (int) lineSpace; i < getHeight(); i += lineSpace)
-		{
-			gc.strokeLine(0, i, getWidth(), i);
-		}
-		gc.restore();
 	}
 
 	/**
