@@ -84,11 +84,6 @@
                         </MenuItem>
                     </items>
                   </Menu>
-                <Menu fx:id="QuickSave" mnemonicParsing="false" onAction="#handleSaveAction" text="Save">
-                     <accelerator>
-                        <KeyCodeCombination alt="UP" code="S" control="DOWN" meta="UP" shift="UP" shortcut="UP" />
-                     </accelerator>
-                </Menu>
                   <Menu mnemonicParsing="false" text="View">
                      <items>
                         <MenuItem fx:id="GridOnOff" mnemonicParsing="false" onAction="#handleViewGridOnOffAction" text="Toggle Grid" />
