@@ -5,7 +5,7 @@ Graphical editor used for creating and designing a circuit with it's elements.
 ## Getting Started
 
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
-Use git clone or download the zip and extract the files. To make changes to the code use an Java IDE. To simply use the programm use the contained BlitzEdit.jar in the target folder.
+See Installing for information about using this programm.
 
 ### Prerequisites
 
