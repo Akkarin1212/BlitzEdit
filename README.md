@@ -66,8 +66,8 @@ Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduc
 
 * **Christian Gärtner** - *Initial work* - [Akkarin1212](https://github.com/Akkarin1212)
 * **David Schick** - *Initial work* - [der-schick96](https://github.com/der-schick96)
-* **Marcel Wellter** - *Initial work* - [nicopf](https://github.com/nicopf)
-* **Nico Pfaff** - *Initial work* - [Well5a](https://github.com/Well5a)
+* **Nico Pfaff** - *Initial work* - [nicopf](https://github.com/nicopf)
+* **Marcel Weller** - *Initial work* - [Well5a](https://github.com/Well5a)
 
 See also the list of [contributors](https://github.com/Akkarin1212/BlitzEdit/graphs/contributors) who participated in this project.
 
