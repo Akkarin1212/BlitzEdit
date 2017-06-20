@@ -383,10 +383,14 @@ public class BlitzEdit implements javafx.fxml.Initializable
 	@FXML
 	private void handleHelpAboutAction(Event event)
 	{
+			ScrollPane sp = new ScrollPane();
+			sp.setFitToHeight(true);
+			sp.setFitToWidth(true);
 			Tab tab = new Tab("About");
 								
 			VBox vbox = new VBox();
 			vbox.setAlignment(Pos.TOP_CENTER);
+			
 			
 			Text title = new Text("BlitzEdit");
 			title.setFont(new Font(50));
@@ -409,8 +413,10 @@ public class BlitzEdit implements javafx.fxml.Initializable
 			team.setTextAlignment(TextAlignment.CENTER);
 			vbox.getChildren().add(team);
 			
-			tab.setContent(vbox);			
-
+			sp.setHbarPolicy(ScrollBarPolicy.NEVER);
+			sp.setContent(vbox);
+			tab.setContent(sp);
+			
 			CircuitsTabPane.getTabs().add(tab);
 			CircuitsTabPane.getSelectionModel().select(tab);
 	}
