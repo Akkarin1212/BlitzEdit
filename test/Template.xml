@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Bauteil Deklaration: Template-->
+<component type="Template">
+	<svg path=""/>
+	<connector x="0" y="100" rot="0"/>
+	<connector x="0" y="-100" rot="180"/>
+</component>
